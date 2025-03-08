@@ -1,0 +1,2989 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="95">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="0">
+      <df name="addons">
+        <df name="ooh323c">
+          <df name="src">
+            <df name="h323">
+              <in>H235-SECURITY-MESSAGES.h</in>
+              <in>H235-SECURITY-MESSAGESDec.c</in>
+              <in>H235-SECURITY-MESSAGESEnc.c</in>
+              <in>H323-MESSAGES.c</in>
+              <in>H323-MESSAGES.h</in>
+              <in>H323-MESSAGESDec.c</in>
+              <in>H323-MESSAGESEnc.c</in>
+              <in>MULTIMEDIA-SYSTEM-CONTROL.c</in>
+              <in>MULTIMEDIA-SYSTEM-CONTROL.h</in>
+              <in>MULTIMEDIA-SYSTEM-CONTROLDec.c</in>
+              <in>MULTIMEDIA-SYSTEM-CONTROLEnc.c</in>
+            </df>
+            <in>context.c</in>
+            <in>decode.c</in>
+            <in>dlist.c</in>
+            <in>dlist.h</in>
+            <in>encode.c</in>
+            <in>errmgmt.c</in>
+            <in>eventHandler.c</in>
+            <in>eventHandler.h</in>
+            <in>memheap.c</in>
+            <in>memheap.h</in>
+            <in>ooCalls.c</in>
+            <in>ooCalls.h</in>
+            <in>ooCapability.c</in>
+            <in>ooCapability.h</in>
+            <in>ooCmdChannel.c</in>
+            <in>ooCmdChannel.h</in>
+            <in>ooCommon.h</in>
+            <in>ooDateTime.c</in>
+            <in>ooDateTime.h</in>
+            <in>ooGkClient.c</in>
+            <in>ooGkClient.h</in>
+            <in>ooLogChan.c</in>
+            <in>ooLogChan.h</in>
+            <in>ooSocket.c</in>
+            <in>ooSocket.h</in>
+            <in>ooStackCmds.c</in>
+            <in>ooStackCmds.h</in>
+            <in>ooTimer.c</in>
+            <in>ooTimer.h</in>
+            <in>ooUtils.c</in>
+            <in>ooUtils.h</in>
+            <in>ooasn1.h</in>
+            <in>oochannels.c</in>
+            <in>oochannels.h</in>
+            <in>ooh245.c</in>
+            <in>ooh245.h</in>
+            <in>ooh323.c</in>
+            <in>ooh323.h</in>
+            <in>ooh323ep.c</in>
+            <in>ooh323ep.h</in>
+            <in>oohdr.h</in>
+            <in>ooper.h</in>
+            <in>ooports.c</in>
+            <in>ooports.h</in>
+            <in>ooq931.c</in>
+            <in>ooq931.h</in>
+            <in>ootrace.c</in>
+            <in>ootrace.h</in>
+            <in>ootypes.h</in>
+            <in>perutil.c</in>
+            <in>printHandler.c</in>
+            <in>printHandler.h</in>
+            <in>rtctype.c</in>
+            <in>rtctype.h</in>
+          </df>
+        </df>
+        <in>app_mysql.c</in>
+        <in>app_saycountpl.c</in>
+        <in>cdr_mysql.c</in>
+        <in>chan_mobile.c</in>
+        <in>chan_ooh323.c</in>
+        <in>chan_ooh323.h</in>
+        <in>format_mp3.c</in>
+        <in>ooh323cDriver.c</in>
+        <in>ooh323cDriver.h</in>
+        <in>res_config_mysql.c</in>
+      </df>
+      <df name="agi">
+        <in>eagi-sphinx-test.c</in>
+        <in>eagi-test.c</in>
+      </df>
+      <df name="apps">
+        <df name="confbridge">
+          <df name="include">
+            <in>conf_state.h</in>
+            <in>confbridge.h</in>
+          </df>
+          <in>conf_config_parser.c</in>
+          <in>conf_state.c</in>
+          <in>conf_state_empty.c</in>
+          <in>conf_state_inactive.c</in>
+          <in>conf_state_multi.c</in>
+          <in>conf_state_multi_marked.c</in>
+          <in>conf_state_single.c</in>
+          <in>conf_state_single_marked.c</in>
+        </df>
+        <in>app_adsiprog.c</in>
+        <in>app_alarmreceiver.c</in>
+        <in>app_amd.c</in>
+        <in>app_authenticate.c</in>
+        <in>app_cdr.c</in>
+        <in>app_celgenuserevent.c</in>
+        <in>app_chanisavail.c</in>
+        <in>app_channelredirect.c</in>
+        <in>app_chanspy.c</in>
+        <in>app_confbridge.c</in>
+        <in>app_controlplayback.c</in>
+        <in>app_dahdibarge.c</in>
+        <in>app_dahdiras.c</in>
+        <in>app_db.c</in>
+        <in>app_dial.c</in>
+        <in>app_dictate.c</in>
+        <in>app_directed_pickup.c</in>
+        <in>app_directory.c</in>
+        <in>app_disa.c</in>
+        <in>app_dumpchan.c</in>
+        <in>app_echo.c</in>
+        <in>app_exec.c</in>
+        <in>app_externalivr.c</in>
+        <in>app_fax.c</in>
+        <in>app_festival.c</in>
+        <in>app_flash.c</in>
+        <in>app_followme.c</in>
+        <in>app_forkcdr.c</in>
+        <in>app_getcpeid.c</in>
+        <in>app_ices.c</in>
+        <in>app_image.c</in>
+        <in>app_ivrdemo.c</in>
+        <in>app_jack.c</in>
+        <in>app_macro.c</in>
+        <in>app_meetme.c</in>
+        <in>app_milliwatt.c</in>
+        <in>app_minivm.c</in>
+        <in>app_mixmonitor.c</in>
+        <in>app_morsecode.c</in>
+        <in>app_mp3.c</in>
+        <in>app_nbscat.c</in>
+        <in>app_originate.c</in>
+        <in>app_osplookup.c</in>
+        <in>app_page.c</in>
+        <in>app_parkandannounce.c</in>
+        <in>app_playback.c</in>
+        <in>app_playtones.c</in>
+        <in>app_privacy.c</in>
+        <in>app_queue.c</in>
+        <in>app_read.c</in>
+        <in>app_readexten.c</in>
+        <in>app_readfile.c</in>
+        <in>app_record.c</in>
+        <in>app_saycounted.c</in>
+        <in>app_sayunixtime.c</in>
+        <in>app_senddtmf.c</in>
+        <in>app_sendtext.c</in>
+        <in>app_setcallerid.c</in>
+        <in>app_skel.c</in>
+        <in>app_sms.c</in>
+        <in>app_softhangup.c</in>
+        <in>app_speech_utils.c</in>
+        <in>app_stack.c</in>
+        <in>app_system.c</in>
+        <in>app_talkdetect.c</in>
+        <in>app_test.c</in>
+        <in>app_transfer.c</in>
+        <in>app_url.c</in>
+        <in>app_userevent.c</in>
+        <in>app_verbose.c</in>
+        <in>app_voicemail.c</in>
+        <in>app_waitforring.c</in>
+        <in>app_waitforsilence.c</in>
+        <in>app_waituntil.c</in>
+        <in>app_while.c</in>
+        <in>app_zapateller.c</in>
+        <in>enter.h</in>
+        <in>leave.h</in>
+      </df>
+      <df name="autoconf">
+      </df>
+      <df name="bridges">
+        <in>bridge_builtin_features.c</in>
+        <in>bridge_multiplexed.c</in>
+        <in>bridge_simple.c</in>
+        <in>bridge_softmix.c</in>
+      </df>
+      <df name="build_tools">
+      </df>
+      <df name="cdr">
+        <in>cdr_adaptive_odbc.c</in>
+        <in>cdr_csv.c</in>
+        <in>cdr_custom.c</in>
+        <in>cdr_manager.c</in>
+        <in>cdr_odbc.c</in>
+        <in>cdr_pgsql.c</in>
+        <in>cdr_radius.c</in>
+        <in>cdr_sqlite.c</in>
+        <in>cdr_sqlite3_custom.c</in>
+        <in>cdr_syslog.c</in>
+        <in>cdr_tds.c</in>
+      </df>
+      <df name="cel">
+        <in>cel_custom.c</in>
+        <in>cel_manager.c</in>
+        <in>cel_odbc.c</in>
+        <in>cel_pgsql.c</in>
+        <in>cel_radius.c</in>
+        <in>cel_sqlite3_custom.c</in>
+        <in>cel_tds.c</in>
+      </df>
+      <df name="channels">
+        <df name="h323">
+          <in>ast_h323.cxx</in>
+          <in>ast_h323.h</in>
+          <in>ast_ptlib.h</in>
+          <in>caps_h323.cxx</in>
+          <in>caps_h323.h</in>
+          <in>chan_h323.h</in>
+          <in>cisco-h225.cxx</in>
+          <in>cisco-h225.h</in>
+          <in>compat_h323.cxx</in>
+          <in>compat_h323.h</in>
+        </df>
+        <df name="misdn">
+          <in>chan_misdn_config.h</in>
+          <in>ie.c</in>
+          <in>isdn_lib.c</in>
+          <in>isdn_lib.h</in>
+          <in>isdn_lib_intern.h</in>
+          <in>isdn_msg_parser.c</in>
+          <in>portinfo.c</in>
+        </df>
+        <df name="sip">
+          <df name="include">
+            <in>config_parser.h</in>
+            <in>dialog.h</in>
+            <in>dialplan_functions.h</in>
+            <in>globals.h</in>
+            <in>reqresp_parser.h</in>
+            <in>sdp_crypto.h</in>
+            <in>security_events.h</in>
+            <in>sip.h</in>
+            <in>sip_utils.h</in>
+            <in>srtp.h</in>
+          </df>
+          <in>config_parser.c</in>
+          <in>dialplan_functions.c</in>
+          <in>reqresp_parser.c</in>
+          <in>sdp_crypto.c</in>
+          <in>security_events.c</in>
+          <in>srtp.c</in>
+          <in>utils.c</in>
+        </df>
+        <in>chan_agent.c</in>
+        <in>chan_alsa.c</in>
+        <in>chan_bridge.c</in>
+        <in>chan_console.c</in>
+        <in>chan_dahdi.c</in>
+        <in>chan_gtalk.c</in>
+        <in>chan_h323.c</in>
+        <in>chan_iax2.c</in>
+        <in>chan_jingle.c</in>
+        <in>chan_local.c</in>
+        <in>chan_mgcp.c</in>
+        <in>chan_misdn.c</in>
+        <in>chan_motif.c</in>
+        <in>chan_multicast_rtp.c</in>
+        <in>chan_nbs.c</in>
+        <in>chan_oss.c</in>
+        <in>chan_phone.c</in>
+        <in>chan_phone.h</in>
+        <in>chan_sip.c</in>
+        <in>chan_skinny.c</in>
+        <in>chan_unistim.c</in>
+        <in>chan_vpb.cc</in>
+        <in>console_board.c</in>
+        <in>console_gui.c</in>
+        <in>console_video.c</in>
+        <in>console_video.h</in>
+        <in>iax2-parser.c</in>
+        <in>iax2-parser.h</in>
+        <in>iax2-provision.c</in>
+        <in>iax2-provision.h</in>
+        <in>iax2.h</in>
+        <in>misdn_config.c</in>
+        <in>sig_analog.c</in>
+        <in>sig_analog.h</in>
+        <in>sig_pri.c</in>
+        <in>sig_pri.h</in>
+        <in>sig_ss7.c</in>
+        <in>sig_ss7.h</in>
+        <in>vcodecs.c</in>
+        <in>vgrabbers.c</in>
+      </df>
+      <df name="codecs">
+        <df name="g722">
+          <in>g722.h</in>
+          <in>g722_decode.c</in>
+          <in>g722_encode.c</in>
+        </df>
+        <df name="gsm">
+          <df name="inc">
+            <in>config.h</in>
+            <in>gsm.h</in>
+            <in>private.h</in>
+            <in>proto.h</in>
+            <in>unproto.h</in>
+          </df>
+          <df name="src">
+            <in>add.c</in>
+            <in>code.c</in>
+            <in>debug.c</in>
+            <in>decode.c</in>
+            <in>gsm_create.c</in>
+            <in>gsm_decode.c</in>
+            <in>gsm_destroy.c</in>
+            <in>gsm_encode.c</in>
+            <in>gsm_explode.c</in>
+            <in>gsm_implode.c</in>
+            <in>gsm_option.c</in>
+            <in>gsm_print.c</in>
+            <in>k6opt.h</in>
+            <in>k6opt.s</in>
+            <in>long_term.c</in>
+            <in>lpc.c</in>
+            <in>preprocess.c</in>
+            <in>rpe.c</in>
+            <in>short_term.c</in>
+            <in>table.c</in>
+          </df>
+        </df>
+        <df name="ilbc">
+          <in>FrameClassify.c</in>
+          <in>FrameClassify.h</in>
+          <in>LPCdecode.c</in>
+          <in>LPCdecode.h</in>
+          <in>LPCencode.c</in>
+          <in>LPCencode.h</in>
+          <in>StateConstructW.c</in>
+          <in>StateConstructW.h</in>
+          <in>StateSearchW.c</in>
+          <in>StateSearchW.h</in>
+          <in>anaFilter.c</in>
+          <in>anaFilter.h</in>
+          <in>constants.c</in>
+          <in>constants.h</in>
+          <in>createCB.c</in>
+          <in>createCB.h</in>
+          <in>doCPLC.c</in>
+          <in>doCPLC.h</in>
+          <in>enhancer.c</in>
+          <in>enhancer.h</in>
+          <in>filter.c</in>
+          <in>filter.h</in>
+          <in>gainquant.c</in>
+          <in>gainquant.h</in>
+          <in>getCBvec.c</in>
+          <in>getCBvec.h</in>
+          <in>helpfun.c</in>
+          <in>helpfun.h</in>
+          <in>hpInput.c</in>
+          <in>hpInput.h</in>
+          <in>hpOutput.c</in>
+          <in>hpOutput.h</in>
+          <in>iCBConstruct.c</in>
+          <in>iCBConstruct.h</in>
+          <in>iCBSearch.c</in>
+          <in>iCBSearch.h</in>
+          <in>iLBC_decode.c</in>
+          <in>iLBC_decode.h</in>
+          <in>iLBC_define.h</in>
+          <in>iLBC_encode.c</in>
+          <in>iLBC_encode.h</in>
+          <in>iLBC_test.c</in>
+          <in>lsf.c</in>
+          <in>lsf.h</in>
+          <in>packing.c</in>
+          <in>packing.h</in>
+          <in>syntFilter.c</in>
+          <in>syntFilter.h</in>
+        </df>
+        <df name="lpc10">
+          <in>analys.c</in>
+          <in>bsynz.c</in>
+          <in>chanwr.c</in>
+          <in>dcbias.c</in>
+          <in>decode.c</in>
+          <in>deemp.c</in>
+          <in>difmag.c</in>
+          <in>dyptrk.c</in>
+          <in>encode.c</in>
+          <in>energy.c</in>
+          <in>f2c.h</in>
+          <in>f2clib.c</in>
+          <in>ham84.c</in>
+          <in>hp100.c</in>
+          <in>invert.c</in>
+          <in>irc2pc.c</in>
+          <in>ivfilt.c</in>
+          <in>lpc10.h</in>
+          <in>lpcdec.c</in>
+          <in>lpcenc.c</in>
+          <in>lpcini.c</in>
+          <in>lpfilt.c</in>
+          <in>median.c</in>
+          <in>mload.c</in>
+          <in>onset.c</in>
+          <in>pitsyn.c</in>
+          <in>placea.c</in>
+          <in>placev.c</in>
+          <in>preemp.c</in>
+          <in>prepro.c</in>
+          <in>random.c</in>
+          <in>rcchk.c</in>
+          <in>synths.c</in>
+          <in>tbdm.c</in>
+          <in>voicin.c</in>
+          <in>vparms.c</in>
+        </df>
+        <df name="speex">
+          <in>arch.h</in>
+          <in>fixed_generic.h</in>
+          <in>resample.c</in>
+          <in>resample_sse.h</in>
+          <in>speex_resampler.h</in>
+          <in>stack_alloc.h</in>
+        </df>
+        <in>codec_a_mu.c</in>
+        <in>codec_adpcm.c</in>
+        <in>codec_alaw.c</in>
+        <in>codec_dahdi.c</in>
+        <in>codec_g722.c</in>
+        <in>codec_g726.c</in>
+        <in>codec_gsm.c</in>
+        <in>codec_ilbc.c</in>
+        <in>codec_lpc10.c</in>
+        <in>codec_resample.c</in>
+        <in>codec_speex.c</in>
+        <in>codec_ulaw.c</in>
+        <in>ex_adpcm.h</in>
+        <in>ex_alaw.h</in>
+        <in>ex_g722.h</in>
+        <in>ex_g726.h</in>
+        <in>ex_gsm.h</in>
+        <in>ex_ilbc.h</in>
+        <in>ex_lpc10.h</in>
+        <in>ex_speex.h</in>
+        <in>ex_ulaw.h</in>
+        <in>log2comp.h</in>
+      </df>
+      <df name="configs">
+      </df>
+      <df name="contrib">
+        <df name="editors">
+        </df>
+        <df name="init.d">
+        </df>
+        <df name="realtime">
+          <df name="mysql">
+          </df>
+          <df name="oracle">
+          </df>
+          <df name="postgresql">
+          </df>
+          <df name="sqlserver">
+          </df>
+        </df>
+        <df name="scripts">
+        </df>
+        <df name="thirdparty">
+        </df>
+        <df name="unistimLang">
+        </df>
+        <df name="upstart">
+        </df>
+        <df name="utils">
+          <in>eagi_proxy.c</in>
+          <in>rawplayer.c</in>
+          <in>zones2indications.c</in>
+        </df>
+      </df>
+      <df name="doc">
+        <df name="Asterisk-Admin-Guide">
+          <df name="attachments">
+            <df name="20840650">
+            </df>
+            <df name="21463142">
+            </df>
+          </df>
+          <df name="images">
+            <df name="border">
+            </df>
+            <df name="icons">
+              <df name="emoticons">
+              </df>
+            </df>
+          </df>
+          <df name="styles">
+          </df>
+        </df>
+        <df name="lang">
+        </df>
+      </df>
+      <df name="formats">
+        <in>format_g719.c</in>
+        <in>format_g723.c</in>
+        <in>format_g726.c</in>
+        <in>format_g729.c</in>
+        <in>format_gsm.c</in>
+        <in>format_h263.c</in>
+        <in>format_h264.c</in>
+        <in>format_ilbc.c</in>
+        <in>format_jpeg.c</in>
+        <in>format_ogg_vorbis.c</in>
+        <in>format_pcm.c</in>
+        <in>format_siren14.c</in>
+        <in>format_siren7.c</in>
+        <in>format_sln.c</in>
+        <in>format_vox.c</in>
+        <in>format_wav.c</in>
+        <in>format_wav_gsm.c</in>
+        <in>msgsm.h</in>
+      </df>
+      <df name="funcs">
+        <in>func_aes.c</in>
+        <in>func_audiohookinherit.c</in>
+        <in>func_base64.c</in>
+        <in>func_blacklist.c</in>
+        <in>func_callcompletion.c</in>
+        <in>func_callerid.c</in>
+        <in>func_cdr.c</in>
+        <in>func_channel.c</in>
+        <in>func_config.c</in>
+        <in>func_curl.c</in>
+        <in>func_cut.c</in>
+        <in>func_db.c</in>
+        <in>func_devstate.c</in>
+        <in>func_dialgroup.c</in>
+        <in>func_dialplan.c</in>
+        <in>func_enum.c</in>
+        <in>func_env.c</in>
+        <in>func_extstate.c</in>
+        <in>func_frame_trace.c</in>
+        <in>func_global.c</in>
+        <in>func_groupcount.c</in>
+        <in>func_hangupcause.c</in>
+        <in>func_iconv.c</in>
+        <in>func_jitterbuffer.c</in>
+        <in>func_lock.c</in>
+        <in>func_logic.c</in>
+        <in>func_math.c</in>
+        <in>func_md5.c</in>
+        <in>func_module.c</in>
+        <in>func_odbc.c</in>
+        <in>func_pitchshift.c</in>
+        <in>func_presencestate.c</in>
+        <in>func_rand.c</in>
+        <in>func_realtime.c</in>
+        <in>func_sha1.c</in>
+        <in>func_shell.c</in>
+        <in>func_speex.c</in>
+        <in>func_sprintf.c</in>
+        <in>func_srv.c</in>
+        <in>func_strings.c</in>
+        <in>func_sysinfo.c</in>
+        <in>func_timeout.c</in>
+        <in>func_uri.c</in>
+        <in>func_version.c</in>
+        <in>func_vmcount.c</in>
+        <in>func_volume.c</in>
+      </df>
+      <df name="images">
+      </df>
+      <df name="include">
+        <df name="asterisk">
+          <df name="doxygen">
+            <in>architecture.h</in>
+            <in>asterisk-git-howto.h</in>
+            <in>commits.h</in>
+            <in>licensing.h</in>
+            <in>mantisworkflow.h</in>
+            <in>releases.h</in>
+            <in>reviewboard.h</in>
+          </df>
+          <in>_private.h</in>
+          <in>abstract_jb.h</in>
+          <in>acl.h</in>
+          <in>adsi.h</in>
+          <in>ael_structs.h</in>
+          <in>agi.h</in>
+          <in>alaw.h</in>
+          <in>aoc.h</in>
+          <in>app.h</in>
+          <in>ast_expr.h</in>
+          <in>ast_version.h</in>
+          <in>astdb.h</in>
+          <in>astmm.h</in>
+          <in>astobj.h</in>
+          <in>astobj2.h</in>
+          <in>astosp.h</in>
+          <in>audiohook.h</in>
+          <in>autochan.h</in>
+          <in>bridging.h</in>
+          <in>bridging_features.h</in>
+          <in>bridging_technology.h</in>
+          <in>buildinfo.h</in>
+          <in>calendar.h</in>
+          <in>callerid.h</in>
+          <in>causes.h</in>
+          <in>ccss.h</in>
+          <in>cdr.h</in>
+          <in>cel.h</in>
+          <in>celt.h</in>
+          <in>channel.h</in>
+          <in>channel_internal.h</in>
+          <in>channelstate.h</in>
+          <in>chanvars.h</in>
+          <in>cli.h</in>
+          <in>compat.h</in>
+          <in>compiler.h</in>
+          <in>config.h</in>
+          <in>config_options.h</in>
+          <in>crypto.h</in>
+          <in>data.h</in>
+          <in>datastore.h</in>
+          <in>devicestate.h</in>
+          <in>dial.h</in>
+          <in>dlinkedlists.h</in>
+          <in>dns.h</in>
+          <in>dnsmgr.h</in>
+          <in>doxyref.h</in>
+          <in>dsp.h</in>
+          <in>dundi.h</in>
+          <in>endian.h</in>
+          <in>enum.h</in>
+          <in>event.h</in>
+          <in>event_defs.h</in>
+          <in>extconf.h</in>
+          <in>features.h</in>
+          <in>file.h</in>
+          <in>format.h</in>
+          <in>format_cap.h</in>
+          <in>format_pref.h</in>
+          <in>frame.h</in>
+          <in>frame_defs.h</in>
+          <in>framehook.h</in>
+          <in>fskmodem.h</in>
+          <in>fskmodem_float.h</in>
+          <in>fskmodem_int.h</in>
+          <in>global_datastores.h</in>
+          <in>hashtab.h</in>
+          <in>heap.h</in>
+          <in>http.h</in>
+          <in>http_websocket.h</in>
+          <in>image.h</in>
+          <in>indications.h</in>
+          <in>inline_api.h</in>
+          <in>io.h</in>
+          <in>jabber.h</in>
+          <in>jingle.h</in>
+          <in>linkedlists.h</in>
+          <in>localtime.h</in>
+          <in>lock.h</in>
+          <in>logger.h</in>
+          <in>manager.h</in>
+          <in>md5.h</in>
+          <in>message.h</in>
+          <in>mod_format.h</in>
+          <in>module.h</in>
+          <in>monitor.h</in>
+          <in>musiconhold.h</in>
+          <in>netsock.h</in>
+          <in>netsock2.h</in>
+          <in>network.h</in>
+          <in>optional_api.h</in>
+          <in>options.h</in>
+          <in>paths.h</in>
+          <in>pbx.h</in>
+          <in>pktccops.h</in>
+          <in>plc.h</in>
+          <in>poll-compat.h</in>
+          <in>presencestate.h</in>
+          <in>privacy.h</in>
+          <in>pval.h</in>
+          <in>res_fax.h</in>
+          <in>res_odbc.h</in>
+          <in>res_srtp.h</in>
+          <in>rtp_engine.h</in>
+          <in>say.h</in>
+          <in>sched.h</in>
+          <in>security_events.h</in>
+          <in>security_events_defs.h</in>
+          <in>select.h</in>
+          <in>sha1.h</in>
+          <in>silk.h</in>
+          <in>sip_api.h</in>
+          <in>slin.h</in>
+          <in>slinfactory.h</in>
+          <in>smdi.h</in>
+          <in>speech.h</in>
+          <in>srv.h</in>
+          <in>stringfields.h</in>
+          <in>strings.h</in>
+          <in>stun.h</in>
+          <in>syslog.h</in>
+          <in>taskprocessor.h</in>
+          <in>tcptls.h</in>
+          <in>tdd.h</in>
+          <in>term.h</in>
+          <in>test.h</in>
+          <in>threadstorage.h</in>
+          <in>time.h</in>
+          <in>timing.h</in>
+          <in>transcap.h</in>
+          <in>translate.h</in>
+          <in>udptl.h</in>
+          <in>ulaw.h</in>
+          <in>unaligned.h</in>
+          <in>utils.h</in>
+          <in>version.h</in>
+          <in>xml.h</in>
+          <in>xmldoc.h</in>
+          <in>xmpp.h</in>
+        </df>
+        <df name="solaris-compat">
+          <df name="sys">
+            <in>cdefs.h</in>
+            <in>queue.h</in>
+          </df>
+          <in>compat.h</in>
+        </df>
+        <in>asterisk.h</in>
+        <in>jitterbuf.h</in>
+      </df>
+      <df name="keys">
+      </df>
+      <df name="main">
+        <df name="editline">
+          <df name="np">
+            <in>fgetln.c</in>
+            <in>strlcat.c</in>
+            <in>strlcpy.c</in>
+            <in>unvis.c</in>
+            <in>vis.c</in>
+            <in>vis.h</in>
+          </df>
+          <df name="TEST">
+            <in>test.c</in>
+          </df>
+          <in>chared.c</in>
+          <in>chared.h</in>
+          <in>common.c</in>
+          <in>el.c</in>
+          <in>el.h</in>
+          <in>emacs.c</in>
+          <in>hist.c</in>
+          <in>hist.h</in>
+          <in>histedit.h</in>
+          <in>history.c</in>
+          <in>key.c</in>
+          <in>key.h</in>
+          <in>map.c</in>
+          <in>map.h</in>
+          <in>parse.c</in>
+          <in>parse.h</in>
+          <in>prompt.c</in>
+          <in>prompt.h</in>
+          <in>read.c</in>
+          <in>read.h</in>
+          <in>readline.c</in>
+          <in>readline.h</in>
+          <in>refresh.c</in>
+          <in>refresh.h</in>
+          <in>search.c</in>
+          <in>search.h</in>
+          <in>sig.c</in>
+          <in>sig.h</in>
+          <in>sys.h</in>
+          <in>term.c</in>
+          <in>term.h</in>
+          <in>tokenizer.c</in>
+          <in>tokenizer.h</in>
+          <in>tty.c</in>
+          <in>tty.h</in>
+          <in>vi.c</in>
+        </df>
+        <df name="stdtime">
+          <in>localtime.c</in>
+          <in>private.h</in>
+          <in>test.c</in>
+          <in>tzfile.h</in>
+        </df>
+        <in>abstract_jb.c</in>
+        <in>acl.c</in>
+        <in>adsi.c</in>
+        <in>alaw.c</in>
+        <in>aoc.c</in>
+        <in>app.c</in>
+        <in>ast_expr2.c</in>
+        <in>ast_expr2.h</in>
+        <in>ast_expr2f.c</in>
+        <in>asterisk.c</in>
+        <in>astfd.c</in>
+        <in>astmm.c</in>
+        <in>astobj2.c</in>
+        <in>audiohook.c</in>
+        <in>autochan.c</in>
+        <in>autoservice.c</in>
+        <in>bridging.c</in>
+        <in>buildinfo.c</in>
+        <in>callerid.c</in>
+        <in>ccss.c</in>
+        <in>cdr.c</in>
+        <in>cel.c</in>
+        <in>channel.c</in>
+        <in>channel_internal_api.c</in>
+        <in>chanvars.c</in>
+        <in>cli.c</in>
+        <in>config.c</in>
+        <in>config_options.c</in>
+        <in>cygload.c</in>
+        <in>data.c</in>
+        <in>datastore.c</in>
+        <in>db.c</in>
+        <in>devicestate.c</in>
+        <in>dial.c</in>
+        <in>dns.c</in>
+        <in>dnsmgr.c</in>
+        <in>dsp.c</in>
+        <in>ecdisa.h</in>
+        <in>enum.c</in>
+        <in>event.c</in>
+        <in>features.c</in>
+        <in>file.c</in>
+        <in>fixedjitterbuf.c</in>
+        <in>fixedjitterbuf.h</in>
+        <in>format.c</in>
+        <in>format_cap.c</in>
+        <in>format_pref.c</in>
+        <in>frame.c</in>
+        <in>framehook.c</in>
+        <in>fskmodem.c</in>
+        <in>fskmodem_float.c</in>
+        <in>fskmodem_int.c</in>
+        <in>global_datastores.c</in>
+        <in>hashtab.c</in>
+        <in>heap.c</in>
+        <in>http.c</in>
+        <in>image.c</in>
+        <in>indications.c</in>
+        <in>io.c</in>
+        <in>jitterbuf.c</in>
+        <in>libasteriskssl.c</in>
+        <in>loader.c</in>
+        <in>lock.c</in>
+        <in>logger.c</in>
+        <in>manager.c</in>
+        <in>md5.c</in>
+        <in>message.c</in>
+        <in>named_acl.c</in>
+        <in>netsock.c</in>
+        <in>netsock2.c</in>
+        <in>pbx.c</in>
+        <in>plc.c</in>
+        <in>poll.c</in>
+        <in>presencestate.c</in>
+        <in>privacy.c</in>
+        <in>rtp_engine.c</in>
+        <in>say.c</in>
+        <in>sched.c</in>
+        <in>security_events.c</in>
+        <in>sha1.c</in>
+        <in>sip_api.c</in>
+        <in>slinfactory.c</in>
+        <in>srv.c</in>
+        <in>strcompat.c</in>
+        <in>strings.c</in>
+        <in>stun.c</in>
+        <in>syslog.c</in>
+        <in>taskprocessor.c</in>
+        <in>tcptls.c</in>
+        <in>tdd.c</in>
+        <in>term.c</in>
+        <in>test.c</in>
+        <in>threadstorage.c</in>
+        <in>timing.c</in>
+        <in>translate.c</in>
+        <in>udptl.c</in>
+        <in>ulaw.c</in>
+        <in>utils.c</in>
+        <in>xml.c</in>
+        <in>xmldoc.c</in>
+      </df>
+      <df name="menuselect">
+        <df name="contrib">
+        </df>
+        <df name="mxml">
+          <in>mxml-attr.c</in>
+          <in>mxml-entity.c</in>
+          <in>mxml-file.c</in>
+          <in>mxml-index.c</in>
+          <in>mxml-node.c</in>
+          <in>mxml-private.c</in>
+          <in>mxml-search.c</in>
+          <in>mxml-set.c</in>
+          <in>mxml-string.c</in>
+          <in>mxml.h</in>
+        </df>
+        <df name="test">
+          <df name="build_tools">
+          </df>
+        </df>
+        <in>linkedlists.h</in>
+        <in>menuselect.c</in>
+        <in>menuselect.h</in>
+        <in>menuselect_curses.c</in>
+        <in>menuselect_gtk.c</in>
+        <in>menuselect_newt.c</in>
+        <in>menuselect_stub.c</in>
+        <in>strcompat.c</in>
+      </df>
+      <df name="pbx">
+        <df name="ael">
+          <df name="ael-test">
+            <df name="ael-ntest10">
+            </df>
+            <df name="ael-ntest12">
+            </df>
+            <df name="ael-ntest22">
+              <df name="t1">
+              </df>
+              <df name="t2">
+              </df>
+              <df name="t3">
+              </df>
+            </df>
+            <df name="ael-ntest23">
+              <df name="t1">
+              </df>
+              <df name="t2">
+              </df>
+              <df name="t3">
+              </df>
+            </df>
+            <df name="ael-ntest24">
+            </df>
+            <df name="ael-ntest9">
+            </df>
+            <df name="ael-test1">
+            </df>
+            <df name="ael-test11">
+            </df>
+            <df name="ael-test14">
+            </df>
+            <df name="ael-test15">
+            </df>
+            <df name="ael-test16">
+            </df>
+            <df name="ael-test18">
+            </df>
+            <df name="ael-test19">
+            </df>
+            <df name="ael-test2">
+            </df>
+            <df name="ael-test20">
+            </df>
+            <df name="ael-test3">
+            </df>
+            <df name="ael-test4">
+            </df>
+            <df name="ael-test5">
+            </df>
+            <df name="ael-test6">
+            </df>
+            <df name="ael-test7">
+            </df>
+            <df name="ael-test8">
+            </df>
+            <df name="ael-vtest13">
+            </df>
+            <df name="ael-vtest17">
+            </df>
+            <df name="ael-vtest21">
+            </df>
+            <df name="ael-vtest25">
+            </df>
+          </df>
+        </df>
+        <in>dundi-parser.c</in>
+        <in>dundi-parser.h</in>
+        <in>pbx_ael.c</in>
+        <in>pbx_config.c</in>
+        <in>pbx_dundi.c</in>
+        <in>pbx_loopback.c</in>
+        <in>pbx_lua.c</in>
+        <in>pbx_realtime.c</in>
+        <in>pbx_spool.c</in>
+      </df>
+      <df name="phoneprov">
+      </df>
+      <df name="res">
+        <df name="ael">
+          <in>ael.tab.c</in>
+          <in>ael.tab.h</in>
+          <in>ael_lex.c</in>
+          <in>pval.c</in>
+        </df>
+        <df name="pjproject">
+          <df name="build">
+            <df name="vs">
+            </df>
+          </df>
+          <df name="build.symbian">
+          </df>
+          <df name="lib">
+          </df>
+          <df name="pjlib">
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+            </df>
+            <df name="docs">
+            </df>
+            <df name="include">
+              <df name="pj">
+                <df name="compat">
+                  <in>assert.h</in>
+                  <in>cc_armcc.h</in>
+                  <in>cc_codew.h</in>
+                  <in>cc_gcc.h</in>
+                  <in>cc_gcce.h</in>
+                  <in>cc_msvc.h</in>
+                  <in>cc_mwcc.h</in>
+                  <in>ctype.h</in>
+                  <in>errno.h</in>
+                  <in>high_precision.h</in>
+                  <in>m_alpha.h</in>
+                  <in>m_armv4.h</in>
+                  <in>m_auto.h</in>
+                  <in>m_i386.h</in>
+                  <in>m_m68k.h</in>
+                  <in>m_powerpc.h</in>
+                  <in>m_sparc.h</in>
+                  <in>m_x86_64.h</in>
+                  <in>malloc.h</in>
+                  <in>os_auto.h</in>
+                  <in>os_darwinos.h</in>
+                  <in>os_linux.h</in>
+                  <in>os_linux_kernel.h</in>
+                  <in>os_palmos.h</in>
+                  <in>os_rtems.h</in>
+                  <in>os_sunos.h</in>
+                  <in>os_symbian.h</in>
+                  <in>os_win32.h</in>
+                  <in>os_win32_wince.h</in>
+                  <in>rand.h</in>
+                  <in>setjmp.h</in>
+                  <in>size_t.h</in>
+                  <in>socket.h</in>
+                  <in>stdarg.h</in>
+                  <in>stdfileio.h</in>
+                  <in>string.h</in>
+                  <in>time.h</in>
+                </df>
+                <in>activesock.h</in>
+                <in>addr_resolv.h</in>
+                <in>array.h</in>
+                <in>assert.h</in>
+                <in>config.h</in>
+                <in>config_site.h</in>
+                <in>config_site_sample.h</in>
+                <in>ctype.h</in>
+                <in>doxygen.h</in>
+                <in>errno.h</in>
+                <in>except.h</in>
+                <in>fifobuf.h</in>
+                <in>file_access.h</in>
+                <in>file_io.h</in>
+                <in>guid.h</in>
+                <in>hash.h</in>
+                <in>ioqueue.h</in>
+                <in>ip_helper.h</in>
+                <in>list.h</in>
+                <in>list_i.h</in>
+                <in>lock.h</in>
+                <in>log.h</in>
+                <in>math.h</in>
+                <in>os.h</in>
+                <in>pool.h</in>
+                <in>pool_alt.h</in>
+                <in>pool_buf.h</in>
+                <in>pool_i.h</in>
+                <in>rand.h</in>
+                <in>rbtree.h</in>
+                <in>sock.h</in>
+                <in>sock_qos.h</in>
+                <in>sock_select.h</in>
+                <in>ssl_sock.h</in>
+                <in>string.h</in>
+                <in>string_i.h</in>
+                <in>timer.h</in>
+                <in>types.h</in>
+                <in>unicode.h</in>
+              </df>
+              <df name="pj++">
+                <in>file.hpp</in>
+                <in>hash.hpp</in>
+                <in>list.hpp</in>
+                <in>lock.hpp</in>
+                <in>os.hpp</in>
+                <in>pool.hpp</in>
+                <in>proactor.hpp</in>
+                <in>scanner.hpp</in>
+                <in>sock.hpp</in>
+                <in>string.hpp</in>
+                <in>timer.hpp</in>
+                <in>tree.hpp</in>
+                <in>types.hpp</in>
+              </df>
+              <in>pjlib++.hpp</in>
+              <in>pjlib.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="pj">
+                <df name="compat">
+                  <in>longjmp_i386.S</in>
+                  <in>setjmp_i386.S</in>
+                  <in>sigjmp.c</in>
+                  <in>string.c</in>
+                  <in>string_compat.c</in>
+                </df>
+                <in>activesock.c</in>
+                <in>addr_resolv_linux_kernel.c</in>
+                <in>addr_resolv_sock.c</in>
+                <in>addr_resolv_symbian.cpp</in>
+                <in>array.c</in>
+                <in>config.c</in>
+                <in>ctype.c</in>
+                <in>errno.c</in>
+                <in>except.c</in>
+                <in>exception_symbian.cpp</in>
+                <in>extra-exports.c</in>
+                <in>fifobuf.c</in>
+                <in>file_access_unistd.c</in>
+                <in>file_access_win32.c</in>
+                <in>file_io_ansi.c</in>
+                <in>file_io_win32.c</in>
+                <in>guid.c</in>
+                <in>guid_simple.c</in>
+                <in>guid_uuid.c</in>
+                <in>guid_win32.c</in>
+                <in>hash.c</in>
+                <in>ioqueue_common_abs.c</in>
+                <in>ioqueue_common_abs.h</in>
+                <in>ioqueue_dummy.c</in>
+                <in>ioqueue_epoll.c</in>
+                <in>ioqueue_linux_kernel.c</in>
+                <in>ioqueue_select.c</in>
+                <in>ioqueue_symbian.cpp</in>
+                <in>ioqueue_winnt.c</in>
+                <in>ip_helper_generic.c</in>
+                <in>ip_helper_symbian.cpp</in>
+                <in>ip_helper_win32.c</in>
+                <in>list.c</in>
+                <in>lock.c</in>
+                <in>log.c</in>
+                <in>log_writer_printk.c</in>
+                <in>log_writer_stdout.c</in>
+                <in>log_writer_symbian_console.cpp</in>
+                <in>os_core_darwin.m</in>
+                <in>os_core_linux_kernel.c</in>
+                <in>os_core_symbian.cpp</in>
+                <in>os_core_unix.c</in>
+                <in>os_core_win32.c</in>
+                <in>os_error_linux_kernel.c</in>
+                <in>os_error_symbian.cpp</in>
+                <in>os_error_unix.c</in>
+                <in>os_error_win32.c</in>
+                <in>os_info.c</in>
+                <in>os_info_iphone.m</in>
+                <in>os_info_symbian.cpp</in>
+                <in>os_rwmutex.c</in>
+                <in>os_symbian.h</in>
+                <in>os_time_bsd.c</in>
+                <in>os_time_common.c</in>
+                <in>os_time_linux_kernel.c</in>
+                <in>os_time_unix.c</in>
+                <in>os_time_win32.c</in>
+                <in>os_timestamp_common.c</in>
+                <in>os_timestamp_linux_kernel.c</in>
+                <in>os_timestamp_posix.c</in>
+                <in>os_timestamp_win32.c</in>
+                <in>pool.c</in>
+                <in>pool_buf.c</in>
+                <in>pool_caching.c</in>
+                <in>pool_dbg.c</in>
+                <in>pool_policy_kmalloc.c</in>
+                <in>pool_policy_malloc.c</in>
+                <in>pool_policy_new.cpp</in>
+                <in>pool_signature.h</in>
+                <in>rand.c</in>
+                <in>rbtree.c</in>
+                <in>sock_bsd.c</in>
+                <in>sock_common.c</in>
+                <in>sock_linux_kernel.c</in>
+                <in>sock_qos_bsd.c</in>
+                <in>sock_qos_common.c</in>
+                <in>sock_qos_dummy.c</in>
+                <in>sock_qos_symbian.cpp</in>
+                <in>sock_qos_wm.c</in>
+                <in>sock_select.c</in>
+                <in>sock_select_symbian.cpp</in>
+                <in>sock_symbian.cpp</in>
+                <in>ssl_sock_common.c</in>
+                <in>ssl_sock_dump.c</in>
+                <in>ssl_sock_ossl.c</in>
+                <in>ssl_sock_symbian.cpp</in>
+                <in>string.c</in>
+                <in>symbols.c</in>
+                <in>timer.c</in>
+                <in>timer_symbian.cpp</in>
+                <in>types.c</in>
+                <in>unicode_symbian.cpp</in>
+                <in>unicode_win32.c</in>
+              </df>
+              <df name="pjlib++-test">
+                <in>main.cpp</in>
+              </df>
+              <df name="pjlib-samples">
+                <in>except.c</in>
+                <in>list.c</in>
+                <in>log.c</in>
+              </df>
+              <df name="pjlib-test">
+                <in>activesock.c</in>
+                <in>atomic.c</in>
+                <in>echo_clt.c</in>
+                <in>errno.c</in>
+                <in>exception.c</in>
+                <in>exception_wrap.cpp</in>
+                <in>fifobuf.c</in>
+                <in>file.c</in>
+                <in>hash_test.c</in>
+                <in>ioq_perf.c</in>
+                <in>ioq_tcp.c</in>
+                <in>ioq_udp.c</in>
+                <in>ioq_unreg.c</in>
+                <in>list.c</in>
+                <in>main.c</in>
+                <in>main_mod.c</in>
+                <in>main_rtems.c</in>
+                <in>main_symbian.cpp</in>
+                <in>main_win32.c</in>
+                <in>mutex.c</in>
+                <in>os.c</in>
+                <in>pool.c</in>
+                <in>pool_perf.c</in>
+                <in>pool_wrap.cpp</in>
+                <in>rand.c</in>
+                <in>rbtree.c</in>
+                <in>rtems_network_config.h</in>
+                <in>select.c</in>
+                <in>sleep.c</in>
+                <in>sock.c</in>
+                <in>sock_perf.c</in>
+                <in>ssl_sock.c</in>
+                <in>string.c</in>
+                <in>test.c</in>
+                <in>test.h</in>
+                <in>test_wrap.cpp</in>
+                <in>thread.c</in>
+                <in>timer.c</in>
+                <in>timestamp.c</in>
+                <in>udp_echo_srv_ioqueue.c</in>
+                <in>udp_echo_srv_sync.c</in>
+                <in>util.c</in>
+              </df>
+            </df>
+          </df>
+          <df name="pjlib-util">
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+            </df>
+            <df name="docs">
+            </df>
+            <df name="include">
+              <df name="pjlib-util">
+                <in>base64.h</in>
+                <in>config.h</in>
+                <in>crc32.h</in>
+                <in>dns.h</in>
+                <in>dns_server.h</in>
+                <in>errno.h</in>
+                <in>getopt.h</in>
+                <in>hmac_md5.h</in>
+                <in>hmac_sha1.h</in>
+                <in>http_client.h</in>
+                <in>md5.h</in>
+                <in>pcap.h</in>
+                <in>resolver.h</in>
+                <in>scanner.h</in>
+                <in>scanner_cis_bitwise.h</in>
+                <in>scanner_cis_uint.h</in>
+                <in>sha1.h</in>
+                <in>srv_resolver.h</in>
+                <in>string.h</in>
+                <in>stun_simple.h</in>
+                <in>types.h</in>
+                <in>xml.h</in>
+              </df>
+              <in>pjlib-util.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="pjlib-util">
+                <in>base64.c</in>
+                <in>crc32.c</in>
+                <in>dns.c</in>
+                <in>dns_dump.c</in>
+                <in>dns_server.c</in>
+                <in>errno.c</in>
+                <in>getopt.c</in>
+                <in>hmac_md5.c</in>
+                <in>hmac_sha1.c</in>
+                <in>http_client.c</in>
+                <in>md5.c</in>
+                <in>pcap.c</in>
+                <in>resolver.c</in>
+                <in>resolver_wrap.cpp</in>
+                <in>scanner.c</in>
+                <in>scanner_cis_bitwise.c</in>
+                <in>scanner_cis_uint.c</in>
+                <in>sha1.c</in>
+                <in>srv_resolver.c</in>
+                <in>string.c</in>
+                <in>stun_simple.c</in>
+                <in>stun_simple_client.c</in>
+                <in>symbols.c</in>
+                <in>xml.c</in>
+                <in>xml_wrap.cpp</in>
+              </df>
+              <df name="pjlib-util-test">
+                <in>encryption.c</in>
+                <in>http_client.c</in>
+                <in>main.c</in>
+                <in>main_rtems.c</in>
+                <in>main_win32.c</in>
+                <in>resolver_test.c</in>
+                <in>stun.c</in>
+                <in>test.c</in>
+                <in>test.h</in>
+                <in>xml.c</in>
+              </df>
+            </df>
+          </df>
+          <df name="pjmedia">
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+            </df>
+            <df name="include">
+              <df name="pjmedia">
+                <in>alaw_ulaw.h</in>
+                <in>avi.h</in>
+                <in>avi_stream.h</in>
+                <in>bidirectional.h</in>
+                <in>circbuf.h</in>
+                <in>clock.h</in>
+                <in>codec.h</in>
+                <in>conference.h</in>
+                <in>config.h</in>
+                <in>config_auto.h</in>
+                <in>converter.h</in>
+                <in>delaybuf.h</in>
+                <in>doxygen.h</in>
+                <in>echo.h</in>
+                <in>echo_port.h</in>
+                <in>endpoint.h</in>
+                <in>errno.h</in>
+                <in>event.h</in>
+                <in>format.h</in>
+                <in>frame.h</in>
+                <in>g711.h</in>
+                <in>jbuf.h</in>
+                <in>master_port.h</in>
+                <in>mem_port.h</in>
+                <in>null_port.h</in>
+                <in>plc.h</in>
+                <in>port.h</in>
+                <in>resample.h</in>
+                <in>rtcp.h</in>
+                <in>rtcp_xr.h</in>
+                <in>rtp.h</in>
+                <in>sdp.h</in>
+                <in>sdp_neg.h</in>
+                <in>session.h</in>
+                <in>signatures.h</in>
+                <in>silencedet.h</in>
+                <in>sound.h</in>
+                <in>sound_port.h</in>
+                <in>splitcomb.h</in>
+                <in>stereo.h</in>
+                <in>stream.h</in>
+                <in>stream_common.h</in>
+                <in>symbian_sound_aps.h</in>
+                <in>tonegen.h</in>
+                <in>transport.h</in>
+                <in>transport_adapter_sample.h</in>
+                <in>transport_ice.h</in>
+                <in>transport_loop.h</in>
+                <in>transport_srtp.h</in>
+                <in>transport_udp.h</in>
+                <in>types.h</in>
+                <in>vid_codec.h</in>
+                <in>vid_codec_util.h</in>
+                <in>vid_port.h</in>
+                <in>vid_stream.h</in>
+                <in>vid_tee.h</in>
+                <in>wav_playlist.h</in>
+                <in>wav_port.h</in>
+                <in>wave.h</in>
+                <in>wsola.h</in>
+              </df>
+              <df name="pjmedia-audiodev">
+                <in>audiodev.h</in>
+                <in>audiodev_imp.h</in>
+                <in>audiotest.h</in>
+                <in>config.h</in>
+                <in>errno.h</in>
+              </df>
+              <df name="pjmedia-codec">
+                <in>amr_helper.h</in>
+                <in>amr_sdp_match.h</in>
+                <in>audio_codecs.h</in>
+                <in>config.h</in>
+                <in>config_auto.h</in>
+                <in>ffmpeg_vid_codecs.h</in>
+                <in>g722.h</in>
+                <in>g7221.h</in>
+                <in>g7221_sdp_match.h</in>
+                <in>gsm.h</in>
+                <in>h263_packetizer.h</in>
+                <in>h264_packetizer.h</in>
+                <in>ilbc.h</in>
+                <in>ipp_codecs.h</in>
+                <in>l16.h</in>
+                <in>opencore_amrnb.h</in>
+                <in>passthrough.h</in>
+                <in>speex.h</in>
+                <in>types.h</in>
+              </df>
+              <df name="pjmedia-videodev">
+                <in>avi_dev.h</in>
+                <in>config.h</in>
+                <in>errno.h</in>
+                <in>videodev.h</in>
+                <in>videodev_imp.h</in>
+              </df>
+              <in>pjmedia-codec.h</in>
+              <in>pjmedia.h</in>
+              <in>pjmedia_audiodev.h</in>
+              <in>pjmedia_videodev.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="pjmedia">
+                <in>alaw_ulaw.c</in>
+                <in>alaw_ulaw_table.c</in>
+                <in>avi_player.c</in>
+                <in>bidirectional.c</in>
+                <in>clock_thread.c</in>
+                <in>codec.c</in>
+                <in>conf_switch.c</in>
+                <in>conference.c</in>
+                <in>converter.c</in>
+                <in>converter_libswscale.c</in>
+                <in>delaybuf.c</in>
+                <in>dummy.c</in>
+                <in>echo_common.c</in>
+                <in>echo_internal.h</in>
+                <in>echo_port.c</in>
+                <in>echo_speex.c</in>
+                <in>echo_suppress.c</in>
+                <in>endpoint.c</in>
+                <in>errno.c</in>
+                <in>event.c</in>
+                <in>ffmpeg_util.c</in>
+                <in>ffmpeg_util.h</in>
+                <in>format.c</in>
+                <in>g711.c</in>
+                <in>jbuf.c</in>
+                <in>master_port.c</in>
+                <in>mem_capture.c</in>
+                <in>mem_player.c</in>
+                <in>null_port.c</in>
+                <in>plc_common.c</in>
+                <in>port.c</in>
+                <in>resample_libsamplerate.c</in>
+                <in>resample_port.c</in>
+                <in>resample_resample.c</in>
+                <in>resample_speex.c</in>
+                <in>rtcp.c</in>
+                <in>rtcp_xr.c</in>
+                <in>rtp.c</in>
+                <in>sdp.c</in>
+                <in>sdp_cmp.c</in>
+                <in>sdp_neg.c</in>
+                <in>sdp_wrap.cpp</in>
+                <in>session.c</in>
+                <in>silencedet.c</in>
+                <in>sound_legacy.c</in>
+                <in>sound_port.c</in>
+                <in>splitcomb.c</in>
+                <in>stereo_port.c</in>
+                <in>stream.c</in>
+                <in>stream_common.c</in>
+                <in>stream_info.c</in>
+                <in>tonegen.c</in>
+                <in>transport_adapter_sample.c</in>
+                <in>transport_ice.c</in>
+                <in>transport_loop.c</in>
+                <in>transport_srtp.c</in>
+                <in>transport_udp.c</in>
+                <in>types.c</in>
+                <in>vid_codec.c</in>
+                <in>vid_codec_util.c</in>
+                <in>vid_port.c</in>
+                <in>vid_stream.c</in>
+                <in>vid_stream_info.c</in>
+                <in>vid_tee.c</in>
+                <in>wav_player.c</in>
+                <in>wav_playlist.c</in>
+                <in>wav_writer.c</in>
+                <in>wave.c</in>
+                <in>wsola.c</in>
+              </df>
+              <df name="pjmedia-audiodev">
+                <in>alsa_dev.c</in>
+                <in>audiodev.c</in>
+                <in>audiotest.c</in>
+                <in>coreaudio_dev.c</in>
+                <in>errno.c</in>
+                <in>legacy_dev.c</in>
+                <in>null_dev.c</in>
+                <in>pa_dev.c</in>
+                <in>s60_g729_bitstream.h</in>
+                <in>symb_aps_dev.cpp</in>
+                <in>symb_mda_dev.cpp</in>
+                <in>symb_vas_dev.cpp</in>
+                <in>wmme_dev.c</in>
+              </df>
+              <df name="pjmedia-codec">
+                <df name="g722">
+                  <in>g722_dec.c</in>
+                  <in>g722_dec.h</in>
+                  <in>g722_enc.c</in>
+                  <in>g722_enc.h</in>
+                </df>
+                <in>amr_sdp_match.c</in>
+                <in>audio_codecs.c</in>
+                <in>ffmpeg_vid_codecs.c</in>
+                <in>g722.c</in>
+                <in>g7221.c</in>
+                <in>g7221_sdp_match.c</in>
+                <in>gsm.c</in>
+                <in>h263_packetizer.c</in>
+                <in>h264_packetizer.c</in>
+                <in>ilbc.c</in>
+                <in>ipp_codecs.c</in>
+                <in>l16.c</in>
+                <in>opencore_amrnb.c</in>
+                <in>passthrough.c</in>
+                <in>speex_codec.c</in>
+              </df>
+              <df name="pjmedia-videodev">
+                <in>avi_dev.c</in>
+                <in>colorbar_dev.c</in>
+                <in>dshow_dev.c</in>
+                <in>dshowclasses.cpp</in>
+                <in>errno.c</in>
+                <in>ffmpeg_dev.c</in>
+                <in>ios_dev.m</in>
+                <in>qt_dev.m</in>
+                <in>sdl_dev.c</in>
+                <in>sdl_dev_m.m</in>
+                <in>v4l2_dev.c</in>
+                <in>videodev.c</in>
+              </df>
+              <df name="test">
+                <df name="vectors">
+                </df>
+                <in>audio_tool.c</in>
+                <in>codec_vectors.c</in>
+                <in>jbuf_test.c</in>
+                <in>main.c</in>
+                <in>mips_test.c</in>
+                <in>rtp_test.c</in>
+                <in>sdp_neg_test.c</in>
+                <in>sdptest.c</in>
+                <in>session_test.c</in>
+                <in>test.c</in>
+                <in>test.h</in>
+                <in>vid_codec_test.c</in>
+                <in>vid_dev_test.c</in>
+                <in>vid_port_test.c</in>
+                <in>wince_main.c</in>
+                <in>wsola_test.c</in>
+              </df>
+            </df>
+          </df>
+          <df name="pjnath">
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+            </df>
+            <df name="include">
+              <df name="pjnath">
+                <in>config.h</in>
+                <in>errno.h</in>
+                <in>ice_session.h</in>
+                <in>ice_strans.h</in>
+                <in>nat_detect.h</in>
+                <in>stun_auth.h</in>
+                <in>stun_config.h</in>
+                <in>stun_msg.h</in>
+                <in>stun_session.h</in>
+                <in>stun_sock.h</in>
+                <in>stun_transaction.h</in>
+                <in>turn_session.h</in>
+                <in>turn_sock.h</in>
+                <in>types.h</in>
+              </df>
+              <in>pjnath.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="pjnath">
+                <in>errno.c</in>
+                <in>ice_session.c</in>
+                <in>ice_strans.c</in>
+                <in>nat_detect.c</in>
+                <in>stun_auth.c</in>
+                <in>stun_msg.c</in>
+                <in>stun_msg_dump.c</in>
+                <in>stun_session.c</in>
+                <in>stun_sock.c</in>
+                <in>stun_transaction.c</in>
+                <in>turn_session.c</in>
+                <in>turn_sock.c</in>
+              </df>
+              <df name="pjnath-test">
+                <in>ice_test.c</in>
+                <in>main.c</in>
+                <in>main_win32.c</in>
+                <in>server.c</in>
+                <in>server.h</in>
+                <in>sess_auth.c</in>
+                <in>stun.c</in>
+                <in>stun_sock_test.c</in>
+                <in>test.c</in>
+                <in>test.h</in>
+                <in>turn_sock_test.c</in>
+              </df>
+              <df name="pjturn-client">
+                <in>client_main.c</in>
+              </df>
+              <df name="pjturn-srv">
+                <in>allocation.c</in>
+                <in>auth.c</in>
+                <in>auth.h</in>
+                <in>listener_tcp.c</in>
+                <in>listener_udp.c</in>
+                <in>main.c</in>
+                <in>server.c</in>
+                <in>turn.h</in>
+              </df>
+            </df>
+          </df>
+          <df name="pjsip">
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+            </df>
+            <df name="include">
+              <df name="pjsip">
+                <in>print_util.h</in>
+                <in>sip_auth.h</in>
+                <in>sip_auth_aka.h</in>
+                <in>sip_auth_msg.h</in>
+                <in>sip_auth_parser.h</in>
+                <in>sip_autoconf.h</in>
+                <in>sip_config.h</in>
+                <in>sip_dialog.h</in>
+                <in>sip_endpoint.h</in>
+                <in>sip_errno.h</in>
+                <in>sip_event.h</in>
+                <in>sip_module.h</in>
+                <in>sip_msg.h</in>
+                <in>sip_multipart.h</in>
+                <in>sip_parser.h</in>
+                <in>sip_private.h</in>
+                <in>sip_resolve.h</in>
+                <in>sip_tel_uri.h</in>
+                <in>sip_transaction.h</in>
+                <in>sip_transport.h</in>
+                <in>sip_transport_loop.h</in>
+                <in>sip_transport_tcp.h</in>
+                <in>sip_transport_tls.h</in>
+                <in>sip_transport_udp.h</in>
+                <in>sip_types.h</in>
+                <in>sip_ua_layer.h</in>
+                <in>sip_uri.h</in>
+                <in>sip_util.h</in>
+              </df>
+              <df name="pjsip-simple">
+                <in>errno.h</in>
+                <in>evsub.h</in>
+                <in>evsub_msg.h</in>
+                <in>iscomposing.h</in>
+                <in>mwi.h</in>
+                <in>pidf.h</in>
+                <in>presence.h</in>
+                <in>publish.h</in>
+                <in>rpid.h</in>
+                <in>types.h</in>
+                <in>xpidf.h</in>
+              </df>
+              <df name="pjsip-ua">
+                <in>sip_100rel.h</in>
+                <in>sip_inv.h</in>
+                <in>sip_regc.h</in>
+                <in>sip_replaces.h</in>
+                <in>sip_timer.h</in>
+                <in>sip_xfer.h</in>
+              </df>
+              <df name="pjsua-lib">
+                <in>pjsua.h</in>
+                <in>pjsua_internal.h</in>
+              </df>
+              <in>pjsip.h</in>
+              <in>pjsip_auth.h</in>
+              <in>pjsip_simple.h</in>
+              <in>pjsip_ua.h</in>
+              <in>pjsua.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="pjsip">
+                <in>sip_auth_aka.c</in>
+                <in>sip_auth_client.c</in>
+                <in>sip_auth_msg.c</in>
+                <in>sip_auth_parser.c</in>
+                <in>sip_auth_parser_wrap.cpp</in>
+                <in>sip_auth_server.c</in>
+                <in>sip_config.c</in>
+                <in>sip_dialog.c</in>
+                <in>sip_dialog_wrap.cpp</in>
+                <in>sip_endpoint.c</in>
+                <in>sip_endpoint_wrap.cpp</in>
+                <in>sip_errno.c</in>
+                <in>sip_msg.c</in>
+                <in>sip_multipart.c</in>
+                <in>sip_parser.c</in>
+                <in>sip_parser_wrap.cpp</in>
+                <in>sip_resolve.c</in>
+                <in>sip_tel_uri.c</in>
+                <in>sip_tel_uri_wrap.cpp</in>
+                <in>sip_transaction.c</in>
+                <in>sip_transport.c</in>
+                <in>sip_transport_loop.c</in>
+                <in>sip_transport_tcp.c</in>
+                <in>sip_transport_tls.c</in>
+                <in>sip_transport_udp.c</in>
+                <in>sip_transport_wrap.cpp</in>
+                <in>sip_ua_layer.c</in>
+                <in>sip_uri.c</in>
+                <in>sip_util.c</in>
+                <in>sip_util_proxy.c</in>
+                <in>sip_util_proxy_wrap.cpp</in>
+                <in>sip_util_statefull.c</in>
+                <in>sip_util_wrap.cpp</in>
+              </df>
+              <df name="pjsip-simple">
+                <in>errno.c</in>
+                <in>evsub.c</in>
+                <in>evsub_msg.c</in>
+                <in>iscomposing.c</in>
+                <in>mwi.c</in>
+                <in>pidf.c</in>
+                <in>presence.c</in>
+                <in>presence_body.c</in>
+                <in>publishc.c</in>
+                <in>rpid.c</in>
+                <in>xpidf.c</in>
+              </df>
+              <df name="pjsip-ua">
+                <in>sip_100rel.c</in>
+                <in>sip_inv.c</in>
+                <in>sip_reg.c</in>
+                <in>sip_replaces.c</in>
+                <in>sip_timer.c</in>
+                <in>sip_xfer.c</in>
+              </df>
+              <df name="pjsua-lib">
+                <in>pjsua_acc.c</in>
+                <in>pjsua_aud.c</in>
+                <in>pjsua_call.c</in>
+                <in>pjsua_core.c</in>
+                <in>pjsua_dump.c</in>
+                <in>pjsua_im.c</in>
+                <in>pjsua_media.c</in>
+                <in>pjsua_pres.c</in>
+                <in>pjsua_vid.c</in>
+              </df>
+              <df name="test">
+                <in>dlg_core_test.c</in>
+                <in>dns_test.c</in>
+                <in>inv_offer_answer_test.c</in>
+                <in>main.c</in>
+                <in>main_rtems.c</in>
+                <in>main_win32.c</in>
+                <in>msg_err_test.c</in>
+                <in>msg_logger.c</in>
+                <in>msg_test.c</in>
+                <in>multipart_test.c</in>
+                <in>regc_test.c</in>
+                <in>test.c</in>
+                <in>test.h</in>
+                <in>transport_loop_test.c</in>
+                <in>transport_tcp_test.c</in>
+                <in>transport_test.c</in>
+                <in>transport_udp_test.c</in>
+                <in>tsx_basic_test.c</in>
+                <in>tsx_bench.c</in>
+                <in>tsx_uac_test.c</in>
+                <in>tsx_uas_test.c</in>
+                <in>txdata_test.c</in>
+                <in>uri_test.c</in>
+              </df>
+            </df>
+          </df>
+          <df name="pjsip-apps">
+            <df name="bin">
+              <df name="samples">
+              </df>
+            </df>
+            <df name="build">
+              <df name="output">
+              </df>
+              <df name="wince-evc4">
+                <df name="output">
+                </df>
+              </df>
+              <in>dummy.c</in>
+            </df>
+            <df name="docs">
+            </df>
+            <df name="lib">
+            </df>
+            <df name="src">
+              <df name="3rdparty_media_sample">
+                <in>alt_pjsua_aud.c</in>
+                <in>alt_pjsua_vid.c</in>
+                <in>config_site.h</in>
+              </df>
+              <df name="confbot">
+              </df>
+              <df name="ipjsua">
+                <df name="Classes">
+                  <in>ConfigViewController.h</in>
+                  <in>ConfigViewController.m</in>
+                  <in>FirstViewController.h</in>
+                  <in>FirstViewController.m</in>
+                  <in>TabBarController.h</in>
+                  <in>TabBarController.m</in>
+                  <in>ipjsuaAppDelegate.h</in>
+                  <in>ipjsuaAppDelegate.m</in>
+                </df>
+                <df name="ipjsua.xcodeproj">
+                </df>
+                <df name="Resources-iPad">
+                </df>
+                <in>main.m</in>
+              </df>
+              <df name="ipjsystest">
+                <df name="Classes">
+                  <in>RootViewController.h</in>
+                  <in>RootViewController.m</in>
+                  <in>TestViewController.h</in>
+                  <in>TestViewController.m</in>
+                  <in>ipjsystestAppDelegate.h</in>
+                  <in>ipjsystestAppDelegate.m</in>
+                </df>
+                <df name="ipjsystest.xcodeproj">
+                </df>
+                <in>main.m</in>
+              </df>
+              <df name="pjsua">
+                <in>gui.h</in>
+                <in>main.c</in>
+                <in>main_rtems.c</in>
+                <in>pjsua_app.c</in>
+              </df>
+              <df name="pjsua_wince">
+                <df name="output">
+                </df>
+                <in>StdAfx.cpp</in>
+                <in>StdAfx.h</in>
+                <in>newres.h</in>
+                <in>pjsua_wince.cpp</in>
+                <in>pjsua_wince.h</in>
+                <in>resource.h</in>
+              </df>
+              <df name="pjsystest">
+                <in>gui.h</in>
+                <in>main_console.c</in>
+                <in>main_wm.c</in>
+                <in>resource.h</in>
+                <in>systest.c</in>
+                <in>systest.h</in>
+              </df>
+              <df name="pocketpj">
+                <df name="output">
+                </df>
+                <df name="res">
+                </df>
+                <in>PocketPJ.cpp</in>
+                <in>PocketPJ.h</in>
+                <in>PocketPJDlg.cpp</in>
+                <in>PocketPJDlg.h</in>
+                <in>PopUpWnd.cpp</in>
+                <in>PopUpWnd.h</in>
+                <in>SettingsDlg.cpp</in>
+                <in>SettingsDlg.h</in>
+                <in>StdAfx.cpp</in>
+                <in>StdAfx.h</in>
+                <in>newres.h</in>
+                <in>resource.h</in>
+              </df>
+              <df name="py_pjsua">
+                <in>py_pjsua.c</in>
+                <in>py_pjsua.h</in>
+              </df>
+              <df name="python">
+                <df name="samples">
+                </df>
+                <in>_pjsua.c</in>
+                <in>_pjsua.h</in>
+              </df>
+              <df name="samples">
+                <in>aectest.c</in>
+                <in>auddemo.c</in>
+                <in>aviplay.c</in>
+                <in>confbench.c</in>
+                <in>confsample.c</in>
+                <in>debug.c</in>
+                <in>encdec.c</in>
+                <in>footprint.c</in>
+                <in>httpdemo.c</in>
+                <in>icedemo.c</in>
+                <in>invtester.c</in>
+                <in>jbsim.c</in>
+                <in>latency.c</in>
+                <in>level.c</in>
+                <in>main_rtems.c</in>
+                <in>mix.c</in>
+                <in>pcaputil.c</in>
+                <in>pjsip-perf.c</in>
+                <in>playfile.c</in>
+                <in>playsine.c</in>
+                <in>proxy.h</in>
+                <in>recfile.c</in>
+                <in>resampleplay.c</in>
+                <in>simple_pjsua.c</in>
+                <in>simpleua.c</in>
+                <in>sipecho.c</in>
+                <in>siprtp.c</in>
+                <in>siprtp_report.c</in>
+                <in>sipstateless.c</in>
+                <in>stateful_proxy.c</in>
+                <in>stateless_proxy.c</in>
+                <in>stereotest.c</in>
+                <in>streamutil.c</in>
+                <in>strerror.c</in>
+                <in>tonegen.c</in>
+                <in>util.h</in>
+                <in>vid_streamutil.c</in>
+              </df>
+              <df name="symbian_ua">
+                <in>main_symbian.cpp</in>
+                <in>ua.cpp</in>
+                <in>ua.h</in>
+              </df>
+              <df name="symbian_ua_gui">
+                <df name="data">
+                </df>
+                <df name="gfx">
+                </df>
+                <df name="group">
+                </df>
+                <df name="inc">
+                  <in>Symbian_ua_guiSettingItemListSettings.h</in>
+                  <in>symbian_ua.h</in>
+                  <in>symbian_ua_guiAppUi.h</in>
+                  <in>symbian_ua_guiApplication.h</in>
+                  <in>symbian_ua_guiContainer.h</in>
+                  <in>symbian_ua_guiContainerView.h</in>
+                  <in>symbian_ua_guiDocument.h</in>
+                  <in>symbian_ua_guiSettingItemList.h</in>
+                  <in>symbian_ua_guiSettingItemListView.h</in>
+                </df>
+                <df name="sis">
+                </df>
+                <df name="src">
+                  <in>Symbian_ua_guiSettingItemListSets.cpp</in>
+                  <in>symbian_ua.cpp</in>
+                  <in>symbian_ua_guiAppUi.cpp</in>
+                  <in>symbian_ua_guiApplication.cpp</in>
+                  <in>symbian_ua_guiContainer.cpp</in>
+                  <in>symbian_ua_guiContainerView.cpp</in>
+                  <in>symbian_ua_guiDocument.cpp</in>
+                  <in>symbian_ua_guiSettingItemList.cpp</in>
+                  <in>symbian_ua_guiSettingItemListView.cpp</in>
+                </df>
+              </df>
+              <df name="symsndtest">
+                <in>app_main.cpp</in>
+                <in>main_symbian.cpp</in>
+              </df>
+              <df name="vidgui">
+                <in>vidgui.cpp</in>
+                <in>vidgui.h</in>
+                <in>vidwin.cpp</in>
+                <in>vidwin.h</in>
+              </df>
+            </df>
+          </df>
+          <df name="tests">
+            <df name="automated">
+            </df>
+            <df name="cdash">
+            </df>
+            <df name="pjsua">
+              <df name="scripts-call">
+              </df>
+              <df name="scripts-media-playrec">
+              </df>
+              <df name="scripts-pesq">
+              </df>
+              <df name="scripts-pres">
+              </df>
+              <df name="scripts-recvfrom">
+              </df>
+              <df name="scripts-run">
+              </df>
+              <df name="scripts-sendto">
+              </df>
+              <df name="scripts-sipp">
+              </df>
+              <df name="tools">
+                <in>cmp_wav.c</in>
+              </df>
+              <df name="wavs">
+              </df>
+            </df>
+          </df>
+          <df name="third_party">
+            <df name="BaseClasses">
+              <in>amfilter.cpp</in>
+              <in>amfilter.h</in>
+              <in>amvideo.cpp</in>
+              <in>arithutil.cpp</in>
+              <in>combase.cpp</in>
+              <in>combase.h</in>
+              <in>ctlutil.cpp</in>
+              <in>ctlutil.h</in>
+              <in>fourcc.h</in>
+              <in>measure.h</in>
+              <in>msgthrd.h</in>
+              <in>mtype.cpp</in>
+              <in>mtype.h</in>
+              <in>refclock.h</in>
+              <in>reftime.h</in>
+              <in>renbase.cpp</in>
+              <in>renbase.h</in>
+              <in>seekpt.h</in>
+              <in>streams.h</in>
+              <in>wxdebug.cpp</in>
+              <in>wxdebug.h</in>
+              <in>wxlist.cpp</in>
+              <in>wxlist.h</in>
+              <in>wxutil.cpp</in>
+              <in>wxutil.h</in>
+            </df>
+            <df name="bin">
+            </df>
+            <df name="build">
+              <df name="baseclasses">
+                <df name="output">
+                </df>
+              </df>
+              <df name="g7221">
+                <df name="output">
+                </df>
+              </df>
+              <df name="gsm">
+                <df name="output">
+                </df>
+                <in>config.h</in>
+              </df>
+              <df name="ilbc">
+                <df name="output">
+                </df>
+              </df>
+              <df name="milenage">
+                <df name="output">
+                </df>
+              </df>
+              <df name="portaudio">
+                <df name="output">
+                </df>
+                <df name="src">
+                  <in>pa_allocation.c</in>
+                  <in>pa_allocation.h</in>
+                  <in>pa_converters.c</in>
+                  <in>pa_converters.h</in>
+                  <in>pa_cpuload.c</in>
+                  <in>pa_cpuload.h</in>
+                  <in>pa_debugprint.c</in>
+                  <in>pa_debugprint.h</in>
+                  <in>pa_dither.c</in>
+                  <in>pa_dither.h</in>
+                  <in>pa_endianness.h</in>
+                  <in>pa_front.c</in>
+                  <in>pa_hostapi.h</in>
+                  <in>pa_linux_alsa.c</in>
+                  <in>pa_linux_alsa.h</in>
+                  <in>pa_mac_core.c</in>
+                  <in>pa_mac_core.h</in>
+                  <in>pa_mac_core_blocking.c</in>
+                  <in>pa_mac_core_blocking.h</in>
+                  <in>pa_mac_core_internal.h</in>
+                  <in>pa_mac_core_old.c</in>
+                  <in>pa_mac_core_utilities.c</in>
+                  <in>pa_mac_core_utilities.h</in>
+                  <in>pa_mac_hostapis.c</in>
+                  <in>pa_process.c</in>
+                  <in>pa_process.h</in>
+                  <in>pa_ringbuffer.c</in>
+                  <in>pa_ringbuffer.h</in>
+                  <in>pa_skeleton.c</in>
+                  <in>pa_stream.c</in>
+                  <in>pa_stream.h</in>
+                  <in>pa_trace.c</in>
+                  <in>pa_trace.h</in>
+                  <in>pa_types.h</in>
+                  <in>pa_unix_hostapis.c</in>
+                  <in>pa_unix_oss.c</in>
+                  <in>pa_unix_util.c</in>
+                  <in>pa_unix_util.h</in>
+                  <in>pa_util.h</in>
+                  <in>pa_win_hostapis.c</in>
+                  <in>pa_win_util.c</in>
+                  <in>pa_win_waveformat.c</in>
+                  <in>pa_win_waveformat.h</in>
+                  <in>pa_win_wmme.c</in>
+                  <in>pa_win_wmme.h</in>
+                  <in>portaudio.h</in>
+                </df>
+              </df>
+              <df name="resample">
+                <df name="output">
+                </df>
+                <in>config.h</in>
+              </df>
+              <df name="samplerate">
+                <df name="output">
+                </df>
+              </df>
+              <df name="speex">
+                <df name="output">
+                </df>
+                <df name="speex">
+                  <in>speex_config_types.h</in>
+                </df>
+                <in>config.h</in>
+              </df>
+              <df name="srtp">
+                <df name="output">
+                </df>
+                <in>srtp_config.h</in>
+              </df>
+            </df>
+            <df name="g7221">
+              <df name="common">
+                <in>basic_op.c</in>
+                <in>basic_op.h</in>
+                <in>basic_op_i.h</in>
+                <in>common.c</in>
+                <in>config.h</in>
+                <in>count.h</in>
+                <in>defs.h</in>
+                <in>huff_def.h</in>
+                <in>huff_tab.c</in>
+                <in>huff_tab.h</in>
+                <in>tables.c</in>
+                <in>tables.h</in>
+                <in>typedef.h</in>
+              </df>
+              <df name="decode">
+                <in>coef2sam.c</in>
+                <in>dct4_s.c</in>
+                <in>dct4_s.h</in>
+                <in>decoder.c</in>
+              </df>
+              <df name="encode">
+                <in>dct4_a.c</in>
+                <in>dct4_a.h</in>
+                <in>encoder.c</in>
+                <in>sam2coef.c</in>
+              </df>
+            </df>
+            <df name="gsm">
+              <df name="add-test">
+                <in>add_test.c</in>
+              </df>
+              <df name="bin">
+              </df>
+              <df name="inc">
+                <in>config.h</in>
+                <in>gsm.h</in>
+                <in>private.h</in>
+                <in>proto.h</in>
+                <in>toast.h</in>
+                <in>unproto.h</in>
+              </df>
+              <df name="lib">
+              </df>
+              <df name="man">
+              </df>
+              <df name="src">
+                <in>add.c</in>
+                <in>code.c</in>
+                <in>debug.c</in>
+                <in>decode.c</in>
+                <in>gsm_create.c</in>
+                <in>gsm_decode.c</in>
+                <in>gsm_destroy.c</in>
+                <in>gsm_encode.c</in>
+                <in>gsm_explode.c</in>
+                <in>gsm_implode.c</in>
+                <in>gsm_option.c</in>
+                <in>gsm_print.c</in>
+                <in>long_term.c</in>
+                <in>lpc.c</in>
+                <in>preprocess.c</in>
+                <in>rpe.c</in>
+                <in>short_term.c</in>
+                <in>table.c</in>
+                <in>toast.c</in>
+                <in>toast_alaw.c</in>
+                <in>toast_audio.c</in>
+                <in>toast_lin.c</in>
+                <in>toast_ulaw.c</in>
+              </df>
+              <df name="tls">
+                <in>bitter.c</in>
+                <in>ginger.c</in>
+                <in>sour.c</in>
+                <in>sweet.c</in>
+                <in>taste.c</in>
+                <in>taste.h</in>
+              </df>
+              <df name="tst">
+                <in>cod2lin.c</in>
+                <in>cod2txt.c</in>
+                <in>gsm2cod.c</in>
+                <in>lin2cod.c</in>
+                <in>lin2txt.c</in>
+              </df>
+            </df>
+            <df name="ilbc">
+              <in>FrameClassify.c</in>
+              <in>FrameClassify.h</in>
+              <in>LPCdecode.c</in>
+              <in>LPCdecode.h</in>
+              <in>LPCencode.c</in>
+              <in>LPCencode.h</in>
+              <in>StateConstructW.c</in>
+              <in>StateConstructW.h</in>
+              <in>StateSearchW.c</in>
+              <in>StateSearchW.h</in>
+              <in>anaFilter.c</in>
+              <in>anaFilter.h</in>
+              <in>constants.c</in>
+              <in>constants.h</in>
+              <in>createCB.c</in>
+              <in>createCB.h</in>
+              <in>doCPLC.c</in>
+              <in>doCPLC.h</in>
+              <in>enhancer.c</in>
+              <in>enhancer.h</in>
+              <in>filter.c</in>
+              <in>filter.h</in>
+              <in>gainquant.c</in>
+              <in>gainquant.h</in>
+              <in>getCBvec.c</in>
+              <in>getCBvec.h</in>
+              <in>helpfun.c</in>
+              <in>helpfun.h</in>
+              <in>hpInput.c</in>
+              <in>hpInput.h</in>
+              <in>hpOutput.c</in>
+              <in>hpOutput.h</in>
+              <in>iCBConstruct.c</in>
+              <in>iCBConstruct.h</in>
+              <in>iCBSearch.c</in>
+              <in>iCBSearch.h</in>
+              <in>iLBC_decode.c</in>
+              <in>iLBC_decode.h</in>
+              <in>iLBC_define.h</in>
+              <in>iLBC_encode.c</in>
+              <in>iLBC_encode.h</in>
+              <in>iLBC_test.c</in>
+              <in>lsf.c</in>
+              <in>lsf.h</in>
+              <in>packing.c</in>
+              <in>packing.h</in>
+              <in>syntFilter.c</in>
+              <in>syntFilter.h</in>
+            </df>
+            <df name="lib">
+            </df>
+            <df name="milenage">
+              <in>milenage.c</in>
+              <in>milenage.h</in>
+              <in>rijndael.c</in>
+              <in>rijndael.h</in>
+            </df>
+            <df name="mp3">
+              <in>BladeMP3EncDLL.h</in>
+              <in>mp3_port.h</in>
+              <in>mp3_writer.c</in>
+            </df>
+            <df name="portaudio">
+              <df name="bindings">
+                <df name="cpp">
+                </df>
+              </df>
+              <df name="build">
+                <df name="dev-cpp">
+                </df>
+                <df name="msvc">
+                </df>
+                <df name="scons">
+                </df>
+              </df>
+              <df name="doc">
+              </df>
+              <df name="include">
+                <in>pa_asio.h</in>
+                <in>pa_jack.h</in>
+                <in>pa_linux_alsa.h</in>
+                <in>pa_mac_core.h</in>
+                <in>pa_win_ds.h</in>
+                <in>pa_win_waveformat.h</in>
+                <in>pa_win_wmme.h</in>
+                <in>portaudio.h</in>
+              </df>
+              <df name="pablio">
+                <in>pablio.c</in>
+                <in>pablio.h</in>
+                <in>test_rw.c</in>
+                <in>test_rw_echo.c</in>
+                <in>test_w_saw.c</in>
+                <in>test_w_saw8.c</in>
+              </df>
+              <df name="src">
+                <df name="common">
+                  <in>pa_allocation.c</in>
+                  <in>pa_allocation.h</in>
+                  <in>pa_converters.c</in>
+                  <in>pa_converters.h</in>
+                  <in>pa_cpuload.c</in>
+                  <in>pa_cpuload.h</in>
+                  <in>pa_debugprint.c</in>
+                  <in>pa_debugprint.h</in>
+                  <in>pa_dither.c</in>
+                  <in>pa_dither.h</in>
+                  <in>pa_endianness.h</in>
+                  <in>pa_front.c</in>
+                  <in>pa_hostapi.h</in>
+                  <in>pa_memorybarrier.h</in>
+                  <in>pa_process.c</in>
+                  <in>pa_process.h</in>
+                  <in>pa_ringbuffer.c</in>
+                  <in>pa_ringbuffer.h</in>
+                  <in>pa_skeleton.c</in>
+                  <in>pa_stream.c</in>
+                  <in>pa_stream.h</in>
+                  <in>pa_trace.c</in>
+                  <in>pa_trace.h</in>
+                  <in>pa_types.h</in>
+                  <in>pa_util.h</in>
+                </df>
+                <df name="hostapi">
+                  <df name="alsa">
+                    <in>pa_linux_alsa.c</in>
+                  </df>
+                  <df name="asihpi">
+                    <in>pa_linux_asihpi.c</in>
+                  </df>
+                  <df name="asio">
+                    <in>iasiothiscallresolver.cpp</in>
+                    <in>iasiothiscallresolver.h</in>
+                    <in>pa_asio.cpp</in>
+                  </df>
+                  <df name="coreaudio">
+                    <in>pa_mac_core.c</in>
+                    <in>pa_mac_core_blocking.c</in>
+                    <in>pa_mac_core_blocking.h</in>
+                    <in>pa_mac_core_internal.h</in>
+                    <in>pa_mac_core_old.c</in>
+                    <in>pa_mac_core_utilities.c</in>
+                    <in>pa_mac_core_utilities.h</in>
+                  </df>
+                  <df name="dsound">
+                    <in>pa_win_ds.c</in>
+                    <in>pa_win_ds_dynlink.c</in>
+                    <in>pa_win_ds_dynlink.h</in>
+                  </df>
+                  <df name="jack">
+                    <in>pa_jack.c</in>
+                  </df>
+                  <df name="oss">
+                    <in>pa_unix_oss.c</in>
+                    <in>recplay.c</in>
+                  </df>
+                  <df name="wasapi">
+                    <in>pa_win_wasapi.cpp</in>
+                  </df>
+                  <df name="wdmks">
+                    <in>pa_win_wdmks.c</in>
+                  </df>
+                  <df name="wmme">
+                    <in>pa_win_wmme.c</in>
+                  </df>
+                </df>
+                <df name="os">
+                  <df name="mac_osx">
+                  </df>
+                  <df name="unix">
+                    <in>pa_unix_hostapis.c</in>
+                    <in>pa_unix_util.c</in>
+                    <in>pa_unix_util.h</in>
+                  </df>
+                  <df name="win">
+                    <in>pa_win_hostapis.c</in>
+                    <in>pa_win_util.c</in>
+                    <in>pa_win_waveformat.c</in>
+                    <in>pa_win_wdmks_utils.c</in>
+                    <in>pa_win_wdmks_utils.h</in>
+                    <in>pa_x86_plain_converters.c</in>
+                    <in>pa_x86_plain_converters.h</in>
+                  </df>
+                </df>
+              </df>
+              <df name="test">
+              </df>
+              <df name="testcvs">
+              </df>
+            </df>
+            <df name="resample">
+              <df name="include">
+                <in>resamplesubs.h</in>
+              </df>
+              <df name="src">
+                <in>largefilter.h</in>
+                <in>libresample_dll.c</in>
+                <in>resample.h</in>
+                <in>resamplesubs.c</in>
+                <in>smallfilter.h</in>
+                <in>stddefs.h</in>
+              </df>
+            </df>
+            <df name="speex">
+              <df name="include">
+                <df name="speex">
+                  <in>speex.h</in>
+                  <in>speex_bits.h</in>
+                  <in>speex_buffer.h</in>
+                  <in>speex_callbacks.h</in>
+                  <in>speex_echo.h</in>
+                  <in>speex_header.h</in>
+                  <in>speex_jitter.h</in>
+                  <in>speex_preprocess.h</in>
+                  <in>speex_resampler.h</in>
+                  <in>speex_stereo.h</in>
+                  <in>speex_types.h</in>
+                </df>
+              </df>
+              <df name="libspeex">
+                <in>_kiss_fft_guts.h</in>
+                <in>arch.h</in>
+                <in>bits.c</in>
+                <in>buffer.c</in>
+                <in>cb_search.c</in>
+                <in>cb_search.h</in>
+                <in>cb_search_arm4.h</in>
+                <in>cb_search_bfin.h</in>
+                <in>cb_search_sse.h</in>
+                <in>echo_diagnostic.m</in>
+                <in>exc_10_16_table.c</in>
+                <in>exc_10_32_table.c</in>
+                <in>exc_20_32_table.c</in>
+                <in>exc_5_256_table.c</in>
+                <in>exc_5_64_table.c</in>
+                <in>exc_8_128_table.c</in>
+                <in>fftwrap.c</in>
+                <in>fftwrap.h</in>
+                <in>filterbank.c</in>
+                <in>filterbank.h</in>
+                <in>filters.c</in>
+                <in>filters.h</in>
+                <in>filters_arm4.h</in>
+                <in>filters_bfin.h</in>
+                <in>filters_sse.h</in>
+                <in>fixed_arm4.h</in>
+                <in>fixed_arm5e.h</in>
+                <in>fixed_bfin.h</in>
+                <in>fixed_debug.h</in>
+                <in>fixed_generic.h</in>
+                <in>gain_table.c</in>
+                <in>gain_table_lbr.c</in>
+                <in>hexc_10_32_table.c</in>
+                <in>hexc_table.c</in>
+                <in>high_lsp_tables.c</in>
+                <in>jitter.c</in>
+                <in>kiss_fft.c</in>
+                <in>kiss_fft.h</in>
+                <in>kiss_fftr.c</in>
+                <in>kiss_fftr.h</in>
+                <in>lpc.c</in>
+                <in>lpc.h</in>
+                <in>lpc_bfin.h</in>
+                <in>lsp.c</in>
+                <in>lsp.h</in>
+                <in>lsp_bfin.h</in>
+                <in>lsp_tables_nb.c</in>
+                <in>ltp.c</in>
+                <in>ltp.h</in>
+                <in>ltp_arm4.h</in>
+                <in>ltp_bfin.h</in>
+                <in>ltp_sse.h</in>
+                <in>math_approx.h</in>
+                <in>mdf.c</in>
+                <in>misc_bfin.h</in>
+                <in>modes.c</in>
+                <in>modes.h</in>
+                <in>modes_wb.c</in>
+                <in>nb_celp.c</in>
+                <in>nb_celp.h</in>
+                <in>os_support.h</in>
+                <in>preprocess.c</in>
+                <in>pseudofloat.h</in>
+                <in>quant_lsp.c</in>
+                <in>quant_lsp.h</in>
+                <in>quant_lsp_bfin.h</in>
+                <in>resample.c</in>
+                <in>resample_sse.h</in>
+                <in>sb_celp.c</in>
+                <in>sb_celp.h</in>
+                <in>scal.c</in>
+                <in>smallft.c</in>
+                <in>smallft.h</in>
+                <in>speex.c</in>
+                <in>speex_callbacks.c</in>
+                <in>speex_header.c</in>
+                <in>stack_alloc.h</in>
+                <in>stereo.c</in>
+                <in>testdenoise.c</in>
+                <in>testecho.c</in>
+                <in>testenc.c</in>
+                <in>testenc_uwb.c</in>
+                <in>testenc_wb.c</in>
+                <in>testjitter.c</in>
+                <in>testresample.c</in>
+                <in>vbr.c</in>
+                <in>vbr.h</in>
+                <in>vorbis_psy.c</in>
+                <in>vorbis_psy.h</in>
+                <in>vq.c</in>
+                <in>vq.h</in>
+                <in>vq_arm4.h</in>
+                <in>vq_bfin.h</in>
+                <in>vq_sse.h</in>
+                <in>window.c</in>
+              </df>
+              <df name="symbian">
+                <in>config.h</in>
+              </df>
+              <df name="win32">
+                <in>config.h</in>
+              </df>
+            </df>
+            <df name="srtp">
+              <df name="crypto">
+                <df name="ae_xfm">
+                  <in>xfm.c</in>
+                </df>
+                <df name="cipher">
+                  <in>aes.c</in>
+                  <in>aes_cbc.c</in>
+                  <in>aes_icm.c</in>
+                  <in>cipher.c</in>
+                  <in>null_cipher.c</in>
+                </df>
+                <df name="hash">
+                  <in>auth.c</in>
+                  <in>hmac.c</in>
+                  <in>null_auth.c</in>
+                  <in>sha1.c</in>
+                </df>
+                <df name="include">
+                  <in>aes.h</in>
+                  <in>aes_cbc.h</in>
+                  <in>aes_icm.h</in>
+                  <in>alloc.h</in>
+                  <in>auth.h</in>
+                  <in>cipher.h</in>
+                  <in>crypto.h</in>
+                  <in>crypto_kernel.h</in>
+                  <in>crypto_math.h</in>
+                  <in>crypto_types.h</in>
+                  <in>cryptoalg.h</in>
+                  <in>datatypes.h</in>
+                  <in>err.h</in>
+                  <in>gf2_8.h</in>
+                  <in>hmac.h</in>
+                  <in>integers.h</in>
+                  <in>kernel_compat.h</in>
+                  <in>key.h</in>
+                  <in>null_auth.h</in>
+                  <in>null_cipher.h</in>
+                  <in>prng.h</in>
+                  <in>rand_source.h</in>
+                  <in>rdb.h</in>
+                  <in>rdbx.h</in>
+                  <in>sha1.h</in>
+                  <in>stat.h</in>
+                  <in>xfm.h</in>
+                </df>
+                <df name="kernel">
+                  <in>alloc.c</in>
+                  <in>crypto_kernel.c</in>
+                  <in>err.c</in>
+                  <in>key.c</in>
+                </df>
+                <df name="math">
+                  <in>datatypes.c</in>
+                  <in>gf2_8.c</in>
+                  <in>math.c</in>
+                  <in>stat.c</in>
+                </df>
+                <df name="replay">
+                  <in>rdb.c</in>
+                  <in>rdbx.c</in>
+                  <in>ut_sim.c</in>
+                </df>
+                <df name="rng">
+                  <in>ctr_prng.c</in>
+                  <in>prng.c</in>
+                  <in>rand_linux_kernel.c</in>
+                  <in>rand_source.c</in>
+                </df>
+                <df name="test">
+                  <in>aes_calc.c</in>
+                  <in>auth_driver.c</in>
+                  <in>cipher_driver.c</in>
+                  <in>datatypes_driver.c</in>
+                  <in>env.c</in>
+                  <in>kernel_driver.c</in>
+                  <in>rand_gen.c</in>
+                  <in>sha1_driver.c</in>
+                  <in>stat_driver.c</in>
+                </df>
+              </df>
+              <df name="doc">
+              </df>
+              <df name="include">
+                <in>getopt_s.h</in>
+                <in>rtp.h</in>
+                <in>rtp_priv.h</in>
+                <in>srtp.h</in>
+                <in>srtp_priv.h</in>
+                <in>ut_sim.h</in>
+              </df>
+              <df name="pjlib">
+                <in>srtp_err.c</in>
+              </df>
+              <df name="srtp">
+                <in>srtp.c</in>
+              </df>
+              <df name="tables">
+                <in>aes_tables.c</in>
+              </df>
+              <df name="test">
+                <in>dtls_srtp_driver.c</in>
+                <in>getopt_s.c</in>
+                <in>lfsr.c</in>
+                <in>rdbx_driver.c</in>
+                <in>replay_driver.c</in>
+                <in>roc_driver.c</in>
+                <in>rtp.c</in>
+                <in>rtpw.c</in>
+                <in>srtp_driver.c</in>
+              </df>
+              <in>config_in.h</in>
+            </df>
+          </df>
+        </df>
+        <df name="snmp">
+          <in>agent.c</in>
+          <in>agent.h</in>
+        </df>
+        <in>res_adsi.c</in>
+        <in>res_ael_share.c</in>
+        <in>res_agi.c</in>
+        <in>res_calendar.c</in>
+        <in>res_calendar_caldav.c</in>
+        <in>res_calendar_ews.c</in>
+        <in>res_calendar_exchange.c</in>
+        <in>res_calendar_icalendar.c</in>
+        <in>res_clialiases.c</in>
+        <in>res_clioriginate.c</in>
+        <in>res_config_curl.c</in>
+        <in>res_config_ldap.c</in>
+        <in>res_config_odbc.c</in>
+        <in>res_config_pgsql.c</in>
+        <in>res_config_sqlite.c</in>
+        <in>res_config_sqlite3.c</in>
+        <in>res_convert.c</in>
+        <in>res_corosync.c</in>
+        <in>res_crypto.c</in>
+        <in>res_curl.c</in>
+        <in>res_fax.c</in>
+        <in>res_fax_spandsp.c</in>
+        <in>res_format_attr_celt.c</in>
+        <in>res_format_attr_h263.c</in>
+        <in>res_format_attr_h264.c</in>
+        <in>res_format_attr_silk.c</in>
+        <in>res_http_post.c</in>
+        <in>res_http_websocket.c</in>
+        <in>res_jabber.c</in>
+        <in>res_limit.c</in>
+        <in>res_monitor.c</in>
+        <in>res_musiconhold.c</in>
+        <in>res_mutestream.c</in>
+        <in>res_odbc.c</in>
+        <in>res_phoneprov.c</in>
+        <in>res_pktccops.c</in>
+        <in>res_realtime.c</in>
+        <in>res_rtp_asterisk.c</in>
+        <in>res_rtp_multicast.c</in>
+        <in>res_security_log.c</in>
+        <in>res_smdi.c</in>
+        <in>res_snmp.c</in>
+        <in>res_speech.c</in>
+        <in>res_srtp.c</in>
+        <in>res_stun_monitor.c</in>
+        <in>res_timing_dahdi.c</in>
+        <in>res_timing_kqueue.c</in>
+        <in>res_timing_pthread.c</in>
+        <in>res_timing_timerfd.c</in>
+        <in>res_xmpp.c</in>
+      </df>
+      <df name="sounds">
+      </df>
+      <df name="static-http">
+      </df>
+      <df name="tests">
+        <in>test_abstract_jb.c</in>
+        <in>test_acl.c</in>
+        <in>test_amihooks.c</in>
+        <in>test_aoc.c</in>
+        <in>test_app.c</in>
+        <in>test_ast_format_str_reduce.c</in>
+        <in>test_astobj2.c</in>
+        <in>test_astobj2_thrash.c</in>
+        <in>test_config.c</in>
+        <in>test_db.c</in>
+        <in>test_devicestate.c</in>
+        <in>test_dlinklists.c</in>
+        <in>test_event.c</in>
+        <in>test_expr.c</in>
+        <in>test_format_api.c</in>
+        <in>test_func_file.c</in>
+        <in>test_gosub.c</in>
+        <in>test_hashtab_thrash.c</in>
+        <in>test_heap.c</in>
+        <in>test_jitterbuf.c</in>
+        <in>test_linkedlists.c</in>
+        <in>test_locale.c</in>
+        <in>test_logger.c</in>
+        <in>test_netsock2.c</in>
+        <in>test_pbx.c</in>
+        <in>test_poll.c</in>
+        <in>test_sched.c</in>
+        <in>test_security_events.c</in>
+        <in>test_skel.c</in>
+        <in>test_stringfields.c</in>
+        <in>test_strings.c</in>
+        <in>test_substitution.c</in>
+        <in>test_time.c</in>
+        <in>test_utils.c</in>
+        <in>test_voicemail_api.c</in>
+        <in>test_xml_escape.c</in>
+      </df>
+      <df name="utils">
+        <df name="db1-ast">
+          <df name="btree">
+            <in>bt_close.c</in>
+            <in>bt_conv.c</in>
+            <in>bt_debug.c</in>
+            <in>bt_delete.c</in>
+            <in>bt_get.c</in>
+            <in>bt_open.c</in>
+            <in>bt_overflow.c</in>
+            <in>bt_page.c</in>
+            <in>bt_put.c</in>
+            <in>bt_search.c</in>
+            <in>bt_seq.c</in>
+            <in>bt_split.c</in>
+            <in>bt_utils.c</in>
+            <in>btree.h</in>
+            <in>extern.h</in>
+          </df>
+          <df name="db">
+            <in>db.c</in>
+          </df>
+          <df name="hash">
+            <in>extern.h</in>
+            <in>hash.c</in>
+            <in>hash.h</in>
+            <in>hash_bigkey.c</in>
+            <in>hash_buf.c</in>
+            <in>hash_func.c</in>
+            <in>hash_log2.c</in>
+            <in>hash_page.c</in>
+            <in>hsearch.c</in>
+            <in>ndbm.c</in>
+            <in>page.h</in>
+            <in>search.h</in>
+          </df>
+          <df name="include">
+            <in>circ-queue.h</in>
+            <in>compat.h</in>
+            <in>db.h</in>
+            <in>mpool.h</in>
+            <in>ndbm.h</in>
+          </df>
+          <df name="mpool">
+            <in>mpool.c</in>
+          </df>
+          <df name="recno">
+            <in>extern.h</in>
+            <in>rec_close.c</in>
+            <in>rec_delete.c</in>
+            <in>rec_get.c</in>
+            <in>rec_open.c</in>
+            <in>rec_put.c</in>
+            <in>rec_search.c</in>
+            <in>rec_seq.c</in>
+            <in>rec_utils.c</in>
+            <in>recno.h</in>
+          </df>
+        </df>
+        <in>ael_main.c</in>
+        <in>astcanary.c</in>
+        <in>astdb2bdb.c</in>
+        <in>astdb2sqlite3.c</in>
+        <in>astman.c</in>
+        <in>check_expr.c</in>
+        <in>clicompat.c</in>
+        <in>conf2ael.c</in>
+        <in>extconf.c</in>
+        <in>frame.c</in>
+        <in>frame.h</in>
+        <in>muted.c</in>
+        <in>refcounter.c</in>
+        <in>smsq.c</in>
+        <in>stereorize.c</in>
+        <in>streamplayer.c</in>
+      </df>
+    </df>
+  </logicalFolder>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <platform>2</platform>
+      </toolsSet>
+      <compile>
+        <compiledirpicklist>
+          <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
+        </compiledirpicklist>
+        <compiledir>${AUTO_FOLDER}</compiledir>
+        <compilecommandpicklist>
+          <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
+        </compilecommandpicklist>
+        <compilecommand>${AUTO_COMPILE}</compilecommand>
+      </compile>
+      <dbx_gdbdebugger version="1">
+        <gdb_pathmaps>
+        </gdb_pathmaps>
+        <gdb_interceptlist>
+          <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
+        </gdb_interceptlist>
+        <gdb_options>
+          <DebugOptions>
+          </DebugOptions>
+        </gdb_options>
+        <gdb_buildfirst gdb_buildfirst_overriden="false" gdb_buildfirst_old="false"/>
+      </dbx_gdbdebugger>
+      <nativedebugger version="1">
+        <engine>gdb</engine>
+      </nativedebugger>
+      <runprofile version="9">
+        <runcommandpicklist>
+          <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+        </runcommandpicklist>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <rundir>.</rundir>
+        <buildfirst>false</buildfirst>
+        <terminal-type>0</terminal-type>
+        <remove-instrumentation>0</remove-instrumentation>
+        <environment>
+        </environment>
+      </runprofile>
+    </conf>
+  </confs>
+</configurationDescriptor>
