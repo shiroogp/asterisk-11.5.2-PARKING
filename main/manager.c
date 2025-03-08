@@ -37,7 +37,7 @@
  */
 
 /*! \addtogroup Group_AMI AMI functions
- */
+*/
 /*! @{
  Doxygen group */
 
@@ -50,7 +50,7 @@
 ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388478 $")
 
 #include "asterisk/_private.h"
-#include "asterisk/paths.h" /* use various ast_config_AST_* */
+#include "asterisk/paths.h"	/* use various ast_config_AST_* */
 #include <ctype.h>
 #include <sys/time.h>
 #include <signal.h>
@@ -953,13 +953,12 @@ ASTERISK_FILE_VERSION(__FILE__, "$Revision: 388478 $")
 		</synopsis>
 		<description>
 			<para>The filters displayed are for the current session.  Only those filters defined in
-						manager.conf will be present upon starting a new session.</para>
+                        manager.conf will be present upon starting a new session.</para>
 		</description>
 	</manager>
  ***/
 
-enum error_type
-{
+enum error_type {
 	UNKNOWN_ACTION = 1,
 	UNKNOWN_CATEGORY,
 	UNSPECIFIED_CATEGORY,
@@ -973,8 +972,7 @@ enum error_type
 	FAILURE_APPEND
 };
 
-enum add_filter_result
-{
+enum add_filter_result {
 	FILTER_SUCCESS,
 	FILTER_ALLOC_FAILED,
 	FILTER_COMPILE_FAIL,
@@ -999,15 +997,13 @@ enum add_filter_result
  *
  * For simplicity of implementation, we make sure the list is never empty.
  */
-struct eventqent
-{
-	int usecount; /*!< # of clients who still need the event */
+struct eventqent {
+	int usecount;		/*!< # of clients who still need the event */
 	int category;
-	unsigned int seq;  /*!< sequence number */
-	struct timeval tv; /*!< When event was allocated */
-	AST_RWLIST_ENTRY(eventqent)
-	eq_next;
-	char eventdata[1]; /*!< really variable size, allocated by append_event() */
+	unsigned int seq;	/*!< sequence number */
+	struct timeval tv;  /*!< When event was allocated */
+	AST_RWLIST_ENTRY(eventqent) eq_next;
+	char eventdata[1];	/*!< really variable size, allocated by append_event() */
 };
 
 static AST_RWLIST_HEAD_STATIC(all_events, eventqent);
@@ -1019,13 +1015,13 @@ static int httptimeout = 60;
 static int broken_events_action = 0;
 static int manager_enabled = 0;
 static int webmanager_enabled = 0;
-static int manager_debug = 0; /*!< enable some debugging code in the manager */
+static int manager_debug = 0;	/*!< enable some debugging code in the manager */
 static int authtimeout;
 static int authlimit;
 static char *manager_channelvars;
 
-#define DEFAULT_REALM "asterisk"
-static char global_realm[MAXHOSTNAMELEN]; /*!< Default realm */
+#define DEFAULT_REALM		"asterisk"
+static char global_realm[MAXHOSTNAMELEN];	/*!< Default realm */
 
 static int block_sockets;
 static int unauth_sessions = 0;
@@ -1042,30 +1038,27 @@ static struct ast_event_sub *acl_change_event_subscription;
  * Digest Authentication http header).
  */
 #define MAX_BLACKLIST_CMD_LEN 2
-static const struct
-{
+static const struct {
 	const char *words[AST_MAX_CMD_LEN];
 } command_blacklist[] = {
-	{{"module", "load", NULL}},
-	{{"module", "unload", NULL}},
-	{{"restart", "gracefully", NULL}},
+	{{ "module", "load", NULL }},
+	{{ "module", "unload", NULL }},
+	{{ "restart", "gracefully", NULL }},
 };
 
 static void acl_change_event_cb(const struct ast_event *event, void *userdata);
 
 static void acl_change_event_subscribe(void)
 {
-	if (!acl_change_event_subscription)
-	{
+	if (!acl_change_event_subscription) {
 		acl_change_event_subscription = ast_event_subscribe(AST_EVENT_ACL_CHANGE,
-															acl_change_event_cb, "Manager must react to Named ACL changes", NULL, AST_EVENT_IE_END);
+			acl_change_event_cb, "Manager must react to Named ACL changes", NULL, AST_EVENT_IE_END);
 	}
 }
 
 static void acl_change_event_unsubscribe(void)
 {
-	if (acl_change_event_subscription)
-	{
+	if (acl_change_event_subscription) {
 		acl_change_event_subscription = ast_event_unsubscribe(acl_change_event_subscription);
 	}
 }
@@ -1102,45 +1095,41 @@ static void acl_change_event_unsubscribe(void)
  * is session-specific data. The structure that it is wrapped in, called a 'mansession' really contains action-specific
  * data.
  */
-struct mansession_session
-{
-	/*! \todo XXX need to document which fields it is protecting */
-	struct ast_sockaddr addr;			/*!< address we are connecting from */
-	FILE *f;							/*!< fdopen() on the underlying fd */
-	int fd;								/*!< descriptor used for output. Either the socket (AMI) or a temporary file (HTTP) */
-	int inuse;							/*!< number of HTTP sessions using this entry */
-	int needdestroy;					/*!< Whether an HTTP session should be destroyed */
-	pthread_t waiting_thread;			/*!< Sleeping thread using this descriptor */
-	uint32_t managerid;					/*!< Unique manager identifier, 0 for AMI sessions */
-	time_t sessionstart;				/*!< Session start time */
-	struct timeval sessionstart_tv;		/*!< Session start time */
-	time_t sessiontimeout;				/*!< Session timeout if HTTP */
-	char username[80];					/*!< Logged in username */
-	char challenge[10];					/*!< Authentication challenge */
-	int authenticated;					/*!< Authentication status */
-	int readperm;						/*!< Authorization for reading */
-	int writeperm;						/*!< Authorization for writing */
-	char inbuf[1025];					/*!< Buffer -  we use the extra byte to add a '\0' and simplify parsing */
-	int inlen;							/*!< number of buffered bytes */
-	struct ao2_container *whitefilters; /*!< Manager event filters - white list */
-	struct ao2_container *blackfilters; /*!< Manager event filters - black list */
-	struct ast_variable *chanvars;		/*!< Channel variables to set for originate */
-	int send_events;					/*!<  XXX what ? */
-	struct eventqent *last_ev;			/*!< last event processed. */
-	int writetimeout;					/*!< Timeout for ast_carefulwrite() */
+struct mansession_session {
+				/*! \todo XXX need to document which fields it is protecting */
+	struct ast_sockaddr addr;	/*!< address we are connecting from */
+	FILE *f;		/*!< fdopen() on the underlying fd */
+	int fd;			/*!< descriptor used for output. Either the socket (AMI) or a temporary file (HTTP) */
+	int inuse;		/*!< number of HTTP sessions using this entry */
+	int needdestroy;	/*!< Whether an HTTP session should be destroyed */
+	pthread_t waiting_thread;	/*!< Sleeping thread using this descriptor */
+	uint32_t managerid;	/*!< Unique manager identifier, 0 for AMI sessions */
+	time_t sessionstart;    /*!< Session start time */
+	struct timeval sessionstart_tv; /*!< Session start time */
+	time_t sessiontimeout;	/*!< Session timeout if HTTP */
+	char username[80];	/*!< Logged in username */
+	char challenge[10];	/*!< Authentication challenge */
+	int authenticated;	/*!< Authentication status */
+	int readperm;		/*!< Authorization for reading */
+	int writeperm;		/*!< Authorization for writing */
+	char inbuf[1025];	/*!< Buffer -  we use the extra byte to add a '\0' and simplify parsing */
+	int inlen;		/*!< number of buffered bytes */
+	struct ao2_container *whitefilters;	/*!< Manager event filters - white list */
+	struct ao2_container *blackfilters;	/*!< Manager event filters - black list */
+	struct ast_variable *chanvars;  /*!< Channel variables to set for originate */
+	int send_events;	/*!<  XXX what ? */
+	struct eventqent *last_ev;	/*!< last event processed. */
+	int writetimeout;	/*!< Timeout for ast_carefulwrite() */
 	time_t authstart;
-	int pending_event;		/*!< Pending events indicator in case when waiting_thread is NULL */
-	time_t noncetime;		/*!< Timer for nonce value expiration */
-	unsigned long oldnonce; /*!< Stale nonce value */
-	unsigned long nc;		/*!< incremental  nonce counter */
-	AST_LIST_HEAD_NOLOCK(mansession_datastores, ast_datastore)
-	datastores; /*!< Data stores on the session */
-	AST_LIST_ENTRY(mansession_session)
-	list;
+	int pending_event;         /*!< Pending events indicator in case when waiting_thread is NULL */
+	time_t noncetime;	/*!< Timer for nonce value expiration */
+	unsigned long oldnonce;	/*!< Stale nonce value */
+	unsigned long nc;	/*!< incremental  nonce counter */
+	AST_LIST_HEAD_NOLOCK(mansession_datastores, ast_datastore) datastores; /*!< Data stores on the session */
+	AST_LIST_ENTRY(mansession_session) list;
 };
 
-enum mansession_message_parsing
-{
+enum mansession_message_parsing {
 	MESSAGE_OKAY,
 	MESSAGE_LINE_TOO_LONG
 };
@@ -1150,25 +1139,22 @@ enum mansession_message_parsing
  * represents data that is different from Manager action to Manager action. The mansession_session pointer
  * contained within points to session-specific data.
  */
-struct mansession
-{
+struct mansession {
 	struct mansession_session *session;
 	struct ast_tcptls_session_instance *tcptls_session;
 	FILE *f;
 	int fd;
 	enum mansession_message_parsing parsing;
-	int write_error : 1;
+	int write_error:1;
 	struct manager_custom_hook *hook;
 	ast_mutex_t lock;
 };
 
 static struct ao2_container *sessions = NULL;
 
-struct manager_channel_variable
-{
-	AST_LIST_ENTRY(manager_channel_variable)
-	entry;
-	unsigned int isfunc : 1;
+struct manager_channel_variable {
+	AST_LIST_ENTRY(manager_channel_variable) entry;
+	unsigned int isfunc:1;
 	char name[0]; /* allocate off the end the real size. */
 };
 
@@ -1180,22 +1166,20 @@ static AST_RWLIST_HEAD_STATIC(channelvars, manager_channel_variable);
  * lines which are not supported here, and readperm/writeperm/writetimeout
  * are not stored.
  */
-struct ast_manager_user
-{
+struct ast_manager_user {
 	char username[80];
-	char *secret;						/*!< Secret for logging in */
-	int readperm;						/*!< Authorization for reading */
-	int writeperm;						/*!< Authorization for writing */
-	int writetimeout;					/*!< Per user Timeout for ast_carefulwrite() */
-	int displayconnects;				/*!< XXX unused */
-	int keep;							/*!< mark entries created on a reload */
+	char *secret;			/*!< Secret for logging in */
+	int readperm;			/*!< Authorization for reading */
+	int writeperm;			/*!< Authorization for writing */
+	int writetimeout;		/*!< Per user Timeout for ast_carefulwrite() */
+	int displayconnects;		/*!< XXX unused */
+	int keep;			/*!< mark entries created on a reload */
 	struct ao2_container *whitefilters; /*!< Manager event filters - white list */
 	struct ao2_container *blackfilters; /*!< Manager event filters - black list */
-	struct ast_acl_list *acl;			/*!< ACL setting */
-	char *a1_hash;						/*!< precalculated A1 for Digest auth */
-	struct ast_variable *chanvars;		/*!< Channel variables to set for originate */
-	AST_RWLIST_ENTRY(ast_manager_user)
-	list;
+	struct ast_acl_list *acl;       /*!< ACL setting */
+	char *a1_hash;			/*!< precalculated A1 for Digest auth */
+	struct ast_variable *chanvars;  /*!< Channel variables to set for originate */
+	AST_RWLIST_ENTRY(ast_manager_user) list;
 };
 
 /*! \brief list of users found in the config file */
@@ -1227,10 +1211,8 @@ static struct manager_action *action_find(const char *name)
 	struct manager_action *act;
 
 	AST_RWLIST_RDLOCK(&actions);
-	AST_RWLIST_TRAVERSE(&actions, act, list)
-	{
-		if (!strcasecmp(name, act->action))
-		{
+	AST_RWLIST_TRAVERSE(&actions, act, list) {
+		if (!strcasecmp(name, act->action)) {
 			ao2_t_ref(act, +1, "found action object");
 			break;
 		}
@@ -1279,8 +1261,7 @@ static struct eventqent *grab_last(void)
 	/* the list is never empty now, but may become so when
 	 * we optimize it in the future, so be prepared.
 	 */
-	if (ret)
-	{
+	if (ret) {
 		ast_atomic_fetchadd_int(&ret->usecount, 1);
 	}
 	AST_RWLIST_UNLOCK(&all_events);
@@ -1297,24 +1278,20 @@ static void purge_events(void)
 	struct timeval now = ast_tvnow();
 
 	AST_RWLIST_WRLOCK(&all_events);
-	while ((ev = AST_RWLIST_FIRST(&all_events)) &&
-		   ev->usecount == 0 && AST_RWLIST_NEXT(ev, eq_next))
-	{
+	while ( (ev = AST_RWLIST_FIRST(&all_events)) &&
+	    ev->usecount == 0 && AST_RWLIST_NEXT(ev, eq_next)) {
 		AST_RWLIST_REMOVE_HEAD(&all_events, eq_next);
 		ast_free(ev);
 	}
 
-	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&all_events, ev, eq_next)
-	{
+	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&all_events, ev, eq_next) {
 		/* Never release the last event */
-		if (!AST_RWLIST_NEXT(ev, eq_next))
-		{
+		if (!AST_RWLIST_NEXT(ev, eq_next)) {
 			break;
 		}
 
 		/* 2.5 times whatever the HTTP timeout is (maximum 2.5 hours) is the maximum time that we will definitely cache an event */
-		if (ev->usecount == 0 && ast_tvdiff_sec(now, ev->tv) > (httptimeout > 3600 ? 3600 : httptimeout) * 2.5)
-		{
+		if (ev->usecount == 0 && ast_tvdiff_sec(now, ev->tv) > (httptimeout > 3600 ? 3600 : httptimeout) * 2.5) {
 			AST_RWLIST_REMOVE_CURRENT(eq_next);
 			ast_free(ev);
 		}
@@ -1327,40 +1304,40 @@ static void purge_events(void)
  * helper functions to convert back and forth between
  * string and numeric representation of set of flags
  */
-static const struct permalias
-{
+static const struct permalias {
 	int num;
 	const char *label;
 } perms[] = {
-	{EVENT_FLAG_SYSTEM, "system"},
-	{EVENT_FLAG_CALL, "call"},
-	{EVENT_FLAG_LOG, "log"},
-	{EVENT_FLAG_VERBOSE, "verbose"},
-	{EVENT_FLAG_COMMAND, "command"},
-	{EVENT_FLAG_AGENT, "agent"},
-	{EVENT_FLAG_USER, "user"},
-	{EVENT_FLAG_CONFIG, "config"},
-	{EVENT_FLAG_DTMF, "dtmf"},
-	{EVENT_FLAG_REPORTING, "reporting"},
-	{EVENT_FLAG_CDR, "cdr"},
-	{EVENT_FLAG_DIALPLAN, "dialplan"},
-	{EVENT_FLAG_ORIGINATE, "originate"},
-	{EVENT_FLAG_AGI, "agi"},
-	{EVENT_FLAG_CC, "cc"},
-	{EVENT_FLAG_AOC, "aoc"},
-	{EVENT_FLAG_TEST, "test"},
-	{EVENT_FLAG_MESSAGE, "message"},
-	{INT_MAX, "all"},
-	{0, "none"},
+	{ EVENT_FLAG_SYSTEM, "system" },
+	{ EVENT_FLAG_CALL, "call" },
+	{ EVENT_FLAG_LOG, "log" },
+	{ EVENT_FLAG_VERBOSE, "verbose" },
+	{ EVENT_FLAG_COMMAND, "command" },
+	{ EVENT_FLAG_AGENT, "agent" },
+	{ EVENT_FLAG_USER, "user" },
+	{ EVENT_FLAG_CONFIG, "config" },
+	{ EVENT_FLAG_DTMF, "dtmf" },
+	{ EVENT_FLAG_REPORTING, "reporting" },
+	{ EVENT_FLAG_CDR, "cdr" },
+	{ EVENT_FLAG_DIALPLAN, "dialplan" },
+	{ EVENT_FLAG_ORIGINATE, "originate" },
+	{ EVENT_FLAG_AGI, "agi" },
+	{ EVENT_FLAG_CC, "cc" },
+	{ EVENT_FLAG_AOC, "aoc" },
+	{ EVENT_FLAG_TEST, "test" },
+	{ EVENT_FLAG_MESSAGE, "message" },
+	{ INT_MAX, "all" },
+	{ 0, "none" },
 };
 
 /*! \brief Checks to see if a string which can be used to evaluate functions should be rejected */
 static int function_capable_string_allowed_with_auths(const char *evaluating, int writepermlist)
 {
-	if (!(writepermlist & EVENT_FLAG_SYSTEM) && (strstr(evaluating, "SHELL") || /* NoOp(${SHELL(rm -rf /)})  */
-												 strstr(evaluating, "EVAL")		/* NoOp(${EVAL(${some_var_containing_SHELL})}) */
-												 ))
-	{
+	if (!(writepermlist & EVENT_FLAG_SYSTEM)
+		&& (
+			strstr(evaluating, "SHELL") ||       /* NoOp(${SHELL(rm -rf /)})  */
+			strstr(evaluating, "EVAL")           /* NoOp(${EVAL(${some_var_containing_SHELL})}) */
+		)) {
 		return 0;
 	}
 	return 1;
@@ -1374,20 +1351,19 @@ static const char *user_authority_to_str(int authority, struct ast_str **res)
 	char *sep = "";
 
 	ast_str_reset(*res);
-	for (i = 0; i < ARRAY_LEN(perms) - 1; i++)
-	{
-		if ((authority & perms[i].num) == perms[i].num)
-		{
+	for (i = 0; i < ARRAY_LEN(perms) - 1; i++) {
+		if ((authority & perms[i].num) == perms[i].num) {
 			ast_str_append(res, 0, "%s%s", sep, perms[i].label);
 			sep = ",";
 		}
 	}
 
-	if (ast_str_strlen(*res) == 0) /* replace empty string with something sensible */
+	if (ast_str_strlen(*res) == 0)	/* replace empty string with something sensible */
 		ast_str_append(res, 0, "<none>");
 
 	return ast_str_buffer(*res);
 }
+
 
 /*! \brief Convert authority code to a list of options. Note that the EVENT_FLAG_ALL
  * authority will always be returned. */
@@ -1397,16 +1373,14 @@ static const char *authority_to_str(int authority, struct ast_str **res)
 	char *sep = "";
 
 	ast_str_reset(*res);
-	for (i = 0; i < ARRAY_LEN(perms) - 1; i++)
-	{
-		if (authority & perms[i].num)
-		{
+	for (i = 0; i < ARRAY_LEN(perms) - 1; i++) {
+		if (authority & perms[i].num) {
 			ast_str_append(res, 0, "%s%s", sep, perms[i].label);
 			sep = ",";
 		}
 	}
 
-	if (ast_str_strlen(*res) == 0) /* replace empty string with something sensible */
+	if (ast_str_strlen(*res) == 0)	/* replace empty string with something sensible */
 		ast_str_append(res, 0, "<none>");
 
 	return ast_str_buffer(*res);
@@ -1421,21 +1395,14 @@ static int ast_instring(const char *bigstr, const char *smallstr, const char del
 {
 	const char *val = bigstr, *next;
 
-	do
-	{
-		if ((next = strchr(val, delim)))
-		{
-			if (!strncmp(val, smallstr, (next - val)))
-			{
+	do {
+		if ((next = strchr(val, delim))) {
+			if (!strncmp(val, smallstr, (next - val))) {
 				return 1;
-			}
-			else
-			{
+			} else {
 				continue;
 			}
-		}
-		else
-		{
+		} else {
 			return !strcmp(smallstr, val);
 		}
 	} while (*(val = (next + 1)));
@@ -1447,15 +1414,12 @@ static int get_perm(const char *instr)
 {
 	int x = 0, ret = 0;
 
-	if (!instr)
-	{
+	if (!instr) {
 		return 0;
 	}
 
-	for (x = 0; x < ARRAY_LEN(perms); x++)
-	{
-		if (ast_instring(instr, perms[x].label, ','))
-		{
+	for (x = 0; x < ARRAY_LEN(perms); x++) {
+		if (ast_instring(instr, perms[x].label, ',')) {
 			ret |= perms[x].num;
 		}
 	}
@@ -1471,31 +1435,24 @@ static int strings_to_mask(const char *string)
 {
 	const char *p;
 
-	if (ast_strlen_zero(string))
-	{
+	if (ast_strlen_zero(string)) {
 		return -1;
 	}
 
-	for (p = string; *p; p++)
-	{
-		if (*p < '0' || *p > '9')
-		{
+	for (p = string; *p; p++) {
+		if (*p < '0' || *p > '9') {
 			break;
 		}
 	}
-	if (!*p)
-	{ /* all digits */
+	if (!*p) { /* all digits */
 		return atoi(string);
 	}
-	if (ast_false(string))
-	{
+	if (ast_false(string)) {
 		return 0;
 	}
-	if (ast_true(string))
-	{ /* all permissions */
+	if (ast_true(string)) {	/* all permissions */
 		int x, ret = 0;
-		for (x = 0; x < ARRAY_LEN(perms); x++)
-		{
+		for (x = 0; x < ARRAY_LEN(perms); x++) {
 			ret |= perms[x].num;
 		}
 		return ret;
@@ -1504,12 +1461,11 @@ static int strings_to_mask(const char *string)
 }
 
 /*! \brief Unreference manager session object.
-	 If no more references, then go ahead and delete it */
+     If no more references, then go ahead and delete it */
 static struct mansession_session *unref_mansession(struct mansession_session *s)
 {
 	int refcount = ao2_ref(s, -1);
-	if (manager_debug)
-	{
+	if (manager_debug) {
 		ast_debug(1, "Mansession: %p refcount now %d\n", s, refcount - 1);
 	}
 	return s;
@@ -1528,35 +1484,29 @@ static void session_destructor(void *obj)
 	struct ast_datastore *datastore;
 
 	/* Get rid of each of the data stores on the session */
-	while ((datastore = AST_LIST_REMOVE_HEAD(&session->datastores, entry)))
-	{
+	while ((datastore = AST_LIST_REMOVE_HEAD(&session->datastores, entry))) {
 		/* Free the data store */
 		ast_datastore_free(datastore);
 	}
 
-	if (session->f != NULL)
-	{
+	if (session->f != NULL) {
 		fclose(session->f);
 	}
-	if (eqe)
-	{
+	if (eqe) {
 		ast_atomic_fetchadd_int(&eqe->usecount, -1);
 	}
-	if (session->chanvars)
-	{
+	if (session->chanvars) {
 		ast_variables_destroy(session->chanvars);
 	}
 
-	if (session->whitefilters)
-	{
+	if (session->whitefilters) {
 		ao2_t_callback(session->whitefilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all white filters");
-		ao2_t_ref(session->whitefilters, -1, "decrement ref for white container, should be last one");
+		ao2_t_ref(session->whitefilters, -1 , "decrement ref for white container, should be last one");
 	}
 
-	if (session->blackfilters)
-	{
+	if (session->blackfilters) {
 		ao2_t_callback(session->blackfilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all black filters");
-		ao2_t_ref(session->blackfilters, -1, "decrement ref for black container, should be last one");
+		ao2_t_ref(session->blackfilters, -1 , "decrement ref for black container, should be last one");
 	}
 }
 
@@ -1565,19 +1515,16 @@ static struct mansession_session *build_mansession(const struct ast_sockaddr *ad
 {
 	struct mansession_session *newsession;
 
-	if (!(newsession = ao2_alloc(sizeof(*newsession), session_destructor)))
-	{
+	if (!(newsession = ao2_alloc(sizeof(*newsession), session_destructor))) {
 		return NULL;
 	}
 
-	if (!(newsession->whitefilters = ao2_container_alloc(1, NULL, NULL)))
-	{
+	if (!(newsession->whitefilters = ao2_container_alloc(1, NULL, NULL))) {
 		ao2_ref(newsession, -1);
 		return NULL;
 	}
 
-	if (!(newsession->blackfilters = ao2_container_alloc(1, NULL, NULL)))
-	{
+	if (!(newsession->blackfilters = ao2_container_alloc(1, NULL, NULL))) {
 		ao2_ref(newsession, -1); /* session_destructor will cleanup the other filter */
 		return NULL;
 	}
@@ -1606,18 +1553,19 @@ static void session_destroy(struct mansession_session *s)
 	ao2_unlink(sessions, s);
 }
 
+
 static int check_manager_session_inuse(const char *name)
 {
-	struct mansession_session *session = ao2_find(sessions, (char *)name, 0);
+	struct mansession_session *session = ao2_find(sessions, (char *) name, 0);
 	int inuse = 0;
 
-	if (session)
-	{
+	if (session) {
 		inuse = 1;
 		unref_mansession(session);
 	}
 	return inuse;
 }
+
 
 /*!
  * lookup an entry in the list of registered users.
@@ -1627,10 +1575,8 @@ static struct ast_manager_user *get_manager_by_name_locked(const char *name)
 {
 	struct ast_manager_user *user = NULL;
 
-	AST_RWLIST_TRAVERSE(&users, user, list)
-	{
-		if (!strcasecmp(user->username, name))
-		{
+	AST_RWLIST_TRAVERSE(&users, user, list) {
+		if (!strcasecmp(user->username, name)) {
 			break;
 		}
 	}
@@ -1642,14 +1588,13 @@ static struct ast_manager_user *get_manager_by_name_locked(const char *name)
  *  \param session manager session to get parameter from.
  *  \return displayconnects config option value.
  */
-static int manager_displayconnects(struct mansession_session *session)
+static int manager_displayconnects (struct mansession_session *session)
 {
 	struct ast_manager_user *user = NULL;
 	int ret = 0;
 
 	AST_RWLIST_RDLOCK(&users);
-	if ((user = get_manager_by_name_locked(session->username)))
-	{
+	if ((user = get_manager_by_name_locked (session->username))) {
 		ret = user->displayconnects;
 	}
 	AST_RWLIST_UNLOCK(&users);
@@ -1667,8 +1612,7 @@ static char *handle_showmancmd(struct ast_cli_entry *e, int cmd, struct ast_cli_
 	char syntax_title[64], description_title[64], synopsis_title[64], seealso_title[64], arguments_title[64];
 #endif
 
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show command";
 		e->usage =
@@ -1679,20 +1623,17 @@ static char *handle_showmancmd(struct ast_cli_entry *e, int cmd, struct ast_cli_
 		l = strlen(a->word);
 		which = 0;
 		AST_RWLIST_RDLOCK(&actions);
-		AST_RWLIST_TRAVERSE(&actions, cur, list)
-		{
-			if (!strncasecmp(a->word, cur->action, l) && ++which > a->n)
-			{
+		AST_RWLIST_TRAVERSE(&actions, cur, list) {
+			if (!strncasecmp(a->word, cur->action, l) && ++which > a->n) {
 				ret = ast_strdup(cur->action);
-				break; /* make sure we exit even if ast_strdup() returns NULL */
+				break;	/* make sure we exit even if ast_strdup() returns NULL */
 			}
 		}
 		AST_RWLIST_UNLOCK(&actions);
 		return ret;
 	}
 	authority = ast_str_alloca(80);
-	if (a->argc < 4)
-	{
+	if (a->argc < 4) {
 		return CLI_SHOWUSAGE;
 	}
 
@@ -1706,34 +1647,29 @@ static char *handle_showmancmd(struct ast_cli_entry *e, int cmd, struct ast_cli_
 #endif
 
 	AST_RWLIST_RDLOCK(&actions);
-	AST_RWLIST_TRAVERSE(&actions, cur, list)
-	{
-		for (num = 3; num < a->argc; num++)
-		{
-			if (!strcasecmp(cur->action, a->argv[num]))
-			{
+	AST_RWLIST_TRAVERSE(&actions, cur, list) {
+		for (num = 3; num < a->argc; num++) {
+			if (!strcasecmp(cur->action, a->argv[num])) {
 #ifdef AST_XML_DOCS
-				if (cur->docsrc == AST_XML_DOC)
-				{
+				if (cur->docsrc == AST_XML_DOC) {
 					ast_cli(a->fd, "%s%s\n\n%s%s\n\n%s%s\n\n%s%s\n\n%s%s\n\n",
-							syntax_title,
-							ast_xmldoc_printable(S_OR(cur->syntax, "Not available"), 1),
-							synopsis_title,
-							ast_xmldoc_printable(S_OR(cur->synopsis, "Not available"), 1),
-							description_title,
-							ast_xmldoc_printable(S_OR(cur->description, "Not available"), 1),
-							arguments_title,
-							ast_xmldoc_printable(S_OR(cur->arguments, "Not available"), 1),
-							seealso_title,
-							ast_xmldoc_printable(S_OR(cur->seealso, "Not available"), 1));
-				}
-				else
+						syntax_title,
+						ast_xmldoc_printable(S_OR(cur->syntax, "Not available"), 1),
+						synopsis_title,
+						ast_xmldoc_printable(S_OR(cur->synopsis, "Not available"), 1),
+						description_title,
+						ast_xmldoc_printable(S_OR(cur->description, "Not available"), 1),
+						arguments_title,
+						ast_xmldoc_printable(S_OR(cur->arguments, "Not available"), 1),
+						seealso_title,
+						ast_xmldoc_printable(S_OR(cur->seealso, "Not available"), 1));
+				} else
 #endif
 				{
 					ast_cli(a->fd, "Action: %s\nSynopsis: %s\nPrivilege: %s\n%s\n",
-							cur->action, cur->synopsis,
-							authority_to_str(cur->authority, &authority),
-							S_OR(cur->description, ""));
+						cur->action, cur->synopsis,
+						authority_to_str(cur->authority, &authority),
+						S_OR(cur->description, ""));
 				}
 			}
 		}
@@ -1745,8 +1681,7 @@ static char *handle_showmancmd(struct ast_cli_entry *e, int cmd, struct ast_cli_
 
 static char *handle_mandebug(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
 {
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager set debug [on|off]";
 		e->usage = "Usage: manager set debug [on|off]\n	Show, enable, disable debugging of the manager code.\n";
@@ -1755,22 +1690,14 @@ static char *handle_mandebug(struct ast_cli_entry *e, int cmd, struct ast_cli_ar
 		return NULL;
 	}
 
-	if (a->argc == 3)
-	{
-		ast_cli(a->fd, "manager debug is %s\n", manager_debug ? "on" : "off");
-	}
-	else if (a->argc == 4)
-	{
-		if (!strcasecmp(a->argv[3], "on"))
-		{
+	if (a->argc == 3) {
+		ast_cli(a->fd, "manager debug is %s\n", manager_debug? "on" : "off");
+	} else if (a->argc == 4) {
+		if (!strcasecmp(a->argv[3], "on")) {
 			manager_debug = 1;
-		}
-		else if (!strcasecmp(a->argv[3], "off"))
-		{
+		} else if (!strcasecmp(a->argv[3], "off")) {
 			manager_debug = 0;
-		}
-		else
-		{
+		} else {
 			return CLI_SHOWUSAGE;
 		}
 	}
@@ -1786,8 +1713,7 @@ static char *handle_showmanager(struct ast_cli_entry *e, int cmd, struct ast_cli
 	struct ast_str *wauthority = ast_str_alloca(128);
 	struct ast_variable *v;
 
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show user";
 		e->usage =
@@ -1797,15 +1723,12 @@ static char *handle_showmanager(struct ast_cli_entry *e, int cmd, struct ast_cli
 	case CLI_GENERATE:
 		l = strlen(a->word);
 		which = 0;
-		if (a->pos != 3)
-		{
+		if (a->pos != 3) {
 			return NULL;
 		}
 		AST_RWLIST_RDLOCK(&users);
-		AST_RWLIST_TRAVERSE(&users, user, list)
-		{
-			if (!strncasecmp(a->word, user->username, l) && ++which > a->n)
-			{
+		AST_RWLIST_TRAVERSE(&users, user, list) {
+			if ( !strncasecmp(a->word, user->username, l) && ++which > a->n ) {
 				ret = ast_strdup(user->username);
 				break;
 			}
@@ -1814,15 +1737,13 @@ static char *handle_showmanager(struct ast_cli_entry *e, int cmd, struct ast_cli
 		return ret;
 	}
 
-	if (a->argc != 4)
-	{
+	if (a->argc != 4) {
 		return CLI_SHOWUSAGE;
 	}
 
 	AST_RWLIST_RDLOCK(&users);
 
-	if (!(user = get_manager_by_name_locked(a->argv[3])))
-	{
+	if (!(user = get_manager_by_name_locked(a->argv[3]))) {
 		ast_cli(a->fd, "There is no manager called %s\n", a->argv[3]);
 		AST_RWLIST_UNLOCK(&users);
 		return CLI_SUCCESS;
@@ -1830,23 +1751,22 @@ static char *handle_showmanager(struct ast_cli_entry *e, int cmd, struct ast_cli
 
 	ast_cli(a->fd, "\n");
 	ast_cli(a->fd,
-			"       username: %s\n"
-			"         secret: %s\n"
-			"            ACL: %s\n"
-			"      read perm: %s\n"
-			"     write perm: %s\n"
-			"displayconnects: %s\n",
-			(user->username ? user->username : "(N/A)"),
-			(user->secret ? "<Set>" : "(N/A)"),
-			((user->acl && !ast_acl_list_is_empty(user->acl)) ? "yes" : "no"),
-			user_authority_to_str(user->readperm, &rauthority),
-			user_authority_to_str(user->writeperm, &wauthority),
-			(user->displayconnects ? "yes" : "no"));
+		"       username: %s\n"
+		"         secret: %s\n"
+		"            ACL: %s\n"
+		"      read perm: %s\n"
+		"     write perm: %s\n"
+		"displayconnects: %s\n",
+		(user->username ? user->username : "(N/A)"),
+		(user->secret ? "<Set>" : "(N/A)"),
+		((user->acl && !ast_acl_list_is_empty(user->acl)) ? "yes" : "no"),
+		user_authority_to_str(user->readperm, &rauthority),
+		user_authority_to_str(user->writeperm, &wauthority),
+		(user->displayconnects ? "yes" : "no"));
 	ast_cli(a->fd, "      Variables: \n");
-	for (v = user->chanvars; v; v = v->next)
-	{
-		ast_cli(a->fd, "                 %s = %s\n", v->name, v->value);
-	}
+		for (v = user->chanvars ; v ; v = v->next) {
+			ast_cli(a->fd, "                 %s = %s\n", v->name, v->value);
+		}
 
 	AST_RWLIST_UNLOCK(&users);
 
@@ -1857,8 +1777,7 @@ static char *handle_showmanagers(struct ast_cli_entry *e, int cmd, struct ast_cl
 {
 	struct ast_manager_user *user = NULL;
 	int count_amu = 0;
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show users";
 		e->usage =
@@ -1869,16 +1788,14 @@ static char *handle_showmanagers(struct ast_cli_entry *e, int cmd, struct ast_cl
 	case CLI_GENERATE:
 		return NULL;
 	}
-	if (a->argc != 3)
-	{
+	if (a->argc != 3) {
 		return CLI_SHOWUSAGE;
 	}
 
 	AST_RWLIST_RDLOCK(&users);
 
 	/* If there are no users, print out something along those lines */
-	if (AST_RWLIST_EMPTY(&users))
-	{
+	if (AST_RWLIST_EMPTY(&users)) {
 		ast_cli(a->fd, "There are no manager users.\n");
 		AST_RWLIST_UNLOCK(&users);
 		return CLI_SUCCESS;
@@ -1886,17 +1803,15 @@ static char *handle_showmanagers(struct ast_cli_entry *e, int cmd, struct ast_cl
 
 	ast_cli(a->fd, "\nusername\n--------\n");
 
-	AST_RWLIST_TRAVERSE(&users, user, list)
-	{
+	AST_RWLIST_TRAVERSE(&users, user, list) {
 		ast_cli(a->fd, "%s\n", user->username);
 		count_amu++;
 	}
 
 	AST_RWLIST_UNLOCK(&users);
 
-	ast_cli(a->fd, "-------------------\n"
-				   "%d manager users configured.\n",
-			count_amu);
+	ast_cli(a->fd,"-------------------\n"
+		      "%d manager users configured.\n", count_amu);
 	return CLI_SUCCESS;
 }
 
@@ -1906,8 +1821,7 @@ static char *handle_showmancmds(struct ast_cli_entry *e, int cmd, struct ast_cli
 	struct manager_action *cur;
 	struct ast_str *authority;
 #define HSMC_FORMAT "  %-15.15s  %-15.15s  %-55.55s\n"
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show commands";
 		e->usage =
@@ -1922,8 +1836,7 @@ static char *handle_showmancmds(struct ast_cli_entry *e, int cmd, struct ast_cli
 	ast_cli(a->fd, HSMC_FORMAT, "------", "---------", "--------");
 
 	AST_RWLIST_RDLOCK(&actions);
-	AST_RWLIST_TRAVERSE(&actions, cur, list)
-	{
+	AST_RWLIST_TRAVERSE(&actions, cur, list) {
 		ast_cli(a->fd, HSMC_FORMAT, cur->action, authority_to_str(cur->authority, &authority), cur->synopsis);
 	}
 	AST_RWLIST_UNLOCK(&actions);
@@ -1941,8 +1854,7 @@ static char *handle_showmanconn(struct ast_cli_entry *e, int cmd, struct ast_cli
 	int count = 0;
 	struct ao2_iterator i;
 
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show connected";
 		e->usage =
@@ -1957,8 +1869,7 @@ static char *handle_showmanconn(struct ast_cli_entry *e, int cmd, struct ast_cli
 	ast_cli(a->fd, HSMCONN_FORMAT1, "Username", "IP Address", "Start", "Elapsed", "FileDes", "HttpCnt", "Read", "Write");
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)))
-	{
+	while ((session = ao2_iterator_next(&i))) {
 		ao2_lock(session);
 		ast_cli(a->fd, HSMCONN_FORMAT2, session->username, ast_sockaddr_stringify_addr(&session->addr), (int)(session->sessionstart), (int)(now - session->sessionstart), session->fd, session->inuse, session->readperm, session->writeperm);
 		count++;
@@ -1976,8 +1887,7 @@ static char *handle_showmanconn(struct ast_cli_entry *e, int cmd, struct ast_cli
 static char *handle_showmaneventq(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
 {
 	struct eventqent *s;
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show eventq";
 		e->usage =
@@ -1989,8 +1899,7 @@ static char *handle_showmaneventq(struct ast_cli_entry *e, int cmd, struct ast_c
 		return NULL;
 	}
 	AST_RWLIST_RDLOCK(&all_events);
-	AST_RWLIST_TRAVERSE(&all_events, s, eq_next)
-	{
+	AST_RWLIST_TRAVERSE(&all_events, s, eq_next) {
 		ast_cli(a->fd, "Usecount: %d\n", s->usecount);
 		ast_cli(a->fd, "Category: %d\n", s->category);
 		ast_cli(a->fd, "Event:\n%s", s->eventdata);
@@ -2003,8 +1912,7 @@ static char *handle_showmaneventq(struct ast_cli_entry *e, int cmd, struct ast_c
 /*! \brief CLI command manager reload */
 static char *handle_manager_reload(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
 {
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager reload";
 		e->usage =
@@ -2014,8 +1922,7 @@ static char *handle_manager_reload(struct ast_cli_entry *e, int cmd, struct ast_
 	case CLI_GENERATE:
 		return NULL;
 	}
-	if (a->argc > 2)
-	{
+	if (a->argc > 2) {
 		return CLI_SHOWUSAGE;
 	}
 	reload_manager();
@@ -2027,8 +1934,7 @@ static struct eventqent *advance_event(struct eventqent *e)
 	struct eventqent *next;
 
 	AST_RWLIST_RDLOCK(&all_events);
-	if ((next = AST_RWLIST_NEXT(e, eq_next)))
-	{
+	if ((next = AST_RWLIST_NEXT(e, eq_next))) {
 		ast_atomic_fetchadd_int(&next->usecount, 1);
 		ast_atomic_fetchadd_int(&e->usecount, -1);
 	}
@@ -2036,9 +1942,9 @@ static struct eventqent *advance_event(struct eventqent *e)
 	return next;
 }
 
-#define GET_HEADER_FIRST_MATCH 0
-#define GET_HEADER_LAST_MATCH 1
-#define GET_HEADER_SKIP_EMPTY 2
+#define	GET_HEADER_FIRST_MATCH	0
+#define	GET_HEADER_LAST_MATCH	1
+#define	GET_HEADER_SKIP_EMPTY	2
 
 /*!
  * \brief Return a matching header value.
@@ -2058,29 +1964,22 @@ static const char *__astman_get_header(const struct message *m, char *var, int m
 	int x, l = strlen(var);
 	const char *result = "";
 
-	if (!m)
-	{
+	if (!m) {
 		return result;
 	}
 
-	for (x = 0; x < m->hdrcount; x++)
-	{
+	for (x = 0; x < m->hdrcount; x++) {
 		const char *h = m->headers[x];
-		if (!strncasecmp(var, h, l) && h[l] == ':')
-		{
+		if (!strncasecmp(var, h, l) && h[l] == ':') {
 			const char *value = h + l + 1;
 			value = ast_skip_blanks(value); /* ignore leading spaces in the value */
 			/* found a potential candidate */
-			if ((mode & GET_HEADER_SKIP_EMPTY) && ast_strlen_zero(value))
-			{
-				continue; /* not interesting */
+			if ((mode & GET_HEADER_SKIP_EMPTY) && ast_strlen_zero(value)) {
+				continue;	/* not interesting */
 			}
-			if (mode & GET_HEADER_LAST_MATCH)
-			{
-				result = value; /* record the last match so far */
-			}
-			else
-			{
+			if (mode & GET_HEADER_LAST_MATCH) {
+				result = value;	/* record the last match so far */
+			} else {
 				return value;
 			}
 		}
@@ -2115,41 +2014,37 @@ static struct ast_variable *man_do_variable_value(struct ast_variable *head, con
 {
 	char *parse;
 	AST_DECLARE_APP_ARGS(args,
-						 AST_APP_ARG(vars)[64];);
+		AST_APP_ARG(vars)[64];
+	);
 
 	hdr_val = ast_skip_blanks(hdr_val); /* ignore leading spaces in the value */
 	parse = ast_strdupa(hdr_val);
 
 	/* Break the header value string into name=val pair items. */
 	AST_STANDARD_APP_ARGS(args, parse);
-	if (args.argc)
-	{
+	if (args.argc) {
 		int y;
 
 		/* Process each name=val pair item. */
-		for (y = 0; y < args.argc; y++)
-		{
+		for (y = 0; y < args.argc; y++) {
 			struct ast_variable *cur;
 			char *var;
 			char *val;
 
-			if (!args.vars[y])
-			{
+			if (!args.vars[y]) {
 				continue;
 			}
 			var = val = args.vars[y];
 			strsep(&val, "=");
 
 			/* XXX We may wish to trim whitespace from the strings. */
-			if (!val || ast_strlen_zero(var))
-			{
+			if (!val || ast_strlen_zero(var)) {
 				continue;
 			}
 
 			/* Create new variable list node and prepend it to the list. */
 			cur = ast_variable_new(var, val, "");
-			if (cur)
-			{
+			if (cur) {
 				cur->next = head;
 				head = cur;
 			}
@@ -2169,10 +2064,8 @@ struct ast_variable *astman_get_variables(const struct message *m)
 
 	/* Process all "Variable:" headers. */
 	varlen = strlen(var_hdr);
-	for (x = 0; x < m->hdrcount; x++)
-	{
-		if (strncasecmp(var_hdr, m->headers[x], varlen))
-		{
+	for (x = 0; x < m->hdrcount; x++) {
+		if (strncasecmp(var_hdr, m->headers[x], varlen)) {
 			continue;
 		}
 		head = man_do_variable_value(head, m->headers[x] + varlen);
@@ -2187,82 +2080,69 @@ int ast_hook_send_action(struct manager_custom_hook *hook, const char *msg)
 	const char *action;
 	int ret = 0;
 	struct manager_action *act_found;
-	struct mansession s = {
-		.session = NULL,
-	};
-	struct message m = {0};
+	struct mansession s = {.session = NULL, };
+	struct message m = { 0 };
 	char *dup_str;
 	char *src;
 	int x = 0;
 	int curlen;
 
-	if (hook == NULL)
-	{
+	if (hook == NULL) {
 		return -1;
 	}
 
 	/* Create our own copy of the AMI action msg string. */
 	src = dup_str = ast_strdup(msg);
-	if (!dup_str)
-	{
+	if (!dup_str) {
 		return -1;
 	}
 
 	/* convert msg string to message struct */
 	curlen = strlen(src);
-	for (x = 0; x < curlen; x++)
-	{
-		int cr; /* set if we have \r */
-		if (src[x] == '\r' && x + 1 < curlen && src[x + 1] == '\n')
-			cr = 2; /* Found. Update length to include \r\n */
+	for (x = 0; x < curlen; x++) {
+		int cr;	/* set if we have \r */
+		if (src[x] == '\r' && x+1 < curlen && src[x+1] == '\n')
+			cr = 2;	/* Found. Update length to include \r\n */
 		else if (src[x] == '\n')
-			cr = 1; /* also accept \n only */
+			cr = 1;	/* also accept \n only */
 		else
 			continue;
 		/* don't keep empty lines */
-		if (x && m.hdrcount < ARRAY_LEN(m.headers))
-		{
+		if (x && m.hdrcount < ARRAY_LEN(m.headers)) {
 			/* ... but trim \r\n and terminate the header string */
 			src[x] = '\0';
 			m.headers[m.hdrcount++] = src;
 		}
 		x += cr;
-		curlen -= x; /* remaining size */
-		src += x;	 /* update pointer */
-		x = -1;		 /* reset loop */
+		curlen -= x;		/* remaining size */
+		src += x;		/* update pointer */
+		x = -1;			/* reset loop */
 	}
 
 	action = astman_get_header(&m, "Action");
-	if (strcasecmp(action, "login"))
-	{
+	if (strcasecmp(action, "login")) {
 		act_found = action_find(action);
-		if (act_found)
-		{
+		if (act_found) {
 			/*
 			 * we have to simulate a session for this action request
 			 * to be able to pass it down for processing
 			 * This is necessary to meet the previous design of manager.c
 			 */
 			s.hook = hook;
-			s.f = (void *)1; /* set this to something so our request will make it through all functions that test it*/
+			s.f = (void*)1; /* set this to something so our request will make it through all functions that test it*/
 
 			ao2_lock(act_found);
-			if (act_found->registered && act_found->func)
-			{
-				if (act_found->module)
-				{
+			if (act_found->registered && act_found->func) {
+				if (act_found->module) {
 					ast_module_ref(act_found->module);
 				}
 				ao2_unlock(act_found);
 				ret = act_found->func(&s, &m);
 				ao2_lock(act_found);
-				if (act_found->module)
-				{
+				if (act_found->module) {
 					ast_module_unref(act_found->module);
 				}
-			}
-			else
-			{
+			} else {
 				ret = -1;
 			}
 			ao2_unlock(act_found);
@@ -2272,6 +2152,7 @@ int ast_hook_send_action(struct manager_custom_hook *hook, const char *msg)
 	ast_free(dup_str);
 	return ret;
 }
+
 
 /*!
  * helper function to send a string to the socket.
@@ -2284,8 +2165,7 @@ static int send_string(struct mansession *s, char *string)
 	int fd = s->f ? s->fd : s->session->fd;
 
 	/* It's a result from one of the hook's action invocation */
-	if (s->hook)
-	{
+	if (s->hook) {
 		/*
 		 * to send responses, we're using the same function
 		 * as for receiving events. We call the event "HookResponse"
@@ -2294,8 +2174,7 @@ static int send_string(struct mansession *s, char *string)
 		return 0;
 	}
 
-	if ((res = ast_careful_fwrite(f, fd, string, strlen(string), s->session->writetimeout)))
-	{
+	if ((res = ast_careful_fwrite(f, fd, string, strlen(string), s->session->writetimeout))) {
 		s->write_error = 1;
 	}
 
@@ -2314,7 +2193,7 @@ AST_THREADSTORAGE(astman_append_buf);
 AST_THREADSTORAGE(userevent_buf);
 
 /*! \brief initial allocated size for the astman_append_buf and astman_send_*_va */
-#define ASTMAN_APPEND_BUF_INITSIZE 256
+#define ASTMAN_APPEND_BUF_INITSIZE   256
 
 /*!
  * utility functions for creating AMI replies
@@ -2324,8 +2203,7 @@ void astman_append(struct mansession *s, const char *fmt, ...)
 	va_list ap;
 	struct ast_str *buf;
 
-	if (!(buf = ast_str_thread_get(&astman_append_buf, ASTMAN_APPEND_BUF_INITSIZE)))
-	{
+	if (!(buf = ast_str_thread_get(&astman_append_buf, ASTMAN_APPEND_BUF_INITSIZE))) {
 		return;
 	}
 
@@ -2333,12 +2211,9 @@ void astman_append(struct mansession *s, const char *fmt, ...)
 	ast_str_set_va(&buf, 0, fmt, ap);
 	va_end(ap);
 
-	if (s->f != NULL || s->session->f != NULL)
-	{
+	if (s->f != NULL || s->session->f != NULL) {
 		send_string(s, ast_str_buffer(buf));
-	}
-	else
-	{
+	} else {
 		ast_verbose("fd == -1 in astman_append, should not happen\n");
 	}
 }
@@ -2353,7 +2228,7 @@ void astman_append(struct mansession *s, const char *fmt, ...)
  */
 
 /*! \todo XXX MSG_MOREDATA should go to a header file. */
-#define MSG_MOREDATA ((char *)astman_send_response)
+#define MSG_MOREDATA	((char *)astman_send_response)
 
 /*! \brief send a response with an optional message,
  * and terminate it with an empty line.
@@ -2367,24 +2242,17 @@ static void astman_send_response_full(struct mansession *s, const struct message
 	const char *id = astman_get_header(m, "ActionID");
 
 	astman_append(s, "Response: %s\r\n", resp);
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		astman_append(s, "ActionID: %s\r\n", id);
 	}
-	if (listflag)
-	{
-		astman_append(s, "EventList: %s\r\n", listflag); /* Start, complete, cancelled */
+	if (listflag) {
+		astman_append(s, "EventList: %s\r\n", listflag);	/* Start, complete, cancelled */
 	}
-	if (msg == MSG_MOREDATA)
-	{
+	if (msg == MSG_MOREDATA) {
 		return;
-	}
-	else if (msg)
-	{
+	} else if (msg) {
 		astman_append(s, "Message: %s\r\n\r\n", msg);
-	}
-	else
-	{
+	} else {
 		astman_append(s, "\r\n");
 	}
 }
@@ -2405,8 +2273,7 @@ void astman_send_error_va(struct mansession *s, const struct message *m, const c
 	struct ast_str *buf;
 	char *msg;
 
-	if (!(buf = ast_str_thread_get(&astman_append_buf, ASTMAN_APPEND_BUF_INITSIZE)))
-	{
+	if (!(buf = ast_str_thread_get(&astman_append_buf, ASTMAN_APPEND_BUF_INITSIZE))) {
 		return;
 	}
 
@@ -2417,8 +2284,7 @@ void astman_send_error_va(struct mansession *s, const struct message *m, const c
 	/* astman_append will use the same underlying buffer, so copy the message out
 	 * before sending the response */
 	msg = ast_str_buffer(buf);
-	if (msg)
-	{
+	if (msg) {
 		msg = ast_strdupa(msg);
 	}
 	astman_send_response_full(s, m, "Error", msg, NULL);
@@ -2460,8 +2326,7 @@ static int set_eventmask(struct mansession *s, const char *eventmask)
 	int maskint = strings_to_mask(eventmask);
 
 	ao2_lock(s->session);
-	if (maskint >= 0)
-	{
+	if (maskint >= 0) {
 		s->session->send_events = maskint;
 	}
 	ao2_unlock(s->session);
@@ -2471,7 +2336,8 @@ static int set_eventmask(struct mansession *s, const char *eventmask)
 
 static enum ast_security_event_transport_type mansession_get_transport(const struct mansession *s)
 {
-	return s->tcptls_session->parent->tls_cfg ? AST_SECURITY_EVENT_TRANSPORT_TLS : AST_SECURITY_EVENT_TRANSPORT_TCP;
+	return s->tcptls_session->parent->tls_cfg ? AST_SECURITY_EVENT_TRANSPORT_TLS :
+			AST_SECURITY_EVENT_TRANSPORT_TCP;
 }
 
 static void report_invalid_user(const struct mansession *s, const char *username)
@@ -2479,16 +2345,16 @@ static void report_invalid_user(const struct mansession *s, const char *username
 	char session_id[32];
 	struct ast_security_event_inval_acct_id inval_acct_id = {
 		.common.event_type = AST_SECURITY_EVENT_INVAL_ACCT_ID,
-		.common.version = AST_SECURITY_EVENT_INVAL_ACCT_ID_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_INVAL_ACCT_ID_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
@@ -2504,16 +2370,16 @@ static void report_failed_acl(const struct mansession *s, const char *username)
 	char session_id[32];
 	struct ast_security_event_failed_acl failed_acl_event = {
 		.common.event_type = AST_SECURITY_EVENT_FAILED_ACL,
-		.common.version = AST_SECURITY_EVENT_FAILED_ACL_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_FAILED_ACL_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
@@ -2529,16 +2395,16 @@ static void report_inval_password(const struct mansession *s, const char *userna
 	char session_id[32];
 	struct ast_security_event_inval_password inval_password = {
 		.common.event_type = AST_SECURITY_EVENT_INVAL_PASSWORD,
-		.common.version = AST_SECURITY_EVENT_INVAL_PASSWORD_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_INVAL_PASSWORD_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
@@ -2554,16 +2420,16 @@ static void report_auth_success(const struct mansession *s)
 	char session_id[32];
 	struct ast_security_event_successful_auth successful_auth = {
 		.common.event_type = AST_SECURITY_EVENT_SUCCESSFUL_AUTH,
-		.common.version = AST_SECURITY_EVENT_SUCCESSFUL_AUTH_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_SUCCESSFUL_AUTH_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = s->session->username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
@@ -2580,21 +2446,21 @@ static void report_req_not_allowed(const struct mansession *s, const char *actio
 	char request_type[64];
 	struct ast_security_event_req_not_allowed req_not_allowed = {
 		.common.event_type = AST_SECURITY_EVENT_REQ_NOT_ALLOWED,
-		.common.version = AST_SECURITY_EVENT_REQ_NOT_ALLOWED_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_REQ_NOT_ALLOWED_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = s->session->username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
 
-		.request_type = request_type,
+		.request_type      = request_type,
 	};
 
 	snprintf(session_id, sizeof(session_id), "%p", s->session);
@@ -2609,21 +2475,21 @@ static void report_req_bad_format(const struct mansession *s, const char *action
 	char request_type[64];
 	struct ast_security_event_req_bad_format req_bad_format = {
 		.common.event_type = AST_SECURITY_EVENT_REQ_BAD_FORMAT,
-		.common.version = AST_SECURITY_EVENT_REQ_BAD_FORMAT_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_REQ_BAD_FORMAT_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = s->session->username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
 
-		.request_type = request_type,
+		.request_type      = request_type,
 	};
 
 	snprintf(session_id, sizeof(session_id), "%p", s->session);
@@ -2633,27 +2499,27 @@ static void report_req_bad_format(const struct mansession *s, const char *action
 }
 
 static void report_failed_challenge_response(const struct mansession *s,
-											 const char *response, const char *expected_response)
+		const char *response, const char *expected_response)
 {
 	char session_id[32];
 	struct ast_security_event_chal_resp_failed chal_resp_failed = {
 		.common.event_type = AST_SECURITY_EVENT_CHAL_RESP_FAILED,
-		.common.version = AST_SECURITY_EVENT_CHAL_RESP_FAILED_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_CHAL_RESP_FAILED_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = s->session->username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
 
-		.challenge = s->session->challenge,
-		.response = response,
+		.challenge         = s->session->challenge,
+		.response          = response,
 		.expected_response = expected_response,
 	};
 
@@ -2667,16 +2533,16 @@ static void report_session_limit(const struct mansession *s)
 	char session_id[32];
 	struct ast_security_event_session_limit session_limit = {
 		.common.event_type = AST_SECURITY_EVENT_SESSION_LIMIT,
-		.common.version = AST_SECURITY_EVENT_SESSION_LIMIT_VERSION,
-		.common.service = "AMI",
+		.common.version    = AST_SECURITY_EVENT_SESSION_LIMIT_VERSION,
+		.common.service    = "AMI",
 		.common.account_id = s->session->username,
 		.common.session_tv = &s->session->sessionstart_tv,
 		.common.local_addr = {
-			.addr = &s->tcptls_session->parent->local_address,
+			.addr      = &s->tcptls_session->parent->local_address,
 			.transport = mansession_get_transport(s),
 		},
 		.common.remote_addr = {
-			.addr = &s->session->addr,
+			.addr      = &s->session->addr,
 			.transport = mansession_get_transport(s),
 		},
 		.common.session_id = session_id,
@@ -2703,29 +2569,22 @@ static int authenticate(struct mansession *s, const struct message *m)
 	regex_t *regex_filter;
 	struct ao2_iterator filter_iter;
 
-	if (ast_strlen_zero(username))
-	{ /* missing username */
+	if (ast_strlen_zero(username)) {	/* missing username */
 		return -1;
 	}
 
 	/* locate user in locked state */
 	AST_RWLIST_WRLOCK(&users);
 
-	if (!(user = get_manager_by_name_locked(username)))
-	{
+	if (!(user = get_manager_by_name_locked(username))) {
 		report_invalid_user(s, username);
 		ast_log(LOG_NOTICE, "%s tried to authenticate with nonexistent user '%s'\n", ast_sockaddr_stringify_addr(&s->session->addr), username);
-	}
-	else if (user->acl && (ast_apply_acl(user->acl, &s->session->addr, "Manager User ACL: ") == AST_SENSE_DENY))
-	{
+	} else if (user->acl && (ast_apply_acl(user->acl, &s->session->addr, "Manager User ACL: ") == AST_SENSE_DENY)) {
 		report_failed_acl(s, username);
 		ast_log(LOG_NOTICE, "%s failed to pass IP ACL as '%s'\n", ast_sockaddr_stringify_addr(&s->session->addr), username);
-	}
-	else if (!strcasecmp(astman_get_header(m, "AuthType"), "MD5"))
-	{
+	} else if (!strcasecmp(astman_get_header(m, "AuthType"), "MD5")) {
 		const char *key = astman_get_header(m, "Key");
-		if (!ast_strlen_zero(key) && !ast_strlen_zero(s->session->challenge) && user->secret)
-		{
+		if (!ast_strlen_zero(key) && !ast_strlen_zero(s->session->challenge) && user->secret) {
 			int x;
 			int len = 0;
 			char md5key[256] = "";
@@ -2733,40 +2592,29 @@ static int authenticate(struct mansession *s, const struct message *m)
 			unsigned char digest[16];
 
 			MD5Init(&md5);
-			MD5Update(&md5, (unsigned char *)s->session->challenge, strlen(s->session->challenge));
-			MD5Update(&md5, (unsigned char *)user->secret, strlen(user->secret));
+			MD5Update(&md5, (unsigned char *) s->session->challenge, strlen(s->session->challenge));
+			MD5Update(&md5, (unsigned char *) user->secret, strlen(user->secret));
 			MD5Final(digest, &md5);
 			for (x = 0; x < 16; x++)
 				len += sprintf(md5key + len, "%2.2x", digest[x]);
-			if (!strcmp(md5key, key))
-			{
+			if (!strcmp(md5key, key)) {
 				error = 0;
-			}
-			else
-			{
+			} else {
 				report_failed_challenge_response(s, key, md5key);
 			}
-		}
-		else
-		{
+		} else {
 			ast_debug(1, "MD5 authentication is not possible.  challenge: '%s'\n",
-					  S_OR(s->session->challenge, ""));
+				S_OR(s->session->challenge, ""));
 		}
-	}
-	else if (user->secret)
-	{
-		if (!strcmp(password, user->secret))
-		{
+	} else if (user->secret) {
+		if (!strcmp(password, user->secret)) {
 			error = 0;
-		}
-		else
-		{
+		} else {
 			report_inval_password(s, username);
 		}
 	}
 
-	if (error)
-	{
+	if (error) {
 		ast_log(LOG_NOTICE, "%s failed to authenticate as '%s'\n", ast_sockaddr_stringify_addr(&s->session->addr), username);
 		AST_RWLIST_UNLOCK(&users);
 		return -1;
@@ -2775,28 +2623,25 @@ static int authenticate(struct mansession *s, const struct message *m)
 	/* auth complete */
 
 	/* All of the user parameters are copied to the session so that in the event
-	 * of a reload and a configuration change, the session parameters are not
-	 * changed. */
+	* of a reload and a configuration change, the session parameters are not
+	* changed. */
 	ast_copy_string(s->session->username, username, sizeof(s->session->username));
 	s->session->readperm = user->readperm;
 	s->session->writeperm = user->writeperm;
 	s->session->writetimeout = user->writetimeout;
-	if (user->chanvars)
-	{
+	if (user->chanvars) {
 		s->session->chanvars = ast_variables_dup(user->chanvars);
 	}
 
 	filter_iter = ao2_iterator_init(user->whitefilters, 0);
-	while ((regex_filter = ao2_iterator_next(&filter_iter)))
-	{
+	while ((regex_filter = ao2_iterator_next(&filter_iter))) {
 		ao2_t_link(s->session->whitefilters, regex_filter, "add white user filter to session");
 		ao2_t_ref(regex_filter, -1, "remove iterator ref");
 	}
 	ao2_iterator_destroy(&filter_iter);
 
 	filter_iter = ao2_iterator_init(user->blackfilters, 0);
-	while ((regex_filter = ao2_iterator_next(&filter_iter)))
-	{
+	while ((regex_filter = ao2_iterator_next(&filter_iter))) {
 		ao2_t_link(s->session->blackfilters, regex_filter, "add black user filter to session");
 		ao2_t_ref(regex_filter, -1, "remove iterator ref");
 	}
@@ -2818,8 +2663,7 @@ static int action_ping(struct mansession *s, const struct message *m)
 	struct timeval now = ast_tvnow();
 
 	astman_append(s, "Response: Success\r\n");
-	if (!ast_strlen_zero(actionid))
-	{
+	if (!ast_strlen_zero(actionid)){
 		astman_append(s, "ActionID: %s\r\n", actionid);
 	}
 	astman_append(
@@ -2827,7 +2671,7 @@ static int action_ping(struct mansession *s, const struct message *m)
 		"Ping: Pong\r\n"
 		"Timestamp: %ld.%06lu\r\n"
 		"\r\n",
-		(long)now.tv_sec, (unsigned long)now.tv_usec);
+		(long) now.tv_sec, (unsigned long) now.tv_usec);
 	return 0;
 }
 
@@ -2840,41 +2684,33 @@ static int action_getconfig(struct mansession *s, const struct message *m)
 	int lineno = 0;
 	char *cur_category = NULL;
 	struct ast_variable *v;
-	struct ast_flags config_flags = {CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE};
+	struct ast_flags config_flags = { CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE };
 
-	if (ast_strlen_zero(fn))
-	{
+	if (ast_strlen_zero(fn)) {
 		astman_send_error(s, m, "Filename not specified");
 		return 0;
 	}
 	cfg = ast_config_load2(fn, "manager", config_flags);
-	if (cfg == CONFIG_STATUS_FILEMISSING)
-	{
+	if (cfg == CONFIG_STATUS_FILEMISSING) {
 		astman_send_error(s, m, "Config file not found");
 		return 0;
-	}
-	else if (cfg == CONFIG_STATUS_FILEINVALID)
-	{
+	} else if (cfg == CONFIG_STATUS_FILEINVALID) {
 		astman_send_error(s, m, "Config file has invalid format");
 		return 0;
 	}
 
 	astman_start_ack(s, m);
-	while ((cur_category = ast_category_browse(cfg, cur_category)))
-	{
-		if (ast_strlen_zero(category) || (!ast_strlen_zero(category) && !strcmp(category, cur_category)))
-		{
+	while ((cur_category = ast_category_browse(cfg, cur_category))) {
+		if (ast_strlen_zero(category) || (!ast_strlen_zero(category) && !strcmp(category, cur_category))) {
 			lineno = 0;
 			astman_append(s, "Category-%06d: %s\r\n", catcount, cur_category);
-			for (v = ast_variable_browse(cfg, cur_category); v; v = v->next)
-			{
+			for (v = ast_variable_browse(cfg, cur_category); v; v = v->next) {
 				astman_append(s, "Line-%06d-%06d: %s=%s\r\n", catcount, lineno++, v->name, v->value);
 			}
 			catcount++;
 		}
 	}
-	if (!ast_strlen_zero(category) && catcount == 0)
-	{ /* TODO: actually, a config with no categories doesn't even get loaded */
+	if (!ast_strlen_zero(category) && catcount == 0) { /* TODO: actually, a config with no categories doesn't even get loaded */
 		astman_append(s, "No categories found\r\n");
 	}
 	ast_config_destroy(cfg);
@@ -2888,32 +2724,26 @@ static int action_listcategories(struct mansession *s, const struct message *m)
 	struct ast_config *cfg;
 	const char *fn = astman_get_header(m, "Filename");
 	char *category = NULL;
-	struct ast_flags config_flags = {CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE};
+	struct ast_flags config_flags = { CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE };
 	int catcount = 0;
 
-	if (ast_strlen_zero(fn))
-	{
+	if (ast_strlen_zero(fn)) {
 		astman_send_error(s, m, "Filename not specified");
 		return 0;
 	}
-	if (!(cfg = ast_config_load2(fn, "manager", config_flags)))
-	{
+	if (!(cfg = ast_config_load2(fn, "manager", config_flags))) {
 		astman_send_error(s, m, "Config file not found");
 		return 0;
-	}
-	else if (cfg == CONFIG_STATUS_FILEINVALID)
-	{
+	} else if (cfg == CONFIG_STATUS_FILEINVALID) {
 		astman_send_error(s, m, "Config file has invalid format");
 		return 0;
 	}
 	astman_start_ack(s, m);
-	while ((category = ast_category_browse(cfg, category)))
-	{
+	while ((category = ast_category_browse(cfg, category))) {
 		astman_append(s, "Category-%06d: %s\r\n", catcount, category);
 		catcount++;
 	}
-	if (catcount == 0)
-	{ /* TODO: actually, a config with no categories doesn't even get loaded */
+	if (catcount == 0) { /* TODO: actually, a config with no categories doesn't even get loaded */
 		astman_append(s, "Error: no categories found\r\n");
 	}
 	ast_config_destroy(cfg);
@@ -2922,13 +2752,14 @@ static int action_listcategories(struct mansession *s, const struct message *m)
 	return 0;
 }
 
+
+
+
 /*! The amount of space in out must be at least ( 2 * strlen(in) + 1 ) */
 static void json_escape(char *out, const char *in)
 {
-	for (; *in; in++)
-	{
-		if (*in == '\\' || *in == '\"')
-		{
+	for (; *in; in++) {
+		if (*in == '\\' || *in == '\"') {
 			*out++ = '\\';
 		}
 		*out++ = *in;
@@ -2961,37 +2792,31 @@ static int action_getconfigjson(struct mansession *s, const struct message *m)
 	char *category = NULL;
 	struct ast_variable *v;
 	int comma1 = 0;
-	struct ast_flags config_flags = {CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE};
+	struct ast_flags config_flags = { CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE };
 
-	if (ast_strlen_zero(fn))
-	{
+	if (ast_strlen_zero(fn)) {
 		astman_send_error(s, m, "Filename not specified");
 		return 0;
 	}
 
-	if (!(cfg = ast_config_load2(fn, "manager", config_flags)))
-	{
+	if (!(cfg = ast_config_load2(fn, "manager", config_flags))) {
 		astman_send_error(s, m, "Config file not found");
 		return 0;
-	}
-	else if (cfg == CONFIG_STATUS_FILEINVALID)
-	{
+	} else if (cfg == CONFIG_STATUS_FILEINVALID) {
 		astman_send_error(s, m, "Config file has invalid format");
 		return 0;
 	}
 
 	astman_start_ack(s, m);
 	astman_append(s, "JSON: {");
-	while ((category = ast_category_browse(cfg, category)))
-	{
+	while ((category = ast_category_browse(cfg, category))) {
 		int comma2 = 0;
 
 		astman_append(s, "%s\"", comma1 ? "," : "");
 		astman_append_json(s, category);
 		astman_append(s, "\":[");
 		comma1 = 1;
-		for (v = ast_variable_browse(cfg, category); v; v = v->next)
-		{
+		for (v = ast_variable_browse(cfg, category); v; v = v->next) {
 			astman_append(s, "%s\"", comma2 ? "," : "");
 			astman_append_json(s, v->name);
 			astman_append(s, "\":\"");
@@ -3019,20 +2844,18 @@ static enum error_type handle_updates(struct mansession *s, const struct message
 	struct ast_str *str1 = ast_str_create(16), *str2 = ast_str_create(16);
 	enum error_type result = 0;
 
-	for (x = 0; x < 100000; x++)
-	{ /* 100000 = the max number of allowed updates + 1 */
+	for (x = 0; x < 100000; x++) {	/* 100000 = the max number of allowed updates + 1 */
 		unsigned int object = 0;
 
 		snprintf(hdr, sizeof(hdr), "Action-%06d", x);
 		action = astman_get_header(m, hdr);
-		if (ast_strlen_zero(action)) /* breaks the for loop if no action header */
-			break;					 /* this could cause problems if actions come in misnumbered */
+		if (ast_strlen_zero(action))		/* breaks the for loop if no action header */
+			break;                      	/* this could cause problems if actions come in misnumbered */
 
 		snprintf(hdr, sizeof(hdr), "Cat-%06d", x);
 		cat = astman_get_header(m, hdr);
-		if (ast_strlen_zero(cat))
-		{ /* every action needs a category */
-			result = UNSPECIFIED_CATEGORY;
+		if (ast_strlen_zero(cat)) {		/* every action needs a category */
+			result =  UNSPECIFIED_CATEGORY;
 			break;
 		}
 
@@ -3042,8 +2865,7 @@ static enum error_type handle_updates(struct mansession *s, const struct message
 		snprintf(hdr, sizeof(hdr), "Value-%06d", x);
 		value = astman_get_header(m, hdr);
 
-		if (!ast_strlen_zero(value) && *value == '>')
-		{
+		if (!ast_strlen_zero(value) && *value == '>') {
 			object = 1;
 			value++;
 		}
@@ -3054,137 +2876,99 @@ static enum error_type handle_updates(struct mansession *s, const struct message
 		snprintf(hdr, sizeof(hdr), "Line-%06d", x);
 		line = astman_get_header(m, hdr);
 
-		if (!strcasecmp(action, "newcat"))
-		{
-			if (ast_category_get(cfg, cat))
-			{							 /* check to make sure the cat doesn't */
-				result = FAILURE_NEWCAT; /* already exist */
+		if (!strcasecmp(action, "newcat")) {
+			if (ast_category_get(cfg,cat)) {	/* check to make sure the cat doesn't */
+				result = FAILURE_NEWCAT;	/* already exist */
 				break;
 			}
-			if (!(category = ast_category_new(cat, dfn, -1)))
-			{
+			if (!(category = ast_category_new(cat, dfn, -1))) {
 				result = FAILURE_ALLOCATION;
 				break;
 			}
-			if (ast_strlen_zero(match))
-			{
+			if (ast_strlen_zero(match)) {
 				ast_category_append(cfg, category);
-			}
-			else
-			{
+			} else {
 				ast_category_insert(cfg, category, match);
 			}
-		}
-		else if (!strcasecmp(action, "renamecat"))
-		{
-			if (ast_strlen_zero(value))
-			{
+		} else if (!strcasecmp(action, "renamecat")) {
+			if (ast_strlen_zero(value)) {
 				result = UNSPECIFIED_ARGUMENT;
 				break;
 			}
-			if (!(category = ast_category_get(cfg, cat)))
-			{
+			if (!(category = ast_category_get(cfg, cat))) {
 				result = UNKNOWN_CATEGORY;
 				break;
 			}
 			ast_category_rename(category, value);
-		}
-		else if (!strcasecmp(action, "delcat"))
-		{
-			if (ast_category_delete(cfg, cat))
-			{
+		} else if (!strcasecmp(action, "delcat")) {
+			if (ast_category_delete(cfg, cat)) {
 				result = FAILURE_DELCAT;
 				break;
 			}
-		}
-		else if (!strcasecmp(action, "emptycat"))
-		{
-			if (ast_category_empty(cfg, cat))
-			{
+		} else if (!strcasecmp(action, "emptycat")) {
+			if (ast_category_empty(cfg, cat)) {
 				result = FAILURE_EMPTYCAT;
 				break;
 			}
-		}
-		else if (!strcasecmp(action, "update"))
-		{
-			if (ast_strlen_zero(var))
-			{
+		} else if (!strcasecmp(action, "update")) {
+			if (ast_strlen_zero(var)) {
 				result = UNSPECIFIED_ARGUMENT;
 				break;
 			}
-			if (!(category = ast_category_get(cfg, cat)))
-			{
+			if (!(category = ast_category_get(cfg,cat))) {
 				result = UNKNOWN_CATEGORY;
 				break;
 			}
-			if (ast_variable_update(category, var, value, match, object))
-			{
+			if (ast_variable_update(category, var, value, match, object)) {
 				result = FAILURE_UPDATE;
 				break;
 			}
-		}
-		else if (!strcasecmp(action, "delete"))
-		{
-			if ((ast_strlen_zero(var) && ast_strlen_zero(line)))
-			{
+		} else if (!strcasecmp(action, "delete")) {
+			if ((ast_strlen_zero(var) && ast_strlen_zero(line))) {
 				result = UNSPECIFIED_ARGUMENT;
 				break;
 			}
-			if (!(category = ast_category_get(cfg, cat)))
-			{
+			if (!(category = ast_category_get(cfg, cat))) {
 				result = UNKNOWN_CATEGORY;
 				break;
 			}
-			if (ast_variable_delete(category, var, match, line))
-			{
+			if (ast_variable_delete(category, var, match, line)) {
 				result = FAILURE_DELETE;
 				break;
 			}
-		}
-		else if (!strcasecmp(action, "append"))
-		{
-			if (ast_strlen_zero(var))
-			{
+		} else if (!strcasecmp(action, "append")) {
+			if (ast_strlen_zero(var)) {
 				result = UNSPECIFIED_ARGUMENT;
 				break;
 			}
-			if (!(category = ast_category_get(cfg, cat)))
-			{
+			if (!(category = ast_category_get(cfg, cat))) {
 				result = UNKNOWN_CATEGORY;
 				break;
 			}
-			if (!(v = ast_variable_new(var, value, dfn)))
-			{
+			if (!(v = ast_variable_new(var, value, dfn))) {
 				result = FAILURE_ALLOCATION;
 				break;
 			}
-			if (object || (match && !strcasecmp(match, "object")))
-			{
+			if (object || (match && !strcasecmp(match, "object"))) {
 				v->object = 1;
 			}
 			ast_variable_append(category, v);
-		}
-		else if (!strcasecmp(action, "insert"))
-		{
-			if (ast_strlen_zero(var) || ast_strlen_zero(line))
-			{
+		} else if (!strcasecmp(action, "insert")) {
+			if (ast_strlen_zero(var) || ast_strlen_zero(line)) {
 				result = UNSPECIFIED_ARGUMENT;
 				break;
 			}
-			if (!(category = ast_category_get(cfg, cat)))
-			{
+			if (!(category = ast_category_get(cfg, cat))) {
 				result = UNKNOWN_CATEGORY;
 				break;
 			}
-			if (!(v = ast_variable_new(var, value, dfn)))
-			{
+			if (!(v = ast_variable_new(var, value, dfn))) {
 				result = FAILURE_ALLOCATION;
 				break;
 			}
 			ast_variable_insert(category, v, line);
 		}
-		else
-		{
+		else {
 			ast_log(LOG_WARNING, "Action-%06d: %s not handled\n", x, action);
 			result = UNKNOWN_ACTION;
 			break;
@@ -3202,50 +2986,39 @@ static int action_updateconfig(struct mansession *s, const struct message *m)
 	const char *dfn = astman_get_header(m, "DstFilename");
 	int res;
 	const char *rld = astman_get_header(m, "Reload");
-	struct ast_flags config_flags = {CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE};
+	struct ast_flags config_flags = { CONFIG_FLAG_WITHCOMMENTS | CONFIG_FLAG_NOCACHE };
 	enum error_type result;
 
-	if (ast_strlen_zero(sfn) || ast_strlen_zero(dfn))
-	{
+	if (ast_strlen_zero(sfn) || ast_strlen_zero(dfn)) {
 		astman_send_error(s, m, "Filename not specified");
 		return 0;
 	}
-	if (!(cfg = ast_config_load2(sfn, "manager", config_flags)))
-	{
+	if (!(cfg = ast_config_load2(sfn, "manager", config_flags))) {
 		astman_send_error(s, m, "Config file not found");
 		return 0;
-	}
-	else if (cfg == CONFIG_STATUS_FILEINVALID)
-	{
+	} else if (cfg == CONFIG_STATUS_FILEINVALID) {
 		astman_send_error(s, m, "Config file has invalid format");
 		return 0;
 	}
 	result = handle_updates(s, m, cfg, dfn);
-	if (!result)
-	{
+	if (!result) {
 		ast_include_rename(cfg, sfn, dfn); /* change the include references from dfn to sfn, so things match up */
 		res = ast_config_text_file_save(dfn, cfg, "Manager");
 		ast_config_destroy(cfg);
-		if (res)
-		{
+		if (res) {
 			astman_send_error(s, m, "Save of config failed");
 			return 0;
 		}
 		astman_send_ack(s, m, NULL);
-		if (!ast_strlen_zero(rld))
-		{
-			if (ast_true(rld))
-			{
+		if (!ast_strlen_zero(rld)) {
+			if (ast_true(rld)) {
 				rld = NULL;
 			}
 			ast_module_reload(rld);
 		}
-	}
-	else
-	{
+	} else {
 		ast_config_destroy(cfg);
-		switch (result)
-		{
+		switch(result) {
 		case UNKNOWN_ACTION:
 			astman_send_error(s, m, "Unknown action command");
 			break;
@@ -3292,13 +3065,10 @@ static int action_createconfig(struct mansession *s, const struct message *m)
 	ast_str_set(&filepath, 0, "%s/", ast_config_AST_CONFIG_DIR);
 	ast_str_append(&filepath, 0, "%s", fn);
 
-	if ((fd = open(ast_str_buffer(filepath), O_CREAT | O_EXCL, AST_FILE_MODE)) != -1)
-	{
+	if ((fd = open(ast_str_buffer(filepath), O_CREAT | O_EXCL, AST_FILE_MODE)) != -1) {
 		close(fd);
 		astman_send_ack(s, m, "New configuration file created successfully");
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, strerror(errno));
 	}
 
@@ -3314,33 +3084,26 @@ static int action_waitevent(struct mansession *s, const struct message *m)
 	const char *id = astman_get_header(m, "ActionID");
 	char idText[256];
 
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", id);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
-	if (!ast_strlen_zero(timeouts))
-	{
+	if (!ast_strlen_zero(timeouts)) {
 		sscanf(timeouts, "%30i", &timeout);
-		if (timeout < -1)
-		{
+		if (timeout < -1) {
 			timeout = -1;
 		}
 		/* XXX maybe put an upper bound, or prevent the use of 0 ? */
 	}
 
 	ao2_lock(s->session);
-	if (s->session->waiting_thread != AST_PTHREADT_NULL)
-	{
+	if (s->session->waiting_thread != AST_PTHREADT_NULL) {
 		pthread_kill(s->session->waiting_thread, SIGURG);
 	}
 
-	if (s->session->managerid)
-	{ /* AMI-over-HTTP session */
+	if (s->session->managerid) { /* AMI-over-HTTP session */
 		/*
 		 * Make sure the timeout is within the expire time of the session,
 		 * as the client will likely abort the request if it does not see
@@ -3349,86 +3112,68 @@ static int action_waitevent(struct mansession *s, const struct message *m)
 		time_t now = time(NULL);
 		int max = s->session->sessiontimeout - now - 10;
 
-		if (max < 0)
-		{ /* We are already late. Strange but possible. */
+		if (max < 0) {	/* We are already late. Strange but possible. */
 			max = 0;
 		}
-		if (timeout < 0 || timeout > max)
-		{
+		if (timeout < 0 || timeout > max) {
 			timeout = max;
 		}
-		if (!s->session->send_events)
-		{ /* make sure we record events */
+		if (!s->session->send_events) {	/* make sure we record events */
 			s->session->send_events = -1;
 		}
 	}
 	ao2_unlock(s->session);
 
 	/* XXX should this go inside the lock ? */
-	s->session->waiting_thread = pthread_self(); /* let new events wake up this thread */
+	s->session->waiting_thread = pthread_self();	/* let new events wake up this thread */
 	ast_debug(1, "Starting waiting for an event!\n");
 
-	for (x = 0; x < timeout || timeout < 0; x++)
-	{
+	for (x = 0; x < timeout || timeout < 0; x++) {
 		ao2_lock(s->session);
-		if (AST_RWLIST_NEXT(s->session->last_ev, eq_next))
-		{
+		if (AST_RWLIST_NEXT(s->session->last_ev, eq_next)) {
 			needexit = 1;
 		}
 		/* We can have multiple HTTP session point to the same mansession entry.
 		 * The way we deal with it is not very nice: newcomers kick out the previous
 		 * HTTP session. XXX this needs to be improved.
 		 */
-		if (s->session->waiting_thread != pthread_self())
-		{
+		if (s->session->waiting_thread != pthread_self()) {
 			needexit = 1;
 		}
-		if (s->session->needdestroy)
-		{
+		if (s->session->needdestroy) {
 			needexit = 1;
 		}
 		ao2_unlock(s->session);
-		if (needexit)
-		{
+		if (needexit) {
 			break;
 		}
-		if (s->session->managerid == 0)
-		{ /* AMI session */
-			if (ast_wait_for_input(s->session->fd, 1000))
-			{
+		if (s->session->managerid == 0) {	/* AMI session */
+			if (ast_wait_for_input(s->session->fd, 1000)) {
 				break;
 			}
-		}
-		else
-		{ /* HTTP session */
+		} else {	/* HTTP session */
 			sleep(1);
 		}
 	}
 	ast_debug(1, "Finished waiting for an event!\n");
 
 	ao2_lock(s->session);
-	if (s->session->waiting_thread == pthread_self())
-	{
+	if (s->session->waiting_thread == pthread_self()) {
 		struct eventqent *eqe = s->session->last_ev;
 		astman_send_response(s, m, "Success", "Waiting for Event completed.");
-		while ((eqe = advance_event(eqe)))
-		{
+		while ((eqe = advance_event(eqe))) {
 			if (((s->session->readperm & eqe->category) == eqe->category) &&
-				((s->session->send_events & eqe->category) == eqe->category))
-			{
+			    ((s->session->send_events & eqe->category) == eqe->category)) {
 				astman_append(s, "%s", eqe->eventdata);
 			}
 			s->session->last_ev = eqe;
 		}
 		astman_append(s,
-					  "Event: WaitEventComplete\r\n"
-					  "%s"
-					  "\r\n",
-					  idText);
+			"Event: WaitEventComplete\r\n"
+			"%s"
+			"\r\n", idText);
 		s->session->waiting_thread = AST_PTHREADT_NULL;
-	}
-	else
-	{
+	} else {
 		ast_debug(1, "Abandoning event request!\n");
 	}
 	ao2_unlock(s->session);
@@ -3443,12 +3188,10 @@ static int action_listcommands(struct mansession *s, const struct message *m)
 
 	astman_start_ack(s, m);
 	AST_RWLIST_RDLOCK(&actions);
-	AST_RWLIST_TRAVERSE(&actions, cur, list)
-	{
-		if ((s->session->writeperm & cur->authority) || cur->authority == 0)
-		{
+	AST_RWLIST_TRAVERSE(&actions, cur, list) {
+		if ((s->session->writeperm & cur->authority) || cur->authority == 0) {
 			astman_append(s, "%s: %s (Priv: %s)\r\n",
-						  cur->action, cur->synopsis, authority_to_str(cur->authority, &temp));
+				cur->action, cur->synopsis, authority_to_str(cur->authority, &temp));
 		}
 	}
 	AST_RWLIST_UNLOCK(&actions);
@@ -3464,49 +3207,37 @@ static int action_events(struct mansession *s, const struct message *m)
 	const char *id = astman_get_header(m, "ActionID");
 	char id_text[256];
 
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		snprintf(id_text, sizeof(id_text), "ActionID: %s\r\n", id);
-	}
-	else
-	{
+	} else {
 		id_text[0] = '\0';
 	}
 
 	res = set_eventmask(s, mask);
-	if (broken_events_action)
-	{
+	if (broken_events_action) {
 		/* if this option is set we should not return a response on
 		 * error, or when all events are set */
 
-		if (res > 0)
-		{
-			for (x = 0; x < ARRAY_LEN(perms); x++)
-			{
-				if (!strcasecmp(perms[x].label, "all") && res == perms[x].num)
-				{
+		if (res > 0) {
+			for (x = 0; x < ARRAY_LEN(perms); x++) {
+				if (!strcasecmp(perms[x].label, "all") && res == perms[x].num) {
 					return 0;
 				}
 			}
 			astman_append(s, "Response: Success\r\n%s"
-							 "Events: On\r\n\r\n",
-						  id_text);
-		}
-		else if (res == 0)
+					 "Events: On\r\n\r\n", id_text);
+		} else if (res == 0)
 			astman_append(s, "Response: Success\r\n%s"
-							 "Events: Off\r\n\r\n",
-						  id_text);
+					 "Events: Off\r\n\r\n", id_text);
 		return 0;
 	}
 
 	if (res > 0)
 		astman_append(s, "Response: Success\r\n%s"
-						 "Events: On\r\n\r\n",
-					  id_text);
+				 "Events: On\r\n\r\n", id_text);
 	else if (res == 0)
 		astman_append(s, "Response: Success\r\n%s"
-						 "Events: Off\r\n\r\n",
-					  id_text);
+				 "Events: Off\r\n\r\n", id_text);
 	else
 		astman_send_error(s, m, "Invalid event mask");
 
@@ -3523,33 +3254,29 @@ static int action_login(struct mansession *s, const struct message *m)
 {
 
 	/* still authenticated - don't process again */
-	if (s->session->authenticated)
-	{
+	if (s->session->authenticated) {
 		astman_send_ack(s, m, "Already authenticated");
 		return 0;
 	}
 
-	if (authenticate(s, m))
-	{
+	if (authenticate(s, m)) {
 		sleep(1);
 		astman_send_error(s, m, "Authentication failed");
 		return -1;
 	}
 	s->session->authenticated = 1;
 	ast_atomic_fetchadd_int(&unauth_sessions, -1);
-	if (manager_displayconnects(s->session))
-	{
+	if (manager_displayconnects(s->session)) {
 		ast_verb(2, "%sManager '%s' logged on from %s\n", (s->session->managerid ? "HTTP " : ""), s->session->username, ast_sockaddr_stringify_addr(&s->session->addr));
 	}
 	astman_send_ack(s, m, "Authentication accepted");
-	if ((s->session->send_events & EVENT_FLAG_SYSTEM) && ast_test_flag(&ast_options, AST_OPT_FLAG_FULLY_BOOTED))
-	{
+	if ((s->session->send_events & EVENT_FLAG_SYSTEM)
+		&& ast_test_flag(&ast_options, AST_OPT_FLAG_FULLY_BOOTED)) {
 		struct ast_str *auth = ast_str_alloca(80);
 		const char *cat_str = authority_to_str(EVENT_FLAG_SYSTEM, &auth);
 		astman_append(s, "Event: FullyBooted\r\n"
-						 "Privilege: %s\r\n"
-						 "Status: Fully Booted\r\n\r\n",
-					  cat_str);
+			"Privilege: %s\r\n"
+			"Status: Fully Booted\r\n\r\n", cat_str);
 	}
 	return 0;
 }
@@ -3558,19 +3285,15 @@ static int action_challenge(struct mansession *s, const struct message *m)
 {
 	const char *authtype = astman_get_header(m, "AuthType");
 
-	if (!strcasecmp(authtype, "MD5"))
-	{
-		if (ast_strlen_zero(s->session->challenge))
-		{
+	if (!strcasecmp(authtype, "MD5")) {
+		if (ast_strlen_zero(s->session->challenge)) {
 			snprintf(s->session->challenge, sizeof(s->session->challenge), "%ld", ast_random());
 		}
 		mansession_lock(s);
 		astman_start_ack(s, m);
 		astman_append(s, "Challenge: %s\r\n\r\n", s->session->challenge);
 		mansession_unlock(s);
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Must specify AuthType");
 	}
 	return 0;
@@ -3589,27 +3312,21 @@ static int action_hangup(struct mansession *s, const struct message *m)
 	struct ast_str *regex_string;
 	int channels_matched = 0;
 
-	if (ast_strlen_zero(name_or_regex))
-	{
+	if (ast_strlen_zero(name_or_regex)) {
 		astman_send_error(s, m, "No channel specified");
 		return 0;
 	}
 
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", id);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
-	if (!ast_strlen_zero(cause))
-	{
+	if (!ast_strlen_zero(cause)) {
 		char *endptr;
 		causecode = strtol(cause, &endptr, 10);
-		if (causecode < 0 || causecode > 127 || *endptr != '\0')
-		{
+		if (causecode < 0 || causecode > 127 || *endptr != '\0') {
 			ast_log(LOG_NOTICE, "Invalid 'Cause: %s' in manager action Hangup\n", cause);
 			/* keep going, better to hangup without cause than to not hang up at all */
 			causecode = 0; /* do not set channel's hangupcause */
@@ -3619,20 +3336,18 @@ static int action_hangup(struct mansession *s, const struct message *m)
 	/************************************************/
 	/* Regular explicit match channel byname hangup */
 
-	if (name_or_regex[0] != '/')
-	{
-		if (!(c = ast_channel_get_by_name(name_or_regex)))
-		{
+	if (name_or_regex[0] != '/') {
+		if (!(c = ast_channel_get_by_name(name_or_regex))) {
 			ast_log(LOG_NOTICE, "!!!!!!!!!! Can't find channel to hang up!\n");
 			astman_send_error(s, m, "No such channel");
 			return 0;
 		}
 
 		ast_verb(3, "%sManager '%s' from %s, hanging up channel: %s\n",
-				 (s->session->managerid ? "HTTP " : ""),
-				 s->session->username,
-				 ast_sockaddr_stringify_addr(&s->session->addr),
-				 ast_channel_name(c));
+			(s->session->managerid ? "HTTP " : ""),
+			s->session->username,
+			ast_sockaddr_stringify_addr(&s->session->addr),
+			ast_channel_name(c));
 
 		ast_channel_softhangup_withcause_locked(c, causecode);
 		c = ast_channel_unref(c);
@@ -3646,23 +3361,20 @@ static int action_hangup(struct mansession *s, const struct message *m)
 	/* find and hangup any channels matching regex */
 
 	regex_string = ast_str_create(strlen(name_or_regex));
-	if (!regex_string)
-	{
+	if (!regex_string) {
 		astman_send_error(s, m, "Memory Allocation Failure");
 		return 0;
 	}
 
 	/* Make "/regex/" into "regex" */
-	if (ast_regex_string_to_regex_pattern(name_or_regex, &regex_string) != 0)
-	{
+	if (ast_regex_string_to_regex_pattern(name_or_regex, &regex_string) != 0) {
 		astman_send_error(s, m, "Regex format invalid, Channel param should be /regex/");
 		ast_free(regex_string);
 		return 0;
 	}
 
 	/* if regex compilation fails, hangup fails */
-	if (regcomp(&regexbuf, ast_str_buffer(regex_string), REG_EXTENDED | REG_NOSUB))
-	{
+	if (regcomp(&regexbuf, ast_str_buffer(regex_string), REG_EXTENDED | REG_NOSUB)) {
 		astman_send_error_va(s, m, "Regex compile failed on: %s", name_or_regex);
 		ast_free(regex_string);
 		return 0;
@@ -3671,33 +3383,31 @@ static int action_hangup(struct mansession *s, const struct message *m)
 	astman_send_listack(s, m, "Channels hung up will follow", "start");
 
 	iter = ast_channel_iterator_all_new();
-	if (iter)
-	{
-		for (; (c = ast_channel_iterator_next(iter)); ast_channel_unref(c))
-		{
-			if (regexec(&regexbuf, ast_channel_name(c), 0, NULL, 0))
-			{
+	if (iter) {
+		for (; (c = ast_channel_iterator_next(iter)); ast_channel_unref(c)) {
+			if (regexec(&regexbuf, ast_channel_name(c), 0, NULL, 0)) {
 				continue;
 			}
 
 			ast_verb(3, "%sManager '%s' from %s, hanging up channel: %s\n",
-					 (s->session->managerid ? "HTTP " : ""),
-					 s->session->username,
-					 ast_sockaddr_stringify_addr(&s->session->addr),
-					 ast_channel_name(c));
+				(s->session->managerid ? "HTTP " : ""),
+				s->session->username,
+				ast_sockaddr_stringify_addr(&s->session->addr),
+				ast_channel_name(c));
 
 			ast_channel_softhangup_withcause_locked(c, causecode);
 			channels_matched++;
-			<VITEL> ast_verbose(VERBOSE_PREFIX_3 " %s(%s) has been instructed to hangup by Vitel\n", ast_channel_name(c), ast_channel_caller(c)->id.number.str);
-			pbx_builtin_setvar_helper(c, "HANGUP_ORIGINATOR", "TRUE");
-			</ VITEL>
+//<VITEL>
+        		ast_verbose(VERBOSE_PREFIX_3 " %s(%s) has been instructed to hangup by Vitel\n", ast_channel_name(c), ast_channel_caller(c)->id.number.str);
+        		pbx_builtin_setvar_helper(c, "HANGUP_ORIGINATOR", "TRUE");
+//</VITEL>
 
-				astman_append(s,
-							  "Event: ChannelHungup\r\n"
-							  "Channel: %s\r\n"
-							  "%s"
-							  "\r\n",
-							  ast_channel_name(c), idText);
+
+			astman_append(s,
+				"Event: ChannelHungup\r\n"
+				"Channel: %s\r\n"
+				"%s"
+				"\r\n", ast_channel_name(c), idText);
 		}
 		ast_channel_iterator_destroy(iter);
 	}
@@ -3706,12 +3416,11 @@ static int action_hangup(struct mansession *s, const struct message *m)
 	ast_free(regex_string);
 
 	astman_append(s,
-				  "Event: ChannelsHungupListComplete\r\n"
-				  "EventList: Complete\r\n"
-				  "ListItems: %d\r\n"
-				  "%s"
-				  "\r\n",
-				  channels_matched, idText);
+		"Event: ChannelsHungupListComplete\r\n"
+		"EventList: Complete\r\n"
+		"ListItems: %d\r\n"
+		"%s"
+		"\r\n", channels_matched, idText);
 
 	return 0;
 }
@@ -3724,16 +3433,13 @@ static int action_setvar(struct mansession *s, const struct message *m)
 	const char *varval = astman_get_header(m, "Value");
 	int res = 0;
 
-	if (ast_strlen_zero(varname))
-	{
+	if (ast_strlen_zero(varname)) {
 		astman_send_error(s, m, "No variable specified");
 		return 0;
 	}
 
-	if (!ast_strlen_zero(name))
-	{
-		if (!(c = ast_channel_get_by_name(name)))
-		{
+	if (!ast_strlen_zero(name)) {
+		if (!(c = ast_channel_get_by_name(name))) {
 			astman_send_error(s, m, "No such channel");
 			return 0;
 		}
@@ -3741,16 +3447,12 @@ static int action_setvar(struct mansession *s, const struct message *m)
 
 	res = pbx_builtin_setvar_helper(c, varname, S_OR(varval, ""));
 
-	if (c)
-	{
+	if (c) {
 		c = ast_channel_unref(c);
 	}
-	if (res == 0)
-	{
+	if (res == 0) {
 		astman_send_ack(s, m, "Variable Set");
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Variable not set");
 	}
 	return 0;
@@ -3764,54 +3466,41 @@ static int action_getvar(struct mansession *s, const struct message *m)
 	char *varval;
 	char workspace[1024];
 
-	if (ast_strlen_zero(varname))
-	{
+	if (ast_strlen_zero(varname)) {
 		astman_send_error(s, m, "No variable specified");
 		return 0;
 	}
 
 	/* We don't want users with insufficient permissions using certain functions. */
-	if (!(function_capable_string_allowed_with_auths(varname, s->session->writeperm)))
-	{
+	if (!(function_capable_string_allowed_with_auths(varname, s->session->writeperm))) {
 		astman_send_error(s, m, "GetVar Access Forbidden: Variable");
 		return 0;
 	}
 
-	if (!ast_strlen_zero(name))
-	{
-		if (!(c = ast_channel_get_by_name(name)))
-		{
+	if (!ast_strlen_zero(name)) {
+		if (!(c = ast_channel_get_by_name(name))) {
 			astman_send_error(s, m, "No such channel");
 			return 0;
 		}
 	}
 
 	workspace[0] = '\0';
-	if (varname[strlen(varname) - 1] == ')')
-	{
-		if (!c)
-		{
+	if (varname[strlen(varname) - 1] == ')') {
+		if (!c) {
 			c = ast_dummy_channel_alloc();
-			if (c)
-			{
-				ast_func_read(c, (char *)varname, workspace, sizeof(workspace));
-			}
-			else
+			if (c) {
+				ast_func_read(c, (char *) varname, workspace, sizeof(workspace));
+			} else
 				ast_log(LOG_ERROR, "Unable to allocate bogus channel for variable substitution.  Function results may be blank.\n");
-		}
-		else
-		{
-			ast_func_read(c, (char *)varname, workspace, sizeof(workspace));
+		} else {
+			ast_func_read(c, (char *) varname, workspace, sizeof(workspace));
 		}
 		varval = workspace;
-	}
-	else
-	{
+	} else {
 		pbx_retrieve_variable(c, varname, &varval, workspace, sizeof(workspace), NULL);
 	}
 
-	if (c)
-	{
+	if (c) {
 		c = ast_channel_unref(c);
 	}
 
@@ -3837,39 +3526,31 @@ static int action_status(struct mansession *s, const struct message *m)
 	const char *id = astman_get_header(m, "ActionID");
 	char idText[256];
 	AST_DECLARE_APP_ARGS(vars,
-						 AST_APP_ARG(name)[100];);
+		AST_APP_ARG(name)[100];
+	);
 	struct ast_str *str = ast_str_create(1000);
 	struct ast_channel_iterator *iter = NULL;
 
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", id);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
-	if (!(function_capable_string_allowed_with_auths(variables, s->session->writeperm)))
-	{
+	if (!(function_capable_string_allowed_with_auths(variables, s->session->writeperm))) {
 		astman_send_error(s, m, "Status Access Forbidden: Variables");
 		return 0;
 	}
 
-	if (all)
-	{
-		if (!(iter = ast_channel_iterator_all_new()))
-		{
+	if (all) {
+		if (!(iter = ast_channel_iterator_all_new())) {
 			ast_free(str);
 			astman_send_error(s, m, "Memory Allocation Failure");
 			return 1;
 		}
 		c = ast_channel_iterator_next(iter);
-	}
-	else
-	{
-		if (!(c = ast_channel_get_by_name(name)))
-		{
+	} else {
+		if (!(c = ast_channel_get_by_name(name))) {
 			astman_send_error(s, m, "No such channel");
 			ast_free(str);
 			return 0;
@@ -3878,34 +3559,26 @@ static int action_status(struct mansession *s, const struct message *m)
 
 	astman_send_ack(s, m, "Channel status will follow");
 
-	if (!ast_strlen_zero(cvariables))
-	{
+	if (!ast_strlen_zero(cvariables)) {
 		AST_STANDARD_APP_ARGS(vars, variables);
 	}
 
 	/* if we look by name, we break after the first iteration */
-	for (; c; c = ast_channel_iterator_next(iter))
-	{
+	for (; c; c = ast_channel_iterator_next(iter)) {
 		ast_channel_lock(c);
 
-		if (!ast_strlen_zero(cvariables))
-		{
+		if (!ast_strlen_zero(cvariables)) {
 			int i;
 			ast_str_reset(str);
-			for (i = 0; i < vars.argc; i++)
-			{
+			for (i = 0; i < vars.argc; i++) {
 				char valbuf[512], *ret = NULL;
 
-				if (vars.name[i][strlen(vars.name[i]) - 1] == ')')
-				{
-					if (ast_func_read(c, vars.name[i], valbuf, sizeof(valbuf)) < 0)
-					{
+				if (vars.name[i][strlen(vars.name[i]) - 1] == ')') {
+					if (ast_func_read(c, vars.name[i], valbuf, sizeof(valbuf)) < 0) {
 						valbuf[0] = '\0';
 					}
 					ret = valbuf;
-				}
-				else
-				{
+				} else {
 					pbx_retrieve_variable(c, vars.name[i], &ret, valbuf, sizeof(valbuf), NULL);
 				}
 
@@ -3914,97 +3587,87 @@ static int action_status(struct mansession *s, const struct message *m)
 		}
 
 		channels++;
-		if (ast_channel_internal_bridged_channel(c))
-		{
+		if (ast_channel_internal_bridged_channel(c)) {
 			snprintf(bridge, sizeof(bridge), "BridgedChannel: %s\r\nBridgedUniqueid: %s\r\n", ast_channel_name(ast_channel_internal_bridged_channel(c)), ast_channel_uniqueid(ast_channel_internal_bridged_channel(c)));
-		}
-		else
-		{
+		} else {
 			bridge[0] = '\0';
 		}
-		if (ast_channel_pbx(c))
-		{
-			if (ast_channel_cdr(c))
-			{
+		if (ast_channel_pbx(c)) {
+			if (ast_channel_cdr(c)) {
 				elapsed_seconds = now.tv_sec - ast_channel_cdr(c)->start.tv_sec;
 			}
 			astman_append(s,
-						  "Event: Status\r\n"
-						  "Privilege: Call\r\n"
-						  "Channel: %s\r\n"
-						  "CallerIDNum: %s\r\n"
-						  "CallerIDName: %s\r\n"
-						  "ConnectedLineNum: %s\r\n"
-						  "ConnectedLineName: %s\r\n"
-						  "Accountcode: %s\r\n"
-						  "ChannelState: %d\r\n"
-						  "ChannelStateDesc: %s\r\n"
-						  "Context: %s\r\n"
-						  "Extension: %s\r\n"
-						  "Priority: %d\r\n"
-						  "Seconds: %ld\r\n"
-						  "%s"
-						  "Uniqueid: %s\r\n"
-						  "%s"
-						  "%s"
-						  "\r\n",
-						  ast_channel_name(c),
-						  S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, "<unknown>"),
-						  S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, "<unknown>"),
-						  S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, "<unknown>"),
-						  S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, "<unknown>"),
-						  ast_channel_accountcode(c),
-						  ast_channel_state(c),
-						  ast_state2str(ast_channel_state(c)), ast_channel_context(c),
-						  ast_channel_exten(c), ast_channel_priority(c), (long)elapsed_seconds, bridge, ast_channel_uniqueid(c), ast_str_buffer(str), idText);
-		}
-		else
-		{
+			"Event: Status\r\n"
+			"Privilege: Call\r\n"
+			"Channel: %s\r\n"
+			"CallerIDNum: %s\r\n"
+			"CallerIDName: %s\r\n"
+			"ConnectedLineNum: %s\r\n"
+			"ConnectedLineName: %s\r\n"
+			"Accountcode: %s\r\n"
+			"ChannelState: %d\r\n"
+			"ChannelStateDesc: %s\r\n"
+			"Context: %s\r\n"
+			"Extension: %s\r\n"
+			"Priority: %d\r\n"
+			"Seconds: %ld\r\n"
+			"%s"
+			"Uniqueid: %s\r\n"
+			"%s"
+			"%s"
+			"\r\n",
+			ast_channel_name(c),
+			S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, "<unknown>"),
+			S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, "<unknown>"),
+			S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, "<unknown>"),
+			S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, "<unknown>"),
+			ast_channel_accountcode(c),
+			ast_channel_state(c),
+			ast_state2str(ast_channel_state(c)), ast_channel_context(c),
+			ast_channel_exten(c), ast_channel_priority(c), (long)elapsed_seconds, bridge, ast_channel_uniqueid(c), ast_str_buffer(str), idText);
+		} else {
 			astman_append(s,
-						  "Event: Status\r\n"
-						  "Privilege: Call\r\n"
-						  "Channel: %s\r\n"
-						  "CallerIDNum: %s\r\n"
-						  "CallerIDName: %s\r\n"
-						  "ConnectedLineNum: %s\r\n"
-						  "ConnectedLineName: %s\r\n"
-						  "Account: %s\r\n"
-						  "State: %s\r\n"
-						  "%s"
-						  "Uniqueid: %s\r\n"
-						  "%s"
-						  "%s"
-						  "\r\n",
-						  ast_channel_name(c),
-						  S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, "<unknown>"),
-						  S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, "<unknown>"),
-						  S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, "<unknown>"),
-						  S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, "<unknown>"),
-						  ast_channel_accountcode(c),
-						  ast_state2str(ast_channel_state(c)), bridge, ast_channel_uniqueid(c),
-						  ast_str_buffer(str), idText);
+				"Event: Status\r\n"
+				"Privilege: Call\r\n"
+				"Channel: %s\r\n"
+				"CallerIDNum: %s\r\n"
+				"CallerIDName: %s\r\n"
+				"ConnectedLineNum: %s\r\n"
+				"ConnectedLineName: %s\r\n"
+				"Account: %s\r\n"
+				"State: %s\r\n"
+				"%s"
+				"Uniqueid: %s\r\n"
+				"%s"
+				"%s"
+				"\r\n",
+				ast_channel_name(c),
+				S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, "<unknown>"),
+				S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, "<unknown>"),
+				S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, "<unknown>"),
+				S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, "<unknown>"),
+				ast_channel_accountcode(c),
+				ast_state2str(ast_channel_state(c)), bridge, ast_channel_uniqueid(c),
+				ast_str_buffer(str), idText);
 		}
 
 		ast_channel_unlock(c);
 		c = ast_channel_unref(c);
 
-		if (!all)
-		{
+		if (!all) {
 			break;
 		}
 	}
 
-	if (iter)
-	{
+	if (iter) {
 		ast_channel_iterator_destroy(iter);
 	}
 
 	astman_append(s,
-				  "Event: StatusComplete\r\n"
-				  "%s"
-				  "Items: %d\r\n"
-				  "\r\n",
-				  idText, channels);
+		"Event: StatusComplete\r\n"
+		"%s"
+		"Items: %d\r\n"
+		"\r\n", idText, channels);
 
 	ast_free(str);
 
@@ -4018,20 +3681,17 @@ static int action_sendtext(struct mansession *s, const struct message *m)
 	const char *textmsg = astman_get_header(m, "Message");
 	int res = 0;
 
-	if (ast_strlen_zero(name))
-	{
+	if (ast_strlen_zero(name)) {
 		astman_send_error(s, m, "No channel specified");
 		return 0;
 	}
 
-	if (ast_strlen_zero(textmsg))
-	{
+	if (ast_strlen_zero(textmsg)) {
 		astman_send_error(s, m, "No Message specified");
 		return 0;
 	}
 
-	if (!(c = ast_channel_get_by_name(name)))
-	{
+	if (!(c = ast_channel_get_by_name(name))) {
 		astman_send_error(s, m, "No such channel");
 		return 0;
 	}
@@ -4039,12 +3699,9 @@ static int action_sendtext(struct mansession *s, const struct message *m)
 	res = ast_sendtext(c, textmsg);
 	c = ast_channel_unref(c);
 
-	if (res >= 0)
-	{
+	if (res >= 0) {
 		astman_send_ack(s, m, "Success");
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Failure");
 	}
 
@@ -4069,92 +3726,74 @@ static int action_redirect(struct mansession *s, const struct message *m)
 	int pi2 = 0;
 	int res;
 
-	if (ast_strlen_zero(name))
-	{
+	if (ast_strlen_zero(name)) {
 		astman_send_error(s, m, "Channel not specified");
 		return 0;
 	}
 
-	if (ast_strlen_zero(context))
-	{
+	if (ast_strlen_zero(context)) {
 		astman_send_error(s, m, "Context not specified");
 		return 0;
 	}
-	if (ast_strlen_zero(exten))
-	{
+	if (ast_strlen_zero(exten)) {
 		astman_send_error(s, m, "Exten not specified");
 		return 0;
 	}
-	if (ast_strlen_zero(priority))
-	{
+	if (ast_strlen_zero(priority)) {
 		astman_send_error(s, m, "Priority not specified");
 		return 0;
 	}
-	if (sscanf(priority, "%30d", &pi) != 1)
-	{
+	if (sscanf(priority, "%30d", &pi) != 1) {
 		pi = ast_findlabel_extension(NULL, context, exten, priority, NULL);
 	}
-	if (pi < 1)
-	{
+	if (pi < 1) {
 		astman_send_error(s, m, "Priority is invalid");
 		return 0;
 	}
 
-	if (!ast_strlen_zero(name2) && !ast_strlen_zero(context2))
-	{
+	if (!ast_strlen_zero(name2) && !ast_strlen_zero(context2)) {
 		/* We have an ExtraChannel and an ExtraContext */
-		if (ast_strlen_zero(exten2))
-		{
+		if (ast_strlen_zero(exten2)) {
 			astman_send_error(s, m, "ExtraExten not specified");
 			return 0;
 		}
-		if (ast_strlen_zero(priority2))
-		{
+		if (ast_strlen_zero(priority2)) {
 			astman_send_error(s, m, "ExtraPriority not specified");
 			return 0;
 		}
-		if (sscanf(priority2, "%30d", &pi2) != 1)
-		{
+		if (sscanf(priority2, "%30d", &pi2) != 1) {
 			pi2 = ast_findlabel_extension(NULL, context2, exten2, priority2, NULL);
 		}
-		if (pi2 < 1)
-		{
+		if (pi2 < 1) {
 			astman_send_error(s, m, "ExtraPriority is invalid");
 			return 0;
 		}
 	}
 
 	chan = ast_channel_get_by_name(name);
-	if (!chan)
-	{
+	if (!chan) {
 		snprintf(buf, sizeof(buf), "Channel does not exist: %s", name);
 		astman_send_error(s, m, buf);
 		return 0;
 	}
-	if (ast_check_hangup_locked(chan))
-	{
+	if (ast_check_hangup_locked(chan)) {
 		astman_send_error(s, m, "Redirect failed, channel not up.");
 		chan = ast_channel_unref(chan);
 		return 0;
 	}
 
-	if (ast_strlen_zero(name2))
-	{
+	if (ast_strlen_zero(name2)) {
 		/* Single channel redirect in progress. */
-		if (ast_channel_pbx(chan))
-		{
+		if (ast_channel_pbx(chan)) {
 			ast_channel_lock(chan);
 			/* don't let the after-bridge code run the h-exten */
 			ast_set_flag(ast_channel_flags(chan), AST_FLAG_BRIDGE_HANGUP_DONT);
 			ast_channel_unlock(chan);
 		}
 		res = ast_async_goto(chan, context, exten, pi);
-		if (!res)
-		{
+		if (!res) {
 			astman_send_ack(s, m, "Redirect successful");
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Redirect failed");
 		}
 		chan = ast_channel_unref(chan);
@@ -4162,15 +3801,13 @@ static int action_redirect(struct mansession *s, const struct message *m)
 	}
 
 	chan2 = ast_channel_get_by_name(name2);
-	if (!chan2)
-	{
+	if (!chan2) {
 		snprintf(buf, sizeof(buf), "ExtraChannel does not exist: %s", name2);
 		astman_send_error(s, m, buf);
 		chan = ast_channel_unref(chan);
 		return 0;
 	}
-	if (ast_check_hangup_locked(chan2))
-	{
+	if (ast_check_hangup_locked(chan2)) {
 		astman_send_error(s, m, "Redirect failed, extra channel not up.");
 		chan2 = ast_channel_unref(chan2);
 		chan = ast_channel_unref(chan);
@@ -4178,54 +3815,43 @@ static int action_redirect(struct mansession *s, const struct message *m)
 	}
 
 	/* Dual channel redirect in progress. */
-	if (ast_channel_pbx(chan))
-	{
+	if (ast_channel_pbx(chan)) {
 		ast_channel_lock(chan);
 		/* don't let the after-bridge code run the h-exten */
-		ast_set_flag(ast_channel_flags(chan), AST_FLAG_BRIDGE_HANGUP_DONT | AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
+		ast_set_flag(ast_channel_flags(chan), AST_FLAG_BRIDGE_HANGUP_DONT
+			| AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
 		ast_channel_unlock(chan);
 	}
-	if (ast_channel_pbx(chan2))
-	{
+	if (ast_channel_pbx(chan2)) {
 		ast_channel_lock(chan2);
 		/* don't let the after-bridge code run the h-exten */
-		ast_set_flag(ast_channel_flags(chan2), AST_FLAG_BRIDGE_HANGUP_DONT | AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
+		ast_set_flag(ast_channel_flags(chan2), AST_FLAG_BRIDGE_HANGUP_DONT
+			| AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
 		ast_channel_unlock(chan2);
 	}
 	res = ast_async_goto(chan, context, exten, pi);
-	if (!res)
-	{
-		if (!ast_strlen_zero(context2))
-		{
+	if (!res) {
+		if (!ast_strlen_zero(context2)) {
 			res = ast_async_goto(chan2, context2, exten2, pi2);
-		}
-		else
-		{
+		} else {
 			res = ast_async_goto(chan2, context, exten, pi);
 		}
-		if (!res)
-		{
+		if (!res) {
 			astman_send_ack(s, m, "Dual Redirect successful");
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Secondary redirect failed");
 		}
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Redirect failed");
 	}
 
 	/* Release the bridge wait. */
-	if (ast_channel_pbx(chan))
-	{
+	if (ast_channel_pbx(chan)) {
 		ast_channel_lock(chan);
 		ast_clear_flag(ast_channel_flags(chan), AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
 		ast_channel_unlock(chan);
 	}
-	if (ast_channel_pbx(chan2))
-	{
+	if (ast_channel_pbx(chan2)) {
 		ast_channel_lock(chan2);
 		ast_clear_flag(ast_channel_flags(chan2), AST_FLAG_BRIDGE_DUAL_REDIRECT_WAIT);
 		ast_channel_unlock(chan2);
@@ -4245,43 +3871,36 @@ static int action_atxfer(struct mansession *s, const struct message *m)
 	struct ast_call_feature *atxfer_feature = NULL;
 	char *feature_code = NULL;
 
-	if (ast_strlen_zero(name))
-	{
+	if (ast_strlen_zero(name)) {
 		astman_send_error(s, m, "No channel specified");
 		return 0;
 	}
-	if (ast_strlen_zero(exten))
-	{
+	if (ast_strlen_zero(exten)) {
 		astman_send_error(s, m, "No extension specified");
 		return 0;
 	}
 
-	if (!(atxfer_feature = ast_find_call_feature("atxfer")))
-	{
+	if (!(atxfer_feature = ast_find_call_feature("atxfer"))) {
 		astman_send_error(s, m, "No attended transfer feature found");
 		return 0;
 	}
 
-	if (!(chan = ast_channel_get_by_name(name)))
-	{
+	if (!(chan = ast_channel_get_by_name(name))) {
 		astman_send_error(s, m, "Channel specified does not exist");
 		return 0;
 	}
 
-	if (!ast_strlen_zero(context))
-	{
+	if (!ast_strlen_zero(context)) {
 		pbx_builtin_setvar_helper(chan, "TRANSFER_CONTEXT", context);
 	}
 
-	for (feature_code = atxfer_feature->exten; feature_code && *feature_code; ++feature_code)
-	{
-		struct ast_frame f = {AST_FRAME_DTMF, .subclass.integer = *feature_code};
+	for (feature_code = atxfer_feature->exten; feature_code && *feature_code; ++feature_code) {
+		struct ast_frame f = { AST_FRAME_DTMF, .subclass.integer = *feature_code };
 		ast_queue_frame(chan, &f);
 	}
 
-	for (feature_code = (char *)exten; feature_code && *feature_code; ++feature_code)
-	{
-		struct ast_frame f = {AST_FRAME_DTMF, .subclass.integer = *feature_code};
+	for (feature_code = (char *)exten; feature_code && *feature_code; ++feature_code) {
+		struct ast_frame f = { AST_FRAME_DTMF, .subclass.integer = *feature_code };
 		ast_queue_frame(chan, &f);
 	}
 
@@ -4295,17 +3914,13 @@ static int action_atxfer(struct mansession *s, const struct message *m)
 static int check_blacklist(const char *cmd)
 {
 	char *cmd_copy, *cur_cmd;
-	char *cmd_words[MAX_BLACKLIST_CMD_LEN] = {
-		NULL,
-	};
+	char *cmd_words[MAX_BLACKLIST_CMD_LEN] = { NULL, };
 	int i;
 
 	cmd_copy = ast_strdupa(cmd);
-	for (i = 0; i < MAX_BLACKLIST_CMD_LEN && (cur_cmd = strsep(&cmd_copy, " ")); i++)
-	{
+	for (i = 0; i < MAX_BLACKLIST_CMD_LEN && (cur_cmd = strsep(&cmd_copy, " ")); i++) {
 		cur_cmd = ast_strip(cur_cmd);
-		if (ast_strlen_zero(cur_cmd))
-		{
+		if (ast_strlen_zero(cur_cmd)) {
 			i--;
 			continue;
 		}
@@ -4313,21 +3928,17 @@ static int check_blacklist(const char *cmd)
 		cmd_words[i] = cur_cmd;
 	}
 
-	for (i = 0; i < ARRAY_LEN(command_blacklist); i++)
-	{
+	for (i = 0; i < ARRAY_LEN(command_blacklist); i++) {
 		int j, match = 1;
 
-		for (j = 0; command_blacklist[i].words[j]; j++)
-		{
-			if (ast_strlen_zero(cmd_words[j]) || strcasecmp(cmd_words[j], command_blacklist[i].words[j]))
-			{
+		for (j = 0; command_blacklist[i].words[j]; j++) {
+			if (ast_strlen_zero(cmd_words[j]) || strcasecmp(cmd_words[j], command_blacklist[i].words[j])) {
 				match = 0;
 				break;
 			}
 		}
 
-		if (match)
-		{
+		if (match) {
 			return 1;
 		}
 	}
@@ -4341,39 +3952,34 @@ static int action_command(struct mansession *s, const struct message *m)
 	const char *cmd = astman_get_header(m, "Command");
 	const char *id = astman_get_header(m, "ActionID");
 	char *buf = NULL, *final_buf = NULL;
-	char template[] = "/tmp/ast-ami-XXXXXX"; /* template for temporary file */
+	char template[] = "/tmp/ast-ami-XXXXXX";	/* template for temporary file */
 	int fd;
 	off_t l;
 
-	if (ast_strlen_zero(cmd))
-	{
+	if (ast_strlen_zero(cmd)) {
 		astman_send_error(s, m, "No command provided");
 		return 0;
 	}
 
-	if (check_blacklist(cmd))
-	{
+	if (check_blacklist(cmd)) {
 		astman_send_error(s, m, "Command blacklisted");
 		return 0;
 	}
 
-	if ((fd = mkstemp(template)) < 0)
-	{
+	if ((fd = mkstemp(template)) < 0) {
 		ast_log(AST_LOG_WARNING, "Failed to create temporary file for command: %s\n", strerror(errno));
 		astman_send_error(s, m, "Command response construction error");
 		return 0;
 	}
 
 	astman_append(s, "Response: Follows\r\nPrivilege: Command\r\n");
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		astman_append(s, "ActionID: %s\r\n", id);
 	}
 	/* FIXME: Wedge a ActionID response in here, waiting for later changes */
-	ast_cli_command(fd, cmd); /* XXX need to change this to use a FILE * */
+	ast_cli_command(fd, cmd);	/* XXX need to change this to use a FILE * */
 	/* Determine number of characters available */
-	if ((l = lseek(fd, 0, SEEK_END)) < 0)
-	{
+	if ((l = lseek(fd, 0, SEEK_END)) < 0) {
 		ast_log(LOG_WARNING, "Failed to determine number of characters for command: %s\n", strerror(errno));
 		goto action_command_cleanup;
 	}
@@ -4382,20 +3988,17 @@ static int action_command(struct mansession *s, const struct message *m)
 	buf = ast_malloc(l + 1);
 	final_buf = ast_malloc(l + 1);
 
-	if (!buf || !final_buf)
-	{
+	if (!buf || !final_buf) {
 		ast_log(LOG_WARNING, "Failed to allocate memory for temporary buffer\n");
 		goto action_command_cleanup;
 	}
 
-	if (lseek(fd, 0, SEEK_SET) < 0)
-	{
+	if (lseek(fd, 0, SEEK_SET) < 0) {
 		ast_log(LOG_WARNING, "Failed to set position on temporary file for command: %s\n", strerror(errno));
 		goto action_command_cleanup;
 	}
 
-	if (read(fd, buf, l) < 0)
-	{
+	if (read(fd, buf, l) < 0) {
 		ast_log(LOG_WARNING, "read() failed: %s\n", strerror(errno));
 		goto action_command_cleanup;
 	}
@@ -4418,12 +4021,11 @@ action_command_cleanup:
 }
 
 /*! \brief helper function for originate */
-struct fast_originate_helper
-{
+struct fast_originate_helper {
 	int timeout;
-	struct ast_format_cap *cap; /*!< Codecs used for a call */
+	struct ast_format_cap *cap;				/*!< Codecs used for a call */
 	int early_media;
-	AST_DECLARE_STRING_FIELDS(
+	AST_DECLARE_STRING_FIELDS (
 		AST_STRING_FIELD(tech);
 		/*! data can contain a channel name, extension number, username, password, etc. */
 		AST_STRING_FIELD(data);
@@ -4434,7 +4036,8 @@ struct fast_originate_helper
 		AST_STRING_FIELD(context);
 		AST_STRING_FIELD(exten);
 		AST_STRING_FIELD(idtext);
-		AST_STRING_FIELD(account););
+		AST_STRING_FIELD(account);
+	);
 	int priority;
 	struct ast_variable *vars;
 };
@@ -4462,50 +4065,46 @@ static void *fast_originate(void *data)
 	struct ast_channel *chan = NULL, *chans[1];
 	char requested_channel[AST_CHANNEL_NAME];
 
-	if (!ast_strlen_zero(in->app))
-	{
+	if (!ast_strlen_zero(in->app)) {
 		res = ast_pbx_outgoing_app(in->tech, in->cap, in->data,
-								   in->timeout, in->app, in->appdata, &reason, 1,
-								   S_OR(in->cid_num, NULL),
-								   S_OR(in->cid_name, NULL),
-								   in->vars, in->account, &chan);
-	}
-	else
-	{
+			in->timeout, in->app, in->appdata, &reason, 1,
+			S_OR(in->cid_num, NULL),
+			S_OR(in->cid_name, NULL),
+			in->vars, in->account, &chan);
+	} else {
 		res = ast_pbx_outgoing_exten(in->tech, in->cap, in->data,
-									 in->timeout, in->context, in->exten, in->priority, &reason, 1,
-									 S_OR(in->cid_num, NULL),
-									 S_OR(in->cid_name, NULL),
-									 in->vars, in->account, &chan, in->early_media);
+			in->timeout, in->context, in->exten, in->priority, &reason, 1,
+			S_OR(in->cid_num, NULL),
+			S_OR(in->cid_name, NULL),
+			in->vars, in->account, &chan, in->early_media);
 	}
 	/* Any vars memory was passed to the ast_pbx_outgoing_xxx() calls. */
 	in->vars = NULL;
 
-	if (!chan)
-	{
+	if (!chan) {
 		snprintf(requested_channel, AST_CHANNEL_NAME, "%s/%s", in->tech, in->data);
 	}
 	/* Tell the manager what happened with the channel */
 	chans[0] = chan;
 	ast_manager_event_multichan(EVENT_FLAG_CALL, "OriginateResponse", chan ? 1 : 0, chans,
-								"%s"
-								"Response: %s\r\n"
-								"Channel: %s\r\n"
-								"Context: %s\r\n"
-								"Exten: %s\r\n"
-								"Reason: %d\r\n"
-								"Uniqueid: %s\r\n"
-								"CallerIDNum: %s\r\n"
-								"CallerIDName: %s\r\n",
-								in->idtext, res ? "Failure" : "Success",
-								chan ? ast_channel_name(chan) : requested_channel, in->context, in->exten, reason,
-								chan ? ast_channel_uniqueid(chan) : "<null>",
-								S_OR(in->cid_num, "<unknown>"),
-								S_OR(in->cid_name, "<unknown>"));
+		"%s"
+		"Response: %s\r\n"
+		"Channel: %s\r\n"
+		"Context: %s\r\n"
+		"Exten: %s\r\n"
+		"Reason: %d\r\n"
+		"Uniqueid: %s\r\n"
+		"CallerIDNum: %s\r\n"
+		"CallerIDName: %s\r\n",
+		in->idtext, res ? "Failure" : "Success",
+		chan ? ast_channel_name(chan) : requested_channel, in->context, in->exten, reason,
+		chan ? ast_channel_uniqueid(chan) : "<null>",
+		S_OR(in->cid_num, "<unknown>"),
+		S_OR(in->cid_name, "<unknown>")
+		);
 
 	/* Locked by ast_pbx_outgoing_exten or ast_pbx_outgoing_app */
-	if (chan)
-	{
+	if (chan) {
 		ast_channel_unlock(chan);
 	}
 	destroy_fast_originate_helper(in);
@@ -4526,13 +4125,11 @@ static int aocmessage_get_unit_entry(const struct message *m, struct ast_aoc_uni
 	ast_str_set(&str, 0, "UnitType(%u)", entry_num);
 	unittype = astman_get_header(m, ast_str_buffer(str));
 
-	if (!ast_strlen_zero(unitamount) && (sscanf(unitamount, "%30u", &entry->amount) == 1))
-	{
+	if (!ast_strlen_zero(unitamount) && (sscanf(unitamount, "%30u", &entry->amount) == 1)) {
 		entry->valid_amount = 1;
 	}
 
-	if (!ast_strlen_zero(unittype) && sscanf(unittype, "%30u", &entry->type) == 1)
-	{
+	if (!ast_strlen_zero(unittype) && sscanf(unittype, "%30u", &entry->type) == 1) {
 		entry->valid_type = 1;
 	}
 
@@ -4550,7 +4147,7 @@ static int action_aocmessage(struct mansession *s, const struct message *m)
 	const char *mult = astman_get_header(m, "CurrencyMultiplier");
 	const char *totaltype = astman_get_header(m, "TotalType");
 	const char *aocbillingid = astman_get_header(m, "AOCBillingId");
-	const char *association_id = astman_get_header(m, "ChargingAssociationId");
+	const char *association_id= astman_get_header(m, "ChargingAssociationId");
 	const char *association_num = astman_get_header(m, "ChargingAssociationNumber");
 	const char *association_plan = astman_get_header(m, "ChargingAssociationPlan");
 
@@ -4568,223 +4165,147 @@ static int action_aocmessage(struct mansession *s, const struct message *m)
 	struct ast_aoc_encoded *encoded = NULL;
 	size_t encoded_size = 0;
 
-	if (ast_strlen_zero(channel) && ast_strlen_zero(pchannel))
-	{
+	if (ast_strlen_zero(channel) && ast_strlen_zero(pchannel)) {
 		astman_send_error(s, m, "Channel and PartialChannel are not specified. Specify at least one of these.");
 		goto aocmessage_cleanup;
 	}
 
-	if (!(chan = ast_channel_get_by_name(channel)) && !ast_strlen_zero(pchannel))
-	{
+	if (!(chan = ast_channel_get_by_name(channel)) && !ast_strlen_zero(pchannel)) {
 		chan = ast_channel_get_by_name_prefix(pchannel, strlen(pchannel));
 	}
 
-	if (!chan)
-	{
+	if (!chan) {
 		astman_send_error(s, m, "No such channel");
 		goto aocmessage_cleanup;
 	}
 
-	if (ast_strlen_zero(msgtype) || (strcasecmp(msgtype, "d") && strcasecmp(msgtype, "e")))
-	{
+	if (ast_strlen_zero(msgtype) || (strcasecmp(msgtype, "d") && strcasecmp(msgtype, "e"))) {
 		astman_send_error(s, m, "Invalid MsgType");
 		goto aocmessage_cleanup;
 	}
 
-	if (ast_strlen_zero(chargetype))
-	{
+	if (ast_strlen_zero(chargetype)) {
 		astman_send_error(s, m, "ChargeType not specified");
 		goto aocmessage_cleanup;
 	}
 
 	_msgtype = strcasecmp(msgtype, "d") ? AST_AOC_E : AST_AOC_D;
 
-	if (!strcasecmp(chargetype, "NA"))
-	{
+	if (!strcasecmp(chargetype, "NA")) {
 		_chargetype = AST_AOC_CHARGE_NA;
-	}
-	else if (!strcasecmp(chargetype, "Free"))
-	{
+	} else if (!strcasecmp(chargetype, "Free")) {
 		_chargetype = AST_AOC_CHARGE_FREE;
-	}
-	else if (!strcasecmp(chargetype, "Currency"))
-	{
+	} else if (!strcasecmp(chargetype, "Currency")) {
 		_chargetype = AST_AOC_CHARGE_CURRENCY;
-	}
-	else if (!strcasecmp(chargetype, "Unit"))
-	{
+	} else if (!strcasecmp(chargetype, "Unit")) {
 		_chargetype = AST_AOC_CHARGE_UNIT;
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Invalid ChargeType");
 		goto aocmessage_cleanup;
 	}
 
-	if (_chargetype == AST_AOC_CHARGE_CURRENCY)
-	{
+	if (_chargetype == AST_AOC_CHARGE_CURRENCY) {
 
-		if (ast_strlen_zero(currencyamount) || (sscanf(currencyamount, "%30u", &_currencyamount) != 1))
-		{
+		if (ast_strlen_zero(currencyamount) || (sscanf(currencyamount, "%30u", &_currencyamount) != 1)) {
 			astman_send_error(s, m, "Invalid CurrencyAmount, CurrencyAmount is a required when ChargeType is Currency");
 			goto aocmessage_cleanup;
 		}
 
-		if (ast_strlen_zero(mult))
-		{
+		if (ast_strlen_zero(mult)) {
 			astman_send_error(s, m, "ChargeMultiplier unspecified, ChargeMultiplier is required when ChargeType is Currency.");
 			goto aocmessage_cleanup;
-		}
-		else if (!strcasecmp(mult, "onethousandth"))
-		{
+		} else if (!strcasecmp(mult, "onethousandth")) {
 			_mult = AST_AOC_MULT_ONETHOUSANDTH;
-		}
-		else if (!strcasecmp(mult, "onehundredth"))
-		{
+		} else if (!strcasecmp(mult, "onehundredth")) {
 			_mult = AST_AOC_MULT_ONEHUNDREDTH;
-		}
-		else if (!strcasecmp(mult, "onetenth"))
-		{
+		} else if (!strcasecmp(mult, "onetenth")) {
 			_mult = AST_AOC_MULT_ONETENTH;
-		}
-		else if (!strcasecmp(mult, "one"))
-		{
+		} else if (!strcasecmp(mult, "one")) {
 			_mult = AST_AOC_MULT_ONE;
-		}
-		else if (!strcasecmp(mult, "ten"))
-		{
+		} else if (!strcasecmp(mult, "ten")) {
 			_mult = AST_AOC_MULT_TEN;
-		}
-		else if (!strcasecmp(mult, "hundred"))
-		{
+		} else if (!strcasecmp(mult, "hundred")) {
 			_mult = AST_AOC_MULT_HUNDRED;
-		}
-		else if (!strcasecmp(mult, "thousand"))
-		{
+		} else if (!strcasecmp(mult, "thousand")) {
 			_mult = AST_AOC_MULT_THOUSAND;
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Invalid ChargeMultiplier");
 			goto aocmessage_cleanup;
 		}
 	}
 
 	/* create decoded object and start setting values */
-	if (!(decoded = ast_aoc_create(_msgtype, _chargetype, 0)))
-	{
-		astman_send_error(s, m, "Message Creation Failed");
-		goto aocmessage_cleanup;
+	if (!(decoded = ast_aoc_create(_msgtype, _chargetype, 0))) {
+			astman_send_error(s, m, "Message Creation Failed");
+			goto aocmessage_cleanup;
 	}
 
-	if (_msgtype == AST_AOC_D)
-	{
-		if (!ast_strlen_zero(totaltype) && !strcasecmp(totaltype, "subtotal"))
-		{
+	if (_msgtype == AST_AOC_D) {
+		if (!ast_strlen_zero(totaltype) && !strcasecmp(totaltype, "subtotal")) {
 			_totaltype = AST_AOC_SUBTOTAL;
 		}
 
-		if (ast_strlen_zero(aocbillingid))
-		{
+		if (ast_strlen_zero(aocbillingid)) {
 			/* ignore this is optional */
-		}
-		else if (!strcasecmp(aocbillingid, "Normal"))
-		{
+		} else if (!strcasecmp(aocbillingid, "Normal")) {
 			_billingid = AST_AOC_BILLING_NORMAL;
-		}
-		else if (!strcasecmp(aocbillingid, "ReverseCharge"))
-		{
+		} else if (!strcasecmp(aocbillingid, "ReverseCharge")) {
 			_billingid = AST_AOC_BILLING_REVERSE_CHARGE;
-		}
-		else if (!strcasecmp(aocbillingid, "CreditCard"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CreditCard")) {
 			_billingid = AST_AOC_BILLING_CREDIT_CARD;
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Invalid AOC-D AOCBillingId");
 			goto aocmessage_cleanup;
 		}
-	}
-	else
-	{
-		if (ast_strlen_zero(aocbillingid))
-		{
+	} else {
+		if (ast_strlen_zero(aocbillingid)) {
 			/* ignore this is optional */
-		}
-		else if (!strcasecmp(aocbillingid, "Normal"))
-		{
+		} else if (!strcasecmp(aocbillingid, "Normal")) {
 			_billingid = AST_AOC_BILLING_NORMAL;
-		}
-		else if (!strcasecmp(aocbillingid, "ReverseCharge"))
-		{
+		} else if (!strcasecmp(aocbillingid, "ReverseCharge")) {
 			_billingid = AST_AOC_BILLING_REVERSE_CHARGE;
-		}
-		else if (!strcasecmp(aocbillingid, "CreditCard"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CreditCard")) {
 			_billingid = AST_AOC_BILLING_CREDIT_CARD;
-		}
-		else if (!strcasecmp(aocbillingid, "CallFwdUnconditional"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CallFwdUnconditional")) {
 			_billingid = AST_AOC_BILLING_CALL_FWD_UNCONDITIONAL;
-		}
-		else if (!strcasecmp(aocbillingid, "CallFwdBusy"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CallFwdBusy")) {
 			_billingid = AST_AOC_BILLING_CALL_FWD_BUSY;
-		}
-		else if (!strcasecmp(aocbillingid, "CallFwdNoReply"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CallFwdNoReply")) {
 			_billingid = AST_AOC_BILLING_CALL_FWD_NO_REPLY;
-		}
-		else if (!strcasecmp(aocbillingid, "CallDeflection"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CallDeflection")) {
 			_billingid = AST_AOC_BILLING_CALL_DEFLECTION;
-		}
-		else if (!strcasecmp(aocbillingid, "CallTransfer"))
-		{
+		} else if (!strcasecmp(aocbillingid, "CallTransfer")) {
 			_billingid = AST_AOC_BILLING_CALL_TRANSFER;
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Invalid AOC-E AOCBillingId");
 			goto aocmessage_cleanup;
 		}
 
-		if (!ast_strlen_zero(association_id) && (sscanf(association_id, "%30d", &_association_id) != 1))
-		{
+		if (!ast_strlen_zero(association_id) && (sscanf(association_id, "%30d", &_association_id) != 1)) {
 			astman_send_error(s, m, "Invalid ChargingAssociationId");
 			goto aocmessage_cleanup;
 		}
-		if (!ast_strlen_zero(association_plan) && (sscanf(association_plan, "%30u", &_association_plan) != 1))
-		{
+		if (!ast_strlen_zero(association_plan) && (sscanf(association_plan, "%30u", &_association_plan) != 1)) {
 			astman_send_error(s, m, "Invalid ChargingAssociationPlan");
 			goto aocmessage_cleanup;
 		}
 
-		if (_association_id)
-		{
+		if (_association_id) {
 			ast_aoc_set_association_id(decoded, _association_id);
-		}
-		else if (!ast_strlen_zero(association_num))
-		{
+		} else if (!ast_strlen_zero(association_num)) {
 			ast_aoc_set_association_number(decoded, association_num, _association_plan);
 		}
 	}
 
-	if (_chargetype == AST_AOC_CHARGE_CURRENCY)
-	{
+	if (_chargetype == AST_AOC_CHARGE_CURRENCY) {
 		ast_aoc_set_currency_info(decoded, _currencyamount, _mult, ast_strlen_zero(currencyname) ? NULL : currencyname);
-	}
-	else if (_chargetype == AST_AOC_CHARGE_UNIT)
-	{
+	} else if (_chargetype == AST_AOC_CHARGE_UNIT) {
 		struct ast_aoc_unit_entry entry;
 		int i;
 
 		/* multiple unit entries are possible, lets get them all */
-		for (i = 0; i < 32; i++)
-		{
-			if (aocmessage_get_unit_entry(m, &entry, i))
-			{
+		for (i = 0; i < 32; i++) {
+			if (aocmessage_get_unit_entry(m, &entry, i)) {
 				break; /* that's the end then */
 			}
 
@@ -4792,22 +4313,20 @@ static int action_aocmessage(struct mansession *s, const struct message *m)
 		}
 
 		/* at least one unit entry is required */
-		if (!i)
-		{
+		if (!i) {
 			astman_send_error(s, m, "Invalid UnitAmount(0), At least one valid unit entry is required when ChargeType is set to Unit");
 			goto aocmessage_cleanup;
 		}
+
 	}
 
 	ast_aoc_set_billing_id(decoded, _billingid);
 	ast_aoc_set_total_type(decoded, _totaltype);
 
-	if ((encoded = ast_aoc_encode(decoded, &encoded_size, NULL)) && !ast_indicate_data(chan, AST_CONTROL_AOC, encoded, encoded_size))
-	{
+
+	if ((encoded = ast_aoc_encode(decoded, &encoded_size, NULL)) && !ast_indicate_data(chan, AST_CONTROL_AOC, encoded, encoded_size)) {
 		astman_send_ack(s, m, "AOC Message successfully queued on channel");
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Error encoding AOC message, could not queue onto channel");
 	}
 
@@ -4816,8 +4335,7 @@ aocmessage_cleanup:
 	ast_aoc_destroy_decoded(decoded);
 	ast_aoc_destroy_encoded(encoded);
 
-	if (chan)
-	{
+	if (chan) {
 		chan = ast_channel_unref(chan);
 	}
 	return 0;
@@ -4852,29 +4370,24 @@ static int action_originate(struct mansession *s, const struct message *m)
 	pthread_t th;
 	int bridge_early = 0;
 
-	if (!cap)
-	{
+	if (!cap) {
 		astman_send_error(s, m, "Internal Error. Memory allocation failure.");
 	}
 	ast_format_cap_add(cap, ast_format_set(&tmp_fmt, AST_FORMAT_SLINEAR, 0));
 
-	if (ast_strlen_zero(name))
-	{
+	if (ast_strlen_zero(name)) {
 		astman_send_error(s, m, "Channel not specified");
 		res = 0;
 		goto fast_orig_cleanup;
 	}
-	if (!ast_strlen_zero(priority) && (sscanf(priority, "%30d", &pi) != 1))
-	{
-		if ((pi = ast_findlabel_extension(NULL, context, exten, priority, NULL)) < 1)
-		{
+	if (!ast_strlen_zero(priority) && (sscanf(priority, "%30d", &pi) != 1)) {
+		if ((pi = ast_findlabel_extension(NULL, context, exten, priority, NULL)) < 1) {
 			astman_send_error(s, m, "Invalid priority");
 			res = 0;
 			goto fast_orig_cleanup;
 		}
 	}
-	if (!ast_strlen_zero(timeout) && (sscanf(timeout, "%30d", &to) != 1))
-	{
+	if (!ast_strlen_zero(timeout) && (sscanf(timeout, "%30d", &to) != 1)) {
 		astman_send_error(s, m, "Invalid timeout");
 		res = 0;
 		goto fast_orig_cleanup;
@@ -4882,8 +4395,7 @@ static int action_originate(struct mansession *s, const struct message *m)
 	ast_copy_string(tmp, name, sizeof(tmp));
 	tech = tmp;
 	data = strchr(tmp, '/');
-	if (!data)
-	{
+	if (!data) {
 		astman_send_error(s, m, "Invalid channel");
 		res = 0;
 		goto fast_orig_cleanup;
@@ -4891,44 +4403,39 @@ static int action_originate(struct mansession *s, const struct message *m)
 	*data++ = '\0';
 	ast_copy_string(tmp2, callerid, sizeof(tmp2));
 	ast_callerid_parse(tmp2, &n, &l);
-	if (n)
-	{
-		if (ast_strlen_zero(n))
-		{
+	if (n) {
+		if (ast_strlen_zero(n)) {
 			n = NULL;
 		}
 	}
-	if (l)
-	{
+	if (l) {
 		ast_shrink_phone_number(l);
-		if (ast_strlen_zero(l))
-		{
+		if (ast_strlen_zero(l)) {
 			l = NULL;
 		}
 	}
-	if (!ast_strlen_zero(codecs))
-	{
+	if (!ast_strlen_zero(codecs)) {
 		ast_format_cap_remove_all(cap);
 		ast_parse_allow_disallow(NULL, cap, codecs, 1);
 	}
 
-	if (!ast_strlen_zero(app) && s->session)
-	{
+	if (!ast_strlen_zero(app) && s->session) {
 		int bad_appdata = 0;
 		/* To run the System application (or anything else that goes to
 		 * shell), you must have the additional System privilege */
-		if (!(s->session->writeperm & EVENT_FLAG_SYSTEM) && (strcasestr(app, "system") ||						/* System(rm -rf /)
-																												   TrySystem(rm -rf /)       */
-															 strcasestr(app, "exec") ||							/* Exec(System(rm -rf /))
-																												   TryExec(System(rm -rf /)) */
-															 strcasestr(app, "agi") ||							/* AGI(/bin/rm,-rf /)
-																												   EAGI(/bin/rm,-rf /)       */
-															 strcasestr(app, "mixmonitor") ||					/* MixMonitor(blah,,rm -rf)  */
-															 strcasestr(app, "externalivr") ||					/* ExternalIVR(rm -rf)       */
-															 (strstr(appdata, "SHELL") && (bad_appdata = 1)) || /* NoOp(${SHELL(rm -rf /)})  */
-															 (strstr(appdata, "EVAL") && (bad_appdata = 1))		/* NoOp(${EVAL(${some_var_containing_SHELL})}) */
-															 ))
-		{
+		if (!(s->session->writeperm & EVENT_FLAG_SYSTEM)
+			&& (
+				strcasestr(app, "system") ||      /* System(rm -rf /)
+				                                     TrySystem(rm -rf /)       */
+				strcasestr(app, "exec") ||        /* Exec(System(rm -rf /))
+				                                     TryExec(System(rm -rf /)) */
+				strcasestr(app, "agi") ||         /* AGI(/bin/rm,-rf /)
+				                                     EAGI(/bin/rm,-rf /)       */
+				strcasestr(app, "mixmonitor") ||  /* MixMonitor(blah,,rm -rf)  */
+				strcasestr(app, "externalivr") || /* ExternalIVR(rm -rf)       */
+				(strstr(appdata, "SHELL") && (bad_appdata = 1)) ||       /* NoOp(${SHELL(rm -rf /)})  */
+				(strstr(appdata, "EVAL") && (bad_appdata = 1))           /* NoOp(${EVAL(${some_var_containing_SHELL})}) */
+				)) {
 			char error_buf[64];
 			snprintf(error_buf, sizeof(error_buf), "Originate Access Forbidden: %s", bad_appdata ? "Data" : "Application");
 			astman_send_error(s, m, error_buf);
@@ -4938,10 +4445,8 @@ static int action_originate(struct mansession *s, const struct message *m)
 	}
 
 	/* Check early if the extension exists. If not, we need to bail out here. */
-	if (exten && context && pi)
-	{
-		if (!ast_exists_extension(NULL, context, exten, pi, l))
-		{
+	if (exten && context && pi) {
+		if (! ast_exists_extension(NULL, context, exten, pi, l)) {
 			/* The extension does not exist. */
 			astman_send_error(s, m, "Extension does not exist.");
 			res = 0;
@@ -4951,8 +4456,7 @@ static int action_originate(struct mansession *s, const struct message *m)
 
 	/* Allocate requested channel variables */
 	vars = astman_get_variables(m);
-	if (s->session && s->session->chanvars)
-	{
+	if (s->session && s->session->chanvars) {
 		struct ast_variable *v, *old;
 		old = vars;
 		vars = NULL;
@@ -4960,13 +4464,10 @@ static int action_originate(struct mansession *s, const struct message *m)
 		/* The variables in the AMI originate action are appended at the end of the list, to override any user variables that apply*/
 
 		vars = ast_variables_dup(s->session->chanvars);
-		if (old)
-		{
-			for (v = vars; v->next; v = v->next)
-				;
-			if (v->next)
-			{
-				v->next = old; /* Append originate variables at end of list */
+		if (old) {
+			for (v = vars; v->next; v = v->next );
+			if (v->next) {
+				v->next = old;	/* Append originate variables at end of list */
 			}
 		}
 	}
@@ -4974,21 +4475,16 @@ static int action_originate(struct mansession *s, const struct message *m)
 	/* For originate async - we can bridge in early media stage */
 	bridge_early = ast_true(early_media);
 
-	if (ast_true(async))
-	{
+	if (ast_true(async)) {
 		struct fast_originate_helper *fast;
 
 		fast = ast_calloc(1, sizeof(*fast));
-		if (!fast || ast_string_field_init(fast, 252))
-		{
+		if (!fast || ast_string_field_init(fast, 252)) {
 			ast_free(fast);
 			ast_variables_destroy(vars);
 			res = -1;
-		}
-		else
-		{
-			if (!ast_strlen_zero(id))
-			{
+		} else {
+			if (!ast_strlen_zero(id)) {
 				ast_string_field_build(fast, idtext, "ActionID: %s\r\n", id);
 			}
 			ast_string_field_set(fast, tech, tech);
@@ -5006,43 +4502,30 @@ static int action_originate(struct mansession *s, const struct message *m)
 			fast->timeout = to;
 			fast->early_media = bridge_early;
 			fast->priority = pi;
-			if (ast_pthread_create_detached(&th, NULL, fast_originate, fast))
-			{
+			if (ast_pthread_create_detached(&th, NULL, fast_originate, fast)) {
 				destroy_fast_originate_helper(fast);
 				res = -1;
-			}
-			else
-			{
+			} else {
 				res = 0;
 			}
 		}
-	}
-	else if (!ast_strlen_zero(app))
-	{
+	} else if (!ast_strlen_zero(app)) {
 		res = ast_pbx_outgoing_app(tech, cap, data, to, app, appdata, &reason, 1, l, n, vars, account, NULL);
 		/* Any vars memory was passed to ast_pbx_outgoing_app(). */
-	}
-	else
-	{
-		if (exten && context && pi)
-		{
+	} else {
+		if (exten && context && pi) {
 			res = ast_pbx_outgoing_exten(tech, cap, data, to, context, exten, pi, &reason, 1, l, n, vars, account, NULL, bridge_early);
 			/* Any vars memory was passed to ast_pbx_outgoing_exten(). */
-		}
-		else
-		{
+		} else {
 			astman_send_error(s, m, "Originate with 'Exten' requires 'Context' and 'Priority'");
 			ast_variables_destroy(vars);
 			res = 0;
 			goto fast_orig_cleanup;
 		}
 	}
-	if (!res)
-	{
+	if (!res) {
 		astman_send_ack(s, m, "Originate successfully queued");
-	}
-	else
-	{
+	} else {
 		astman_send_error(s, m, "Originate failed");
 	}
 
@@ -5056,40 +4539,36 @@ static int action_mailboxstatus(struct mansession *s, const struct message *m)
 	const char *mailbox = astman_get_header(m, "Mailbox");
 	int ret;
 
-	if (ast_strlen_zero(mailbox))
-	{
+	if (ast_strlen_zero(mailbox)) {
 		astman_send_error(s, m, "Mailbox not specified");
 		return 0;
 	}
 	ret = ast_app_has_voicemail(mailbox, NULL);
 	astman_start_ack(s, m);
 	astman_append(s, "Message: Mailbox Status\r\n"
-					 "Mailbox: %s\r\n"
-					 "Waiting: %d\r\n\r\n",
-				  mailbox, ret);
+			 "Mailbox: %s\r\n"
+			 "Waiting: %d\r\n\r\n", mailbox, ret);
 	return 0;
 }
 
 static int action_mailboxcount(struct mansession *s, const struct message *m)
 {
 	const char *mailbox = astman_get_header(m, "Mailbox");
-	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;
-	;
+	int newmsgs = 0, oldmsgs = 0, urgentmsgs = 0;;
 
-	if (ast_strlen_zero(mailbox))
-	{
+	if (ast_strlen_zero(mailbox)) {
 		astman_send_error(s, m, "Mailbox not specified");
 		return 0;
 	}
 	ast_app_inboxcount2(mailbox, &urgentmsgs, &newmsgs, &oldmsgs);
 	astman_start_ack(s, m);
-	astman_append(s, "Message: Mailbox Message Count\r\n"
-					 "Mailbox: %s\r\n"
-					 "UrgMessages: %d\r\n"
-					 "NewMessages: %d\r\n"
-					 "OldMessages: %d\r\n"
-					 "\r\n",
-				  mailbox, urgentmsgs, newmsgs, oldmsgs);
+	astman_append(s,   "Message: Mailbox Message Count\r\n"
+			   "Mailbox: %s\r\n"
+			   "UrgMessages: %d\r\n"
+			   "NewMessages: %d\r\n"
+			   "OldMessages: %d\r\n"
+			   "\r\n",
+			   mailbox, urgentmsgs, newmsgs, oldmsgs);
 	return 0;
 }
 
@@ -5099,24 +4578,22 @@ static int action_extensionstate(struct mansession *s, const struct message *m)
 	const char *context = astman_get_header(m, "Context");
 	char hint[256] = "";
 	int status;
-	if (ast_strlen_zero(exten))
-	{
+	if (ast_strlen_zero(exten)) {
 		astman_send_error(s, m, "Extension not specified");
 		return 0;
 	}
-	if (ast_strlen_zero(context))
-	{
+	if (ast_strlen_zero(context)) {
 		context = "default";
 	}
 	status = ast_extension_state(NULL, context, exten);
 	ast_get_hint(hint, sizeof(hint) - 1, NULL, 0, NULL, context, exten);
 	astman_start_ack(s, m);
-	astman_append(s, "Message: Extension Status\r\n"
-					 "Exten: %s\r\n"
-					 "Context: %s\r\n"
-					 "Hint: %s\r\n"
-					 "Status: %d\r\n\r\n",
-				  exten, context, hint, status);
+	astman_append(s,   "Message: Extension Status\r\n"
+			   "Exten: %s\r\n"
+			   "Context: %s\r\n"
+			   "Hint: %s\r\n"
+			   "Status: %d\r\n\r\n",
+			   exten, context, hint, status);
 	return 0;
 }
 
@@ -5129,39 +4606,35 @@ static int action_presencestate(struct mansession *s, const struct message *m)
 	char subtype_header[256] = "";
 	char message_header[256] = "";
 
-	if (ast_strlen_zero(provider))
-	{
+	if (ast_strlen_zero(provider)) {
 		astman_send_error(s, m, "No provider specified");
 		return 0;
 	}
 
 	state = ast_presence_state(provider, &subtype, &message);
-	if (state == AST_PRESENCE_INVALID)
-	{
+	if (state == AST_PRESENCE_INVALID) {
 		astman_send_error_va(s, m, "Invalid provider %s or provider in invalid state", provider);
 		return 0;
 	}
 
-	if (!ast_strlen_zero(subtype))
-	{
+	if (!ast_strlen_zero(subtype)) {
 		snprintf(subtype_header, sizeof(subtype_header),
-				 "Subtype: %s\r\n", subtype);
+				"Subtype: %s\r\n", subtype);
 	}
 
-	if (!ast_strlen_zero(message))
-	{
+	if (!ast_strlen_zero(message)) {
 		snprintf(message_header, sizeof(message_header),
-				 "Message: %s\r\n", message);
+				"Message: %s\r\n", message);
 	}
 
 	astman_append(s, "Message: Presence State\r\n"
-					 "State: %s\r\n"
-					 "%s"
-					 "%s"
-					 "\r\n",
-				  ast_presence_state2str(state),
-				  subtype_header,
-				  message_header);
+			"State: %s\r\n"
+			"%s"
+			"%s"
+			"\r\n",
+			ast_presence_state2str(state),
+			subtype_header,
+			message_header);
 	return 0;
 }
 
@@ -5170,22 +4643,19 @@ static int action_timeout(struct mansession *s, const struct message *m)
 	struct ast_channel *c;
 	const char *name = astman_get_header(m, "Channel");
 	double timeout = atof(astman_get_header(m, "Timeout"));
-	struct timeval when = {timeout, 0};
+	struct timeval when = { timeout, 0 };
 
-	if (ast_strlen_zero(name))
-	{
+	if (ast_strlen_zero(name)) {
 		astman_send_error(s, m, "No channel specified");
 		return 0;
 	}
 
-	if (!timeout || timeout < 0)
-	{
+	if (!timeout || timeout < 0) {
 		astman_send_error(s, m, "No timeout specified");
 		return 0;
 	}
 
-	if (!(c = ast_channel_get_by_name(name)))
-	{
+	if (!(c = ast_channel_get_by_name(name))) {
 		astman_send_error(s, m, "No such channel");
 		return 0;
 	}
@@ -5208,8 +4678,7 @@ static int whitefilter_cmp_fn(void *obj, void *arg, void *data, int flags)
 	const char *eventdata = arg;
 	int *result = data;
 
-	if (!regexec(regex_filter, eventdata, 0, NULL, 0))
-	{
+	if (!regexec(regex_filter, eventdata, 0, NULL, 0)) {
 		*result = 1;
 		return (CMP_MATCH | CMP_STOP);
 	}
@@ -5223,8 +4692,7 @@ static int blackfilter_cmp_fn(void *obj, void *arg, void *data, int flags)
 	const char *eventdata = arg;
 	int *result = data;
 
-	if (!regexec(regex_filter, eventdata, 0, NULL, 0))
-	{
+	if (!regexec(regex_filter, eventdata, 0, NULL, 0)) {
 		*result = 0;
 		return (CMP_MATCH | CMP_STOP);
 	}
@@ -5243,27 +4711,20 @@ static int action_filter(struct mansession *s, const struct message *m)
 	const char *operation = astman_get_header(m, "Operation");
 	int res;
 
-	if (!strcasecmp(operation, "Add"))
-	{
+	if (!strcasecmp(operation, "Add")) {
 		res = manager_add_filter(filter, s->session->whitefilters, s->session->blackfilters);
 
-		if (res != FILTER_SUCCESS)
-		{
-			if (res == FILTER_ALLOC_FAILED)
-			{
+	        if (res != FILTER_SUCCESS) {
+		        if (res == FILTER_ALLOC_FAILED) {
 				astman_send_error(s, m, "Internal Error. Failed to allocate regex for filter");
-				return 0;
-			}
-			else if (res == FILTER_COMPILE_FAIL)
-			{
+		                return 0;
+		        } else if (res == FILTER_COMPILE_FAIL) {
 				astman_send_error(s, m, "Filter did not compile.  Check the syntax of the filter given.");
-				return 0;
-			}
-			else
-			{
+		                return 0;
+		        } else {
 				astman_send_error(s, m, "Internal Error. Failed adding filter.");
-				return 0;
-			}
+		                return 0;
+	                }
 		}
 
 		astman_send_ack(s, m, "Success");
@@ -5295,38 +4756,29 @@ static int action_filter(struct mansession *s, const struct message *m)
  * \endcode
  *
  */
-static enum add_filter_result manager_add_filter(const char *filter_pattern, struct ao2_container *whitefilters, struct ao2_container *blackfilters)
-{
+static enum add_filter_result manager_add_filter(const char *filter_pattern, struct ao2_container *whitefilters, struct ao2_container *blackfilters) {
 	regex_t *new_filter = ao2_t_alloc(sizeof(*new_filter), event_filter_destructor, "event_filter allocation");
 	int is_blackfilter;
 
-	if (!new_filter)
-	{
+	if (!new_filter) {
 		return FILTER_ALLOC_FAILED;
 	}
 
-	if (filter_pattern[0] == '!')
-	{
+	if (filter_pattern[0] == '!') {
 		is_blackfilter = 1;
 		filter_pattern++;
-	}
-	else
-	{
+	} else {
 		is_blackfilter = 0;
 	}
 
-	if (regcomp(new_filter, filter_pattern, 0))
-	{
+	if (regcomp(new_filter, filter_pattern, 0)) {
 		ao2_t_ref(new_filter, -1, "failed to make regx");
 		return FILTER_COMPILE_FAIL;
 	}
 
-	if (is_blackfilter)
-	{
+	if (is_blackfilter) {
 		ao2_t_link(blackfilters, new_filter, "link new filter into black user container");
-	}
-	else
-	{
+	} else {
 		ao2_t_link(whitefilters, new_filter, "link new filter into white user container");
 	}
 
@@ -5338,26 +4790,18 @@ static int match_filter(struct mansession *s, char *eventdata)
 	int result = 0;
 
 	ast_debug(3, "Examining event:\n%s\n", eventdata);
-	if (!ao2_container_count(s->session->whitefilters) && !ao2_container_count(s->session->blackfilters))
-	{
+	if (!ao2_container_count(s->session->whitefilters) && !ao2_container_count(s->session->blackfilters)) {
 		return 1; /* no filtering means match all */
-	}
-	else if (ao2_container_count(s->session->whitefilters) && !ao2_container_count(s->session->blackfilters))
-	{
+	} else if (ao2_container_count(s->session->whitefilters) && !ao2_container_count(s->session->blackfilters)) {
 		/* white filters only: implied black all filter processed first, then white filters */
 		ao2_t_callback_data(s->session->whitefilters, OBJ_NODATA, whitefilter_cmp_fn, eventdata, &result, "find filter in session filter container");
-	}
-	else if (!ao2_container_count(s->session->whitefilters) && ao2_container_count(s->session->blackfilters))
-	{
+	} else if (!ao2_container_count(s->session->whitefilters) && ao2_container_count(s->session->blackfilters)) {
 		/* black filters only: implied white all filter processed first, then black filters */
 		ao2_t_callback_data(s->session->blackfilters, OBJ_NODATA, blackfilter_cmp_fn, eventdata, &result, "find filter in session filter container");
-	}
-	else
-	{
+	} else {
 		/* white and black filters: implied black all filter processed first, then white filters, and lastly black filters */
 		ao2_t_callback_data(s->session->whitefilters, OBJ_NODATA, whitefilter_cmp_fn, eventdata, &result, "find filter in session filter container");
-		if (result)
-		{
+		if (result) {
 			result = 0;
 			ao2_t_callback_data(s->session->blackfilters, OBJ_NODATA, blackfilter_cmp_fn, eventdata, &result, "find filter in session filter container");
 		}
@@ -5376,21 +4820,17 @@ static int process_events(struct mansession *s)
 	int ret = 0;
 
 	ao2_lock(s->session);
-	if (s->session->f != NULL)
-	{
+	if (s->session->f != NULL) {
 		struct eventqent *eqe = s->session->last_ev;
 
-		while ((eqe = advance_event(eqe)))
-		{
+		while ((eqe = advance_event(eqe))) {
 			if (!ret && s->session->authenticated &&
-				(s->session->readperm & eqe->category) == eqe->category &&
-				(s->session->send_events & eqe->category) == eqe->category)
-			{
-				if (match_filter(s, eqe->eventdata))
-				{
-					if (send_string(s, eqe->eventdata) < 0)
-						ret = -1; /* don't send more */
-				}
+			    (s->session->readperm & eqe->category) == eqe->category &&
+			    (s->session->send_events & eqe->category) == eqe->category) {
+					if (match_filter(s, eqe->eventdata)) {
+						if (send_string(s, eqe->eventdata) < 0)
+							ret = -1;	/* don't send more */
+					}
 			}
 			s->session->last_ev = eqe;
 		}
@@ -5407,10 +4847,8 @@ static int action_userevent(struct mansession *s, const struct message *m)
 
 	ast_str_reset(body);
 
-	for (x = 0; x < m->hdrcount; x++)
-	{
-		if (strncasecmp("UserEvent:", m->headers[x], strlen("UserEvent:")))
-		{
+	for (x = 0; x < m->hdrcount; x++) {
+		if (strncasecmp("UserEvent:", m->headers[x], strlen("UserEvent:"))) {
 			ast_str_append(&body, 0, "%s\r\n", m->headers[x]);
 		}
 	}
@@ -5426,41 +4864,39 @@ static int action_coresettings(struct mansession *s, const struct message *m)
 	const char *actionid = astman_get_header(m, "ActionID");
 	char idText[150];
 
-	if (!ast_strlen_zero(actionid))
-	{
+	if (!ast_strlen_zero(actionid)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", actionid);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
 	astman_append(s, "Response: Success\r\n"
-					 "%s"
-					 "AMIversion: %s\r\n"
-					 "AsteriskVersion: %s\r\n"
-					 "SystemName: %s\r\n"
-					 "CoreMaxCalls: %d\r\n"
-					 "CoreMaxLoadAvg: %f\r\n"
-					 "CoreRunUser: %s\r\n"
-					 "CoreRunGroup: %s\r\n"
-					 "CoreMaxFilehandles: %d\r\n"
-					 "CoreRealTimeEnabled: %s\r\n"
-					 "CoreCDRenabled: %s\r\n"
-					 "CoreHTTPenabled: %s\r\n"
-					 "\r\n",
-				  idText,
-				  AMI_VERSION,
-				  ast_get_version(),
-				  ast_config_AST_SYSTEM_NAME,
-				  option_maxcalls,
-				  option_maxload,
-				  ast_config_AST_RUN_USER,
-				  ast_config_AST_RUN_GROUP,
-				  option_maxfiles,
-				  AST_CLI_YESNO(ast_realtime_enabled()),
-				  AST_CLI_YESNO(check_cdr_enabled()),
-				  AST_CLI_YESNO(check_webmanager_enabled()));
+			"%s"
+			"AMIversion: %s\r\n"
+			"AsteriskVersion: %s\r\n"
+			"SystemName: %s\r\n"
+			"CoreMaxCalls: %d\r\n"
+			"CoreMaxLoadAvg: %f\r\n"
+			"CoreRunUser: %s\r\n"
+			"CoreRunGroup: %s\r\n"
+			"CoreMaxFilehandles: %d\r\n"
+			"CoreRealTimeEnabled: %s\r\n"
+			"CoreCDRenabled: %s\r\n"
+			"CoreHTTPenabled: %s\r\n"
+			"\r\n",
+			idText,
+			AMI_VERSION,
+			ast_get_version(),
+			ast_config_AST_SYSTEM_NAME,
+			option_maxcalls,
+			option_maxload,
+			ast_config_AST_RUN_USER,
+			ast_config_AST_RUN_GROUP,
+			option_maxfiles,
+			AST_CLI_YESNO(ast_realtime_enabled()),
+			AST_CLI_YESNO(check_cdr_enabled()),
+			AST_CLI_YESNO(check_webmanager_enabled())
+			);
 	return 0;
 }
 
@@ -5473,12 +4909,9 @@ static int action_corestatus(struct mansession *s, const struct message *m)
 	char reloadtime[150], reloaddate[150];
 	struct ast_tm tm;
 
-	if (!ast_strlen_zero(actionid))
-	{
+	if (!ast_strlen_zero(actionid)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", actionid);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
@@ -5490,19 +4923,20 @@ static int action_corestatus(struct mansession *s, const struct message *m)
 	ast_strftime(reloaddate, sizeof(reloaddate), "%Y-%m-%d", &tm);
 
 	astman_append(s, "Response: Success\r\n"
-					 "%s"
-					 "CoreStartupDate: %s\r\n"
-					 "CoreStartupTime: %s\r\n"
-					 "CoreReloadDate: %s\r\n"
-					 "CoreReloadTime: %s\r\n"
-					 "CoreCurrentCalls: %d\r\n"
-					 "\r\n",
-				  idText,
-				  startupdate,
-				  startuptime,
-				  reloaddate,
-				  reloadtime,
-				  ast_active_channels());
+			"%s"
+			"CoreStartupDate: %s\r\n"
+			"CoreStartupTime: %s\r\n"
+			"CoreReloadDate: %s\r\n"
+			"CoreReloadTime: %s\r\n"
+			"CoreCurrentCalls: %d\r\n"
+			"\r\n",
+			idText,
+			startupdate,
+			startuptime,
+			reloaddate,
+			reloadtime,
+			ast_active_channels()
+			);
 	return 0;
 }
 
@@ -5512,8 +4946,7 @@ static int action_reload(struct mansession *s, const struct message *m)
 	const char *module = astman_get_header(m, "Module");
 	int res = ast_module_reload(S_OR(module, NULL));
 
-	switch (res)
-	{
+	switch (res) {
 	case -1:
 		astman_send_error(s, m, "A reload is in progress");
 		break;
@@ -5544,33 +4977,27 @@ static int action_coreshowchannels(struct mansession *s, const struct message *m
 	int duration, durh, durm, durs;
 	struct ast_channel_iterator *iter;
 
-	if (!ast_strlen_zero(actionid))
-	{
+	if (!ast_strlen_zero(actionid)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", actionid);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 
-	if (!(iter = ast_channel_iterator_all_new()))
-	{
+	if (!(iter = ast_channel_iterator_all_new())) {
 		astman_send_error(s, m, "Memory Allocation Failure");
 		return 1;
 	}
 
 	astman_send_listack(s, m, "Channels will follow", "start");
 
-	for (; (c = ast_channel_iterator_next(iter)); ast_channel_unref(c))
-	{
+	for (; (c = ast_channel_iterator_next(iter)); ast_channel_unref(c)) {
 		struct ast_channel *bc;
 		char durbuf[10] = "";
 
 		ast_channel_lock(c);
 
 		bc = ast_bridged_channel(c);
-		if (ast_channel_cdr(c) && !ast_tvzero(ast_channel_cdr(c)->start))
-		{
+		if (ast_channel_cdr(c) && !ast_tvzero(ast_channel_cdr(c)->start)) {
 			duration = (int)(ast_tvdiff_ms(ast_tvnow(), ast_channel_cdr(c)->start) / 1000);
 			durh = duration / 3600;
 			durm = (duration % 3600) / 60;
@@ -5579,33 +5006,32 @@ static int action_coreshowchannels(struct mansession *s, const struct message *m
 		}
 
 		astman_append(s,
-					  "Event: CoreShowChannel\r\n"
-					  "%s"
-					  "Channel: %s\r\n"
-					  "UniqueID: %s\r\n"
-					  "Context: %s\r\n"
-					  "Extension: %s\r\n"
-					  "Priority: %d\r\n"
-					  "ChannelState: %d\r\n"
-					  "ChannelStateDesc: %s\r\n"
-					  "Application: %s\r\n"
-					  "ApplicationData: %s\r\n"
-					  "CallerIDnum: %s\r\n"
-					  "CallerIDname: %s\r\n"
-					  "ConnectedLineNum: %s\r\n"
-					  "ConnectedLineName: %s\r\n"
-					  "Duration: %s\r\n"
-					  "AccountCode: %s\r\n"
-					  "BridgedChannel: %s\r\n"
-					  "BridgedUniqueID: %s\r\n"
-					  "\r\n",
-					  idText, ast_channel_name(c), ast_channel_uniqueid(c), ast_channel_context(c), ast_channel_exten(c), ast_channel_priority(c), ast_channel_state(c),
-					  ast_state2str(ast_channel_state(c)), ast_channel_appl(c) ? ast_channel_appl(c) : "", ast_channel_data(c) ? S_OR(ast_channel_data(c), "") : "",
-					  S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, ""),
-					  S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, ""),
-					  S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, ""),
-					  S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, ""),
-					  durbuf, S_OR(ast_channel_accountcode(c), ""), bc ? ast_channel_name(bc) : "", bc ? ast_channel_uniqueid(bc) : "");
+			"Event: CoreShowChannel\r\n"
+			"%s"
+			"Channel: %s\r\n"
+			"UniqueID: %s\r\n"
+			"Context: %s\r\n"
+			"Extension: %s\r\n"
+			"Priority: %d\r\n"
+			"ChannelState: %d\r\n"
+			"ChannelStateDesc: %s\r\n"
+			"Application: %s\r\n"
+			"ApplicationData: %s\r\n"
+			"CallerIDnum: %s\r\n"
+			"CallerIDname: %s\r\n"
+			"ConnectedLineNum: %s\r\n"
+			"ConnectedLineName: %s\r\n"
+			"Duration: %s\r\n"
+			"AccountCode: %s\r\n"
+			"BridgedChannel: %s\r\n"
+			"BridgedUniqueID: %s\r\n"
+			"\r\n", idText, ast_channel_name(c), ast_channel_uniqueid(c), ast_channel_context(c), ast_channel_exten(c), ast_channel_priority(c), ast_channel_state(c),
+			ast_state2str(ast_channel_state(c)), ast_channel_appl(c) ? ast_channel_appl(c) : "", ast_channel_data(c) ? S_OR(ast_channel_data(c), "") : "",
+			S_COR(ast_channel_caller(c)->id.number.valid, ast_channel_caller(c)->id.number.str, ""),
+			S_COR(ast_channel_caller(c)->id.name.valid, ast_channel_caller(c)->id.name.str, ""),
+			S_COR(ast_channel_connected(c)->id.number.valid, ast_channel_connected(c)->id.number.str, ""),
+			S_COR(ast_channel_connected(c)->id.name.valid, ast_channel_connected(c)->id.name.str, ""),
+			durbuf, S_OR(ast_channel_accountcode(c), ""), bc ? ast_channel_name(bc) : "", bc ? ast_channel_uniqueid(bc) : "");
 
 		ast_channel_unlock(c);
 
@@ -5613,12 +5039,11 @@ static int action_coreshowchannels(struct mansession *s, const struct message *m
 	}
 
 	astman_append(s,
-				  "Event: CoreShowChannelsComplete\r\n"
-				  "EventList: Complete\r\n"
-				  "ListItems: %d\r\n"
-				  "%s"
-				  "\r\n",
-				  numchans, idText);
+		"Event: CoreShowChannelsComplete\r\n"
+		"EventList: Complete\r\n"
+		"ListItems: %d\r\n"
+		"%s"
+		"\r\n", numchans, idText);
 
 	ast_channel_iterator_destroy(iter);
 
@@ -5639,19 +5064,15 @@ static int manager_modulecheck(struct mansession *s, const struct message *m)
 	char *cut;
 
 	ast_copy_string(filename, module, sizeof(filename));
-	if ((cut = strchr(filename, '.')))
-	{
+	if ((cut = strchr(filename, '.'))) {
 		*cut = '\0';
-	}
-	else
-	{
+	} else {
 		cut = filename + strlen(filename);
 	}
 	snprintf(cut, (sizeof(filename) - strlen(filename)) - 1, ".so");
 	ast_debug(1, "**** ModuleCheck .so file %s\n", filename);
 	res = ast_module_check(filename);
-	if (!res)
-	{
+	if (!res) {
 		astman_send_error(s, m, "Module not loaded");
 		return 0;
 	}
@@ -5661,12 +5082,9 @@ static int manager_modulecheck(struct mansession *s, const struct message *m)
 	version = ast_file_version_find(filename);
 #endif
 
-	if (!ast_strlen_zero(id))
-	{
+	if (!ast_strlen_zero(id)) {
 		snprintf(idText, sizeof(idText), "ActionID: %s\r\n", id);
-	}
-	else
-	{
+	} else {
 		idText[0] = '\0';
 	}
 	astman_append(s, "Response: Success\r\n%s", idText);
@@ -5682,64 +5100,42 @@ static int manager_moduleload(struct mansession *s, const struct message *m)
 	const char *module = astman_get_header(m, "Module");
 	const char *loadtype = astman_get_header(m, "LoadType");
 
-	if (!loadtype || strlen(loadtype) == 0)
-	{
+	if (!loadtype || strlen(loadtype) == 0) {
 		astman_send_error(s, m, "Incomplete ModuleLoad action.");
 	}
-	if ((!module || strlen(module) == 0) && strcasecmp(loadtype, "reload") != 0)
-	{
+	if ((!module || strlen(module) == 0) && strcasecmp(loadtype, "reload") != 0) {
 		astman_send_error(s, m, "Need module name");
 	}
 
-	if (!strcasecmp(loadtype, "load"))
-	{
+	if (!strcasecmp(loadtype, "load")) {
 		res = ast_load_resource(module);
-		if (res)
-		{
+		if (res) {
 			astman_send_error(s, m, "Could not load module.");
-		}
-		else
-		{
+		} else {
 			astman_send_ack(s, m, "Module loaded.");
 		}
-	}
-	else if (!strcasecmp(loadtype, "unload"))
-	{
+	} else if (!strcasecmp(loadtype, "unload")) {
 		res = ast_unload_resource(module, AST_FORCE_SOFT);
-		if (res)
-		{
+		if (res) {
 			astman_send_error(s, m, "Could not unload module.");
-		}
-		else
-		{
+		} else {
 			astman_send_ack(s, m, "Module unloaded.");
 		}
-	}
-	else if (!strcasecmp(loadtype, "reload"))
-	{
-		if (!ast_strlen_zero(module))
-		{
+	} else if (!strcasecmp(loadtype, "reload")) {
+		if (!ast_strlen_zero(module)) {
 			res = ast_module_reload(module);
-			if (res == 0)
-			{
+			if (res == 0) {
 				astman_send_error(s, m, "No such module.");
-			}
-			else if (res == 1)
-			{
+			} else if (res == 1) {
 				astman_send_error(s, m, "Module does not support reload action.");
-			}
-			else
-			{
+			} else {
 				astman_send_ack(s, m, "Module reloaded.");
 			}
-		}
-		else
-		{
-			ast_module_reload(NULL); /* Reload all modules */
+		} else {
+			ast_module_reload(NULL);	/* Reload all modules */
 			astman_send_ack(s, m, "All modules reloaded");
 		}
-	}
-	else
+	} else
 		astman_send_error(s, m, "Incomplete ModuleLoad action.");
 	return 0;
 }
@@ -5765,8 +5161,7 @@ static int process_message(struct mansession *s, const struct message *m)
 	const char *action;
 
 	action = __astman_get_header(m, "Action", GET_HEADER_SKIP_EMPTY);
-	if (ast_strlen_zero(action))
-	{
+	if (ast_strlen_zero(action)) {
 		report_req_bad_format(s, "NONE");
 		mansession_lock(s);
 		astman_send_error(s, m, "Missing action in request");
@@ -5774,10 +5169,11 @@ static int process_message(struct mansession *s, const struct message *m)
 		return 0;
 	}
 
-	if (!s->session->authenticated && strcasecmp(action, "Login") && strcasecmp(action, "Logoff") && strcasecmp(action, "Challenge"))
-	{
-		if (!s->session->authenticated)
-		{
+	if (!s->session->authenticated
+		&& strcasecmp(action, "Login")
+		&& strcasecmp(action, "Logoff")
+		&& strcasecmp(action, "Challenge")) {
+		if (!s->session->authenticated) {
 			report_req_not_allowed(s, action);
 		}
 		mansession_lock(s);
@@ -5786,12 +5182,13 @@ static int process_message(struct mansession *s, const struct message *m)
 		return 0;
 	}
 
-	if (!allowmultiplelogin && !s->session->authenticated && (!strcasecmp(action, "Login") || !strcasecmp(action, "Challenge")))
-	{
+	if (!allowmultiplelogin
+		&& !s->session->authenticated
+		&& (!strcasecmp(action, "Login")
+			|| !strcasecmp(action, "Challenge"))) {
 		user = astman_get_header(m, "Username");
 
-		if (!ast_strlen_zero(user) && check_manager_session_inuse(user))
-		{
+		if (!ast_strlen_zero(user) && check_manager_session_inuse(user)) {
 			report_session_limit(s);
 			sleep(1);
 			mansession_lock(s);
@@ -5802,35 +5199,30 @@ static int process_message(struct mansession *s, const struct message *m)
 	}
 
 	act_found = action_find(action);
-	if (act_found)
-	{
+	if (act_found) {
 		/* Found the requested AMI action. */
 		int acted = 0;
 
-		if ((s->session->writeperm & act_found->authority) || act_found->authority == 0)
-		{
+		if ((s->session->writeperm & act_found->authority)
+			|| act_found->authority == 0) {
 			/* We have the authority to execute the action. */
 			ao2_lock(act_found);
-			if (act_found->registered && act_found->func)
-			{
+			if (act_found->registered && act_found->func) {
 				ast_debug(1, "Running action '%s'\n", act_found->action);
-				if (act_found->module)
-				{
+				if (act_found->module) {
 					ast_module_ref(act_found->module);
 				}
 				ao2_unlock(act_found);
 				ret = act_found->func(s, m);
 				acted = 1;
 				ao2_lock(act_found);
-				if (act_found->module)
-				{
+				if (act_found->module) {
 					ast_module_unref(act_found->module);
 				}
 			}
 			ao2_unlock(act_found);
 		}
-		if (!acted)
-		{
+		if (!acted) {
 			/*
 			 * We did not execute the action because access was denied, it
 			 * was no longer registered, or no action was really registered.
@@ -5842,9 +5234,7 @@ static int process_message(struct mansession *s, const struct message *m)
 			mansession_unlock(s);
 		}
 		ao2_t_ref(act_found, -1, "done with found action object");
-	}
-	else
-	{
+	} else {
 		char buf[512];
 
 		report_req_bad_format(s, action);
@@ -5853,19 +5243,15 @@ static int process_message(struct mansession *s, const struct message *m)
 		astman_send_error(s, m, buf);
 		mansession_unlock(s);
 	}
-	if (ret)
-	{
+	if (ret) {
 		return ret;
 	}
 	/* Once done with our message, deliver any pending events unless the
 	   requester doesn't want them as part of this response.
 	*/
-	if (ast_strlen_zero(astman_get_header(m, "SuppressEvents")))
-	{
+	if (ast_strlen_zero(astman_get_header(m, "SuppressEvents"))) {
 		return process_events(s);
-	}
-	else
-	{
+	} else {
 		return ret;
 	}
 }
@@ -5891,58 +5277,46 @@ static int get_input(struct mansession *s, char *output)
 	 * Look for \r\n within the buffer. If found, copy to the output
 	 * buffer and return, trimming the \r\n (not used afterwards).
 	 */
-	for (x = 0; x < s->session->inlen; x++)
-	{
-		int cr; /* set if we have \r */
-		if (src[x] == '\r' && x + 1 < s->session->inlen && src[x + 1] == '\n')
-		{
-			cr = 2; /* Found. Update length to include \r\n */
-		}
-		else if (src[x] == '\n')
-		{
-			cr = 1; /* also accept \n only */
-		}
-		else
-		{
+	for (x = 0; x < s->session->inlen; x++) {
+		int cr;	/* set if we have \r */
+		if (src[x] == '\r' && x+1 < s->session->inlen && src[x + 1] == '\n') {
+			cr = 2;	/* Found. Update length to include \r\n */
+		} else if (src[x] == '\n') {
+			cr = 1;	/* also accept \n only */
+		} else {
 			continue;
 		}
-		memmove(output, src, x);				  /*... but trim \r\n */
-		output[x] = '\0';						  /* terminate the string */
-		x += cr;								  /* number of bytes used */
-		s->session->inlen -= x;					  /* remaining size */
+		memmove(output, src, x);	/*... but trim \r\n */
+		output[x] = '\0';		/* terminate the string */
+		x += cr;			/* number of bytes used */
+		s->session->inlen -= x;			/* remaining size */
 		memmove(src, src + x, s->session->inlen); /* remove used bytes */
 		return 1;
 	}
-	if (s->session->inlen >= maxlen)
-	{
+	if (s->session->inlen >= maxlen) {
 		/* no crlf found, and buffer full - sorry, too long for us */
 		ast_log(LOG_WARNING, "Discarding message from %s. Line too long: %.25s...\n", ast_sockaddr_stringify_addr(&s->session->addr), src);
 		s->session->inlen = 0;
 		s->parsing = MESSAGE_LINE_TOO_LONG;
 	}
 	res = 0;
-	while (res == 0)
-	{
+	while (res == 0) {
 		/* calculate a timeout if we are not authenticated */
-		if (!s->session->authenticated)
-		{
-			if (time(&now) == -1)
-			{
+		if (!s->session->authenticated) {
+			if(time(&now) == -1) {
 				ast_log(LOG_ERROR, "error executing time(): %s\n", strerror(errno));
 				return -1;
 			}
 
 			timeout = (authtimeout - (now - s->session->authstart)) * 1000;
-			if (timeout < 0)
-			{
+			if (timeout < 0) {
 				/* we have timed out */
 				return 0;
 			}
 		}
 
 		ao2_lock(s->session);
-		if (s->session->pending_event)
-		{
+		if (s->session->pending_event) {
 			s->session->pending_event = 0;
 			ao2_unlock(s->session);
 			return 0;
@@ -5956,13 +5330,11 @@ static int get_input(struct mansession *s, char *output)
 		s->session->waiting_thread = AST_PTHREADT_NULL;
 		ao2_unlock(s->session);
 	}
-	if (res < 0)
-	{
+	if (res < 0) {
 		/* If we get a signal from some other thread (typically because
 		 * there are new events queued), return 0 to notify the caller.
 		 */
-		if (errno == EINTR || errno == EAGAIN)
-		{
+		if (errno == EINTR || errno == EAGAIN) {
 			return 0;
 		}
 		ast_log(LOG_WARNING, "poll() returned error: %s\n", strerror(errno));
@@ -5971,12 +5343,9 @@ static int get_input(struct mansession *s, char *output)
 
 	ao2_lock(s->session);
 	res = fread(src + s->session->inlen, 1, maxlen - s->session->inlen, s->session->f);
-	if (res < 1)
-	{
-		res = -1; /* error return */
-	}
-	else
-	{
+	if (res < 1) {
+		res = -1;	/* error return */
+	} else {
 		s->session->inlen += res;
 		src[s->session->inlen] = '\0';
 		res = 0;
@@ -6013,39 +5382,32 @@ static void handle_parse_error(struct mansession *s, struct message *m, char *er
  */
 static int do_message(struct mansession *s)
 {
-	struct message m = {0};
-	char header_buf[sizeof(s->session->inbuf)] = {'\0'};
+	struct message m = { 0 };
+	char header_buf[sizeof(s->session->inbuf)] = { '\0' };
 	int res;
 	int idx;
 	int hdr_loss;
 	time_t now;
 
 	hdr_loss = 0;
-	for (;;)
-	{
+	for (;;) {
 		/* Check if any events are pending and do them if needed */
-		if (process_events(s))
-		{
+		if (process_events(s)) {
 			res = -1;
 			break;
 		}
 		res = get_input(s, header_buf);
-		if (res == 0)
-		{
+		if (res == 0) {
 			/* No input line received. */
-			if (!s->session->authenticated)
-			{
-				if (time(&now) == -1)
-				{
+			if (!s->session->authenticated) {
+				if (time(&now) == -1) {
 					ast_log(LOG_ERROR, "error executing time(): %s\n", strerror(errno));
 					res = -1;
 					break;
 				}
 
-				if (now - s->session->authstart > authtimeout)
-				{
-					if (displayconnects)
-					{
+				if (now - s->session->authstart > authtimeout) {
+					if (displayconnects) {
 						ast_verb(2, "Client from %s, failed to authenticate in %d seconds\n", ast_sockaddr_stringify_addr(&s->session->addr), authtimeout);
 					}
 					res = -1;
@@ -6053,23 +5415,16 @@ static int do_message(struct mansession *s)
 				}
 			}
 			continue;
-		}
-		else if (res > 0)
-		{
+		} else if (res > 0) {
 			/* Input line received. */
-			if (ast_strlen_zero(header_buf))
-			{
-				if (hdr_loss)
-				{
+			if (ast_strlen_zero(header_buf)) {
+				if (hdr_loss) {
 					mansession_lock(s);
 					astman_send_error(s, &m, "Too many lines in message or allocation failure");
 					mansession_unlock(s);
 					res = 0;
-				}
-				else
-				{
-					switch (s->parsing)
-					{
+				} else {
+					switch (s->parsing) {
 					case MESSAGE_OKAY:
 						res = process_message(s, &m) ? -1 : 0;
 						break;
@@ -6080,37 +5435,27 @@ static int do_message(struct mansession *s)
 					}
 				}
 				break;
-			}
-			else if (m.hdrcount < ARRAY_LEN(m.headers))
-			{
+			} else if (m.hdrcount < ARRAY_LEN(m.headers)) {
 				m.headers[m.hdrcount] = ast_strdup(header_buf);
-				if (!m.headers[m.hdrcount])
-				{
+				if (!m.headers[m.hdrcount]) {
 					/* Allocation failure. */
 					hdr_loss = 1;
-				}
-				else
-				{
+				} else {
 					++m.hdrcount;
 				}
-			}
-			else
-			{
+			} else {
 				/* Too many lines in message. */
 				hdr_loss = 1;
 			}
-		}
-		else
-		{
+		} else {
 			/* Input error. */
 			break;
 		}
 	}
 
 	/* Free AMI request headers. */
-	for (idx = 0; idx < m.hdrcount; ++idx)
-	{
-		ast_free((void *)m.headers[idx]);
+	for (idx = 0; idx < m.hdrcount; ++idx) {
+		ast_free((void *) m.headers[idx]);
 	}
 	return res;
 }
@@ -6135,8 +5480,7 @@ static void *session_do(void *data)
 	struct ast_sockaddr ser_remote_address_tmp;
 	struct protoent *p;
 
-	if (ast_atomic_fetchadd_int(&unauth_sessions, +1) >= authlimit)
-	{
+	if (ast_atomic_fetchadd_int(&unauth_sessions, +1) >= authlimit) {
 		fclose(ser->f);
 		ast_atomic_fetchadd_int(&unauth_sessions, -1);
 		goto done;
@@ -6145,8 +5489,7 @@ static void *session_do(void *data)
 	ast_sockaddr_copy(&ser_remote_address_tmp, &ser->remote_address);
 	session = build_mansession(&ser_remote_address_tmp);
 
-	if (session == NULL)
-	{
+	if (session == NULL) {
 		fclose(ser->f);
 		ast_atomic_fetchadd_int(&unauth_sessions, -1);
 		goto done;
@@ -6156,26 +5499,19 @@ static void *session_do(void *data)
 	 * This is necessary to prevent delays (caused by buffering) as we
 	 * write to the socket in bits and peices. */
 	p = getprotobyname("tcp");
-	if (p)
-	{
+	if (p) {
 		int arg = 1;
-		if (setsockopt(ser->fd, p->p_proto, TCP_NODELAY, (char *)&arg, sizeof(arg)) < 0)
-		{
+		if( setsockopt(ser->fd, p->p_proto, TCP_NODELAY, (char *)&arg, sizeof(arg) ) < 0 ) {
 			ast_log(LOG_WARNING, "Failed to set manager tcp connection to TCP_NODELAY mode: %s\nSome manager actions may be slow to respond.\n", strerror(errno));
 		}
-	}
-	else
-	{
+	} else {
 		ast_log(LOG_WARNING, "Failed to set manager tcp connection to TCP_NODELAY, getprotobyname(\"tcp\") failed\nSome manager actions may be slow to respond.\n");
 	}
 
 	flags = fcntl(ser->fd, F_GETFL);
-	if (!block_sockets)
-	{ /* make sure socket is non-blocking */
+	if (!block_sockets) { /* make sure socket is non-blocking */
 		flags |= O_NONBLOCK;
-	}
-	else
-	{
+	} else {
 		flags &= ~O_NONBLOCK;
 	}
 	fcntl(ser->fd, F_SETFL, flags);
@@ -6194,8 +5530,7 @@ static void *session_do(void *data)
 
 	AST_LIST_HEAD_INIT_NOLOCK(&session->datastores);
 
-	if (time(&session->authstart) == -1)
-	{
+	if(time(&session->authstart) == -1) {
 		ast_log(LOG_ERROR, "error executing time(): %s; disconnecting client\n", strerror(errno));
 		ast_atomic_fetchadd_int(&unauth_sessions, -1);
 		ao2_unlock(session);
@@ -6204,27 +5539,20 @@ static void *session_do(void *data)
 	}
 	ao2_unlock(session);
 
-	astman_append(&s, "Asterisk Call Manager/%s\r\n", AMI_VERSION); /* welcome prompt */
-	for (;;)
-	{
-		if ((res = do_message(&s)) < 0 || s.write_error)
-		{
+	astman_append(&s, "Asterisk Call Manager/%s\r\n", AMI_VERSION);	/* welcome prompt */
+	for (;;) {
+		if ((res = do_message(&s)) < 0 || s.write_error) {
 			break;
 		}
 	}
 	/* session is over, explain why and terminate */
-	if (session->authenticated)
-	{
-		if (manager_displayconnects(session))
-		{
+	if (session->authenticated) {
+		if (manager_displayconnects(session)) {
 			ast_verb(2, "Manager '%s' logged off from %s\n", session->username, ast_sockaddr_stringify_addr(&session->addr));
 		}
-	}
-	else
-	{
+	} else {
 		ast_atomic_fetchadd_int(&unauth_sessions, -1);
-		if (displayconnects)
-		{
+		if (displayconnects) {
 			ast_verb(2, "Connect attempt from '%s' unable to authenticate\n", ast_sockaddr_stringify_addr(&session->addr));
 		}
 	}
@@ -6245,28 +5573,22 @@ static void purge_sessions(int n_max)
 	time_t now = time(NULL);
 	struct ao2_iterator i;
 
-	if (!sessions)
-	{
+	if (!sessions) {
 		return;
 	}
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)) && n_max > 0)
-	{
+	while ((session = ao2_iterator_next(&i)) && n_max > 0) {
 		ao2_lock(session);
-		if (session->sessiontimeout && (now > session->sessiontimeout) && !session->inuse)
-		{
-			if (session->authenticated && manager_displayconnects(session))
-			{
+		if (session->sessiontimeout && (now > session->sessiontimeout) && !session->inuse) {
+			if (session->authenticated && manager_displayconnects(session)) {
 				ast_verb(2, "HTTP Manager '%s' timed out from %s\n",
-						 session->username, ast_sockaddr_stringify_addr(&session->addr));
+					session->username, ast_sockaddr_stringify_addr(&session->addr));
 			}
 			ao2_unlock(session);
 			session_destroy(session);
 			n_max--;
-		}
-		else
-		{
+		} else {
 			ao2_unlock(session);
 			unref_mansession(session);
 		}
@@ -6281,10 +5603,9 @@ static void purge_sessions(int n_max)
 static int append_event(const char *str, int category)
 {
 	struct eventqent *tmp = ast_malloc(sizeof(*tmp) + strlen(str));
-	static int seq; /* sequence number */
+	static int seq;	/* sequence number */
 
-	if (!tmp)
-	{
+	if (!tmp) {
 		return -1;
 	}
 
@@ -6310,25 +5631,18 @@ static void append_channel_vars(struct ast_str **pbuf, struct ast_channel *chan)
 	struct manager_channel_variable *var;
 
 	AST_RWLIST_RDLOCK(&channelvars);
-	AST_LIST_TRAVERSE(&channelvars, var, entry)
-	{
+	AST_LIST_TRAVERSE(&channelvars, var, entry) {
 		const char *val;
 		struct ast_str *res;
 
-		if (var->isfunc)
-		{
+		if (var->isfunc) {
 			res = ast_str_thread_get(&manager_event_funcbuf, 16);
-			if (res && ast_func_read2(chan, var->name, &res, 0) == 0)
-			{
+			if (res && ast_func_read2(chan, var->name, &res, 0) == 0) {
 				val = ast_str_buffer(res);
-			}
-			else
-			{
+			} else {
 				val = NULL;
 			}
-		}
-		else
-		{
+		} else {
 			val = pbx_builtin_getvar_helper(chan, var->name);
 		}
 		ast_str_append(pbuf, 0, "ChanVariable(%s): %s=%s\r\n", ast_channel_name(chan), var->name, val ? val : "");
@@ -6338,9 +5652,10 @@ static void append_channel_vars(struct ast_str **pbuf, struct ast_channel *chan)
 
 /* XXX see if can be moved inside the function */
 AST_THREADSTORAGE(manager_event_buf);
-#define MANAGER_EVENT_BUF_INITSIZE 256
+#define MANAGER_EVENT_BUF_INITSIZE   256
 
-int __ast_manager_event_multichan(int category, const char *event, int chancount, struct ast_channel **chans, const char *file, int line, const char *func, const char *fmt, ...)
+int __ast_manager_event_multichan(int category, const char *event, int chancount, struct
+	ast_channel **chans, const char *file, int line, const char *func, const char *fmt, ...)
 {
 	struct mansession_session *session;
 	struct manager_custom_hook *hook;
@@ -6351,43 +5666,38 @@ int __ast_manager_event_multichan(int category, const char *event, int chancount
 	struct ast_str *buf;
 	int i;
 
-	if (!(sessions && ao2_container_count(sessions)) && AST_RWLIST_EMPTY(&manager_hooks))
-	{
+	if (!(sessions && ao2_container_count(sessions)) && AST_RWLIST_EMPTY(&manager_hooks)) {
 		return 0;
 	}
 
-	if (!(buf = ast_str_thread_get(&manager_event_buf, MANAGER_EVENT_BUF_INITSIZE)))
-	{
+	if (!(buf = ast_str_thread_get(&manager_event_buf, MANAGER_EVENT_BUF_INITSIZE))) {
 		return -1;
 	}
 
 	cat_str = authority_to_str(category, &auth);
 	ast_str_set(&buf, 0,
-				"Event: %s\r\nPrivilege: %s\r\n",
-				event, cat_str);
+			"Event: %s\r\nPrivilege: %s\r\n",
+			 event, cat_str);
 
-	if (timestampevents)
-	{
+	if (timestampevents) {
 		now = ast_tvnow();
 		ast_str_append(&buf, 0,
-					   "Timestamp: %ld.%06lu\r\n",
-					   (long)now.tv_sec, (unsigned long)now.tv_usec);
+				"Timestamp: %ld.%06lu\r\n",
+				 (long)now.tv_sec, (unsigned long) now.tv_usec);
 	}
-	if (manager_debug)
-	{
+	if (manager_debug) {
 		static int seq;
 		ast_str_append(&buf, 0,
-					   "SequenceNumber: %d\r\n",
-					   ast_atomic_fetchadd_int(&seq, 1));
+				"SequenceNumber: %d\r\n",
+				 ast_atomic_fetchadd_int(&seq, 1));
 		ast_str_append(&buf, 0,
-					   "File: %s\r\nLine: %d\r\nFunc: %s\r\n", file, line, func);
+				"File: %s\r\nLine: %d\r\nFunc: %s\r\n", file, line, func);
 	}
 
 	va_start(ap, fmt);
 	ast_str_append_va(&buf, 0, fmt, ap);
 	va_end(ap);
-	for (i = 0; i < chancount; i++)
-	{
+	for (i = 0; i < chancount; i++) {
 		append_channel_vars(&buf, chans[i]);
 	}
 
@@ -6396,19 +5706,14 @@ int __ast_manager_event_multichan(int category, const char *event, int chancount
 	append_event(ast_str_buffer(buf), category);
 
 	/* Wake up any sleeping sessions */
-	if (sessions)
-	{
+	if (sessions) {
 		struct ao2_iterator i;
 		i = ao2_iterator_init(sessions, 0);
-		while ((session = ao2_iterator_next(&i)))
-		{
+		while ((session = ao2_iterator_next(&i))) {
 			ao2_lock(session);
-			if (session->waiting_thread != AST_PTHREADT_NULL)
-			{
+			if (session->waiting_thread != AST_PTHREADT_NULL) {
 				pthread_kill(session->waiting_thread, SIGURG);
-			}
-			else
-			{
+			} else {
 				/* We have an event to process, but the mansession is
 				 * not waiting for it. We still need to indicate that there
 				 * is an event waiting so that get_input processes the pending
@@ -6422,11 +5727,9 @@ int __ast_manager_event_multichan(int category, const char *event, int chancount
 		ao2_iterator_destroy(&i);
 	}
 
-	if (!AST_RWLIST_EMPTY(&manager_hooks))
-	{
+	if (!AST_RWLIST_EMPTY(&manager_hooks)) {
 		AST_RWLIST_RDLOCK(&manager_hooks);
-		AST_RWLIST_TRAVERSE(&manager_hooks, hook, list)
-		{
+		AST_RWLIST_TRAVERSE(&manager_hooks, hook, list) {
 			hook->helper(category, event, ast_str_buffer(buf));
 		}
 		AST_RWLIST_UNLOCK(&manager_hooks);
@@ -6443,10 +5746,8 @@ int ast_manager_unregister(const char *action)
 	struct manager_action *cur;
 
 	AST_RWLIST_WRLOCK(&actions);
-	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&actions, cur, list)
-	{
-		if (!strcasecmp(action, cur->action))
-		{
+	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&actions, cur, list) {
+		if (!strcasecmp(action, cur->action)) {
 			AST_RWLIST_REMOVE_CURRENT(list);
 			break;
 		}
@@ -6454,8 +5755,7 @@ int ast_manager_unregister(const char *action)
 	AST_RWLIST_TRAVERSE_SAFE_END;
 	AST_RWLIST_UNLOCK(&actions);
 
-	if (cur)
-	{
+	if (cur) {
 		/*
 		 * We have removed the action object from the container so we
 		 * are no longer in a hurry.
@@ -6478,8 +5778,7 @@ static int manager_state_cb(char *context, char *exten, struct ast_state_cb_info
 	int state = info->exten_state;
 
 	/* only interested in device state for this right now */
-	if (info->reason != AST_HINT_UPDATE_DEVICE)
-	{
+	if (info->reason !=  AST_HINT_UPDATE_DEVICE) {
 		return 0;
 	}
 
@@ -6498,19 +5797,16 @@ static int ast_manager_register_struct(struct manager_action *act)
 	struct manager_action *cur, *prev = NULL;
 
 	AST_RWLIST_WRLOCK(&actions);
-	AST_RWLIST_TRAVERSE(&actions, cur, list)
-	{
+	AST_RWLIST_TRAVERSE(&actions, cur, list) {
 		int ret;
 
 		ret = strcasecmp(cur->action, act->action);
-		if (ret == 0)
-		{
+		if (ret == 0) {
 			ast_log(LOG_WARNING, "Manager: Action '%s' already registered\n", act->action);
 			AST_RWLIST_UNLOCK(&actions);
 			return -1;
 		}
-		if (ret > 0)
-		{ /* Insert these alphabetically */
+		if (ret > 0) { /* Insert these alphabetically */
 			prev = cur;
 			break;
 		}
@@ -6518,12 +5814,9 @@ static int ast_manager_register_struct(struct manager_action *act)
 
 	ao2_t_ref(act, +1, "action object added to list");
 	act->registered = 1;
-	if (prev)
-	{
+	if (prev) {
 		AST_RWLIST_INSERT_AFTER(&actions, prev, act, list);
-	}
-	else
-	{
+	} else {
 		AST_RWLIST_INSERT_HEAD(&actions, act, list);
 	}
 
@@ -6546,8 +5839,7 @@ static void action_destroy(void *obj)
 {
 	struct manager_action *doomed = obj;
 
-	if (doomed->synopsis)
-	{
+	if (doomed->synopsis) {
 		/* The string fields were initialized. */
 		ast_string_field_free_memory(doomed);
 	}
@@ -6560,12 +5852,10 @@ int ast_manager_register2(const char *action, int auth, int (*func)(struct manse
 	struct manager_action *cur;
 
 	cur = ao2_alloc(sizeof(*cur), action_destroy);
-	if (!cur)
-	{
+	if (!cur) {
 		return -1;
 	}
-	if (ast_string_field_init(cur, 128))
-	{
+	if (ast_string_field_init(cur, 128)) {
 		ao2_t_ref(cur, -1, "action object creation failed");
 		return -1;
 	}
@@ -6575,8 +5865,7 @@ int ast_manager_register2(const char *action, int auth, int (*func)(struct manse
 	cur->func = func;
 	cur->module = module;
 #ifdef AST_XML_DOCS
-	if (ast_strlen_zero(synopsis) && ast_strlen_zero(description))
-	{
+	if (ast_strlen_zero(synopsis) && ast_strlen_zero(description)) {
 		char *tmpxml;
 
 		tmpxml = ast_xmldoc_build_synopsis("manager", action, NULL);
@@ -6600,8 +5889,7 @@ int ast_manager_register2(const char *action, int auth, int (*func)(struct manse
 		ast_free(tmpxml);
 
 		cur->docsrc = AST_XML_DOC;
-	}
-	else
+	} else
 #endif
 	{
 		ast_string_field_set(cur, synopsis, synopsis);
@@ -6610,8 +5898,7 @@ int ast_manager_register2(const char *action, int auth, int (*func)(struct manse
 		cur->docsrc = AST_STATIC_DOC;
 #endif
 	}
-	if (ast_manager_register_struct(cur))
-	{
+	if (ast_manager_register_struct(cur)) {
 		ao2_t_ref(cur, -1, "action object registration failed");
 		return -1;
 	}
@@ -6634,17 +5921,16 @@ int ast_manager_register2(const char *action, int auth, int (*func)(struct manse
  * then fed back to the client over the original socket.
  */
 
-enum output_format
-{
+enum output_format {
 	FORMAT_RAW,
 	FORMAT_HTML,
 	FORMAT_XML,
 };
 
-static const char *const contenttype[] = {
+static const char * const contenttype[] = {
 	[FORMAT_RAW] = "plain",
 	[FORMAT_HTML] = "html",
-	[FORMAT_XML] = "xml",
+	[FORMAT_XML] =  "xml",
 };
 
 /*!
@@ -6657,17 +5943,14 @@ static struct mansession_session *find_session(uint32_t ident, int incinuse)
 	struct mansession_session *session;
 	struct ao2_iterator i;
 
-	if (ident == 0)
-	{
+	if (ident == 0) {
 		return NULL;
 	}
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)))
-	{
+	while ((session = ao2_iterator_next(&i))) {
 		ao2_lock(session);
-		if (session->managerid == ident && !session->needdestroy)
-		{
+		if (session->managerid == ident && !session->needdestroy) {
 			ast_atomic_fetchadd_int(&session->inuse, incinuse ? 1 : 0);
 			break;
 		}
@@ -6693,22 +5976,17 @@ static struct mansession_session *find_session_by_nonce(const char *username, un
 	struct mansession_session *session;
 	struct ao2_iterator i;
 
-	if (nonce == 0 || username == NULL || stale == NULL)
-	{
+	if (nonce == 0 || username == NULL || stale == NULL) {
 		return NULL;
 	}
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)))
-	{
+	while ((session = ao2_iterator_next(&i))) {
 		ao2_lock(session);
-		if (!strcasecmp(session->username, username) && session->managerid == nonce)
-		{
+		if (!strcasecmp(session->username, username) && session->managerid == nonce) {
 			*stale = 0;
 			break;
-		}
-		else if (!strcasecmp(session->username, username) && session->oldnonce == nonce)
-		{
+		} else if (!strcasecmp(session->username, username) && session->oldnonce == nonce) {
 			*stale = 1;
 			break;
 		}
@@ -6741,17 +6019,14 @@ int astman_verify_session_readpermissions(uint32_t ident, int perm)
 	struct mansession_session *session;
 	struct ao2_iterator i;
 
-	if (ident == 0)
-	{
+	if (ident == 0) {
 		return 0;
 	}
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)))
-	{
+	while ((session = ao2_iterator_next(&i))) {
 		ao2_lock(session);
-		if ((session->managerid == ident) && (session->readperm & perm))
-		{
+		if ((session->managerid == ident) && (session->readperm & perm)) {
 			result = 1;
 			ao2_unlock(session);
 			unref_mansession(session);
@@ -6770,17 +6045,14 @@ int astman_verify_session_writepermissions(uint32_t ident, int perm)
 	struct mansession_session *session;
 	struct ao2_iterator i;
 
-	if (ident == 0)
-	{
+	if (ident == 0) {
 		return 0;
 	}
 
 	i = ao2_iterator_init(sessions, 0);
-	while ((session = ao2_iterator_next(&i)))
-	{
+	while ((session = ao2_iterator_next(&i))) {
 		ao2_lock(session);
-		if ((session->managerid == ident) && (session->writeperm & perm))
-		{
+		if ((session->managerid == ident) && (session->writeperm & perm)) {
 			result = 1;
 			ao2_unlock(session);
 			unref_mansession(session);
@@ -6805,28 +6077,23 @@ static void xml_copy_escape(struct ast_str **out, const char *src, int mode)
 	char *dst = buf;
 	int space = sizeof(buf);
 	/* repeat until done and nothing to flush */
-	for (; *src || dst != buf; src++)
-	{
-		if (*src == '\0' || space < 10)
-		{ /* flush */
+	for ( ; *src || dst != buf ; src++) {
+		if (*src == '\0' || space < 10) {	/* flush */
 			*dst++ = '\0';
 			ast_str_append(out, 0, "%s", buf);
 			dst = buf;
 			space = sizeof(buf);
-			if (*src == '\0')
-			{
+			if (*src == '\0') {
 				break;
 			}
 		}
 
-		if ((mode & 2) && !isalnum(*src))
-		{
+		if ( (mode & 2) && !isalnum(*src)) {
 			*dst++ = '_';
 			space--;
 			continue;
 		}
-		switch (*src)
-		{
+		switch (*src) {
 		case '<':
 			strcpy(dst, "&lt;");
 			dst += 4;
@@ -6860,8 +6127,7 @@ static void xml_copy_escape(struct ast_str **out, const char *src, int mode)
 	}
 }
 
-struct variable_count
-{
+struct variable_count {
 	char *varname;
 	int count;
 };
@@ -6918,60 +6184,49 @@ static void xml_translate(struct ast_str **out, char *in, struct ast_variable *g
 	const char *dest = NULL;
 	char *var, *val;
 	const char *objtype = NULL;
-	int in_data = 0; /* parsing data */
+	int in_data = 0;	/* parsing data */
 	int inobj = 0;
 	int xml = (format == FORMAT_XML);
 	struct variable_count *vc = NULL;
 	struct ao2_container *vco = NULL;
 
-	if (xml)
-	{
+	if (xml) {
 		/* dest and objtype need only for XML format */
-		for (v = get_vars; v; v = v->next)
-		{
-			if (!strcasecmp(v->name, "ajaxdest"))
-			{
+		for (v = get_vars; v; v = v->next) {
+			if (!strcasecmp(v->name, "ajaxdest")) {
 				dest = v->value;
-			}
-			else if (!strcasecmp(v->name, "ajaxobjtype"))
-			{
+			} else if (!strcasecmp(v->name, "ajaxobjtype")) {
 				objtype = v->value;
 			}
 		}
-		if (ast_strlen_zero(dest))
-		{
+		if (ast_strlen_zero(dest)) {
 			dest = "unknown";
 		}
-		if (ast_strlen_zero(objtype))
-		{
+		if (ast_strlen_zero(objtype)) {
 			objtype = "generic";
 		}
 	}
 
 	/* we want to stop when we find an empty line */
-	while (in && *in)
-	{
-		val = strsep(&in, "\r\n"); /* mark start and end of line */
-		if (in && *in == '\n')
-		{ /* remove trailing \n if any */
+	while (in && *in) {
+		val = strsep(&in, "\r\n");	/* mark start and end of line */
+		if (in && *in == '\n') {	/* remove trailing \n if any */
 			in++;
 		}
 		ast_trim_blanks(val);
 		ast_debug(5, "inobj %d in_data %d line <%s>\n", inobj, in_data, val);
-		if (ast_strlen_zero(val))
-		{
+		if (ast_strlen_zero(val)) {
 			/* empty line */
-			if (in_data)
-			{
+			if (in_data) {
 				/* close data in Opaque mode */
 				ast_str_append(out, 0, xml ? "'" : "</td></tr>\n");
 				in_data = 0;
 			}
 
-			if (inobj)
-			{
+			if (inobj) {
 				/* close block */
-				ast_str_append(out, 0, xml ? " /></response>\n" : "<tr><td colspan=\"2\"><hr></td></tr>\r\n");
+				ast_str_append(out, 0, xml ? " /></response>\n" :
+					"<tr><td colspan=\"2\"><hr></td></tr>\r\n");
 				inobj = 0;
 				ao2_ref(vco, -1);
 				vco = NULL;
@@ -6979,49 +6234,41 @@ static void xml_translate(struct ast_str **out, char *in, struct ast_variable *g
 			continue;
 		}
 
-		if (!inobj)
-		{
+		if (!inobj) {
 			/* start new block */
-			if (xml)
-			{
+			if (xml) {
 				ast_str_append(out, 0, "<response type='object' id='%s'><%s", dest, objtype);
 			}
 			vco = ao2_container_alloc(37, variable_count_hash_fn, variable_count_cmp_fn);
 			inobj = 1;
 		}
 
-		if (in_data)
-		{
+		if (in_data) {
 			/* Process data field in Opaque mode. This is a
 			 * followup, so we re-add line feeds. */
 			ast_str_append(out, 0, xml ? "\n" : "<br>\n");
-			xml_copy_escape(out, val, 0); /* data field */
+			xml_copy_escape(out, val, 0);   /* data field */
 			continue;
 		}
 
 		/* We expect "Name: value" line here */
 		var = strsep(&val, ":");
-		if (val)
-		{
+		if (val) {
 			/* found the field name */
 			val = ast_skip_blanks(val);
 			ast_trim_blanks(var);
-		}
-		else
-		{
+		} else {
 			/* field name not found, switch to opaque mode */
 			val = var;
 			var = "Opaque-data";
 			in_data = 1;
 		}
 
+
 		ast_str_append(out, 0, xml ? " " : "<tr><td>");
-		if ((vc = ao2_find(vco, var, 0)))
-		{
+		if ((vc = ao2_find(vco, var, 0))) {
 			vc->count++;
-		}
-		else
-		{
+		} else {
 			/* Create a new entry for this one */
 			vc = ao2_alloc(sizeof(*vc), NULL);
 			vc->varname = var;
@@ -7030,22 +6277,20 @@ static void xml_translate(struct ast_str **out, char *in, struct ast_variable *g
 		}
 
 		xml_copy_escape(out, var, xml ? 1 | 2 : 0); /* data name */
-		if (vc->count > 1)
-		{
+		if (vc->count > 1) {
 			ast_str_append(out, 0, "-%d", vc->count);
 		}
 		ao2_ref(vc, -1);
 		ast_str_append(out, 0, xml ? "='" : "</td><td>");
-		xml_copy_escape(out, val, 0); /* data field */
-		if (!in_data || !*in)
-		{
+		xml_copy_escape(out, val, 0);	/* data field */
+		if (!in_data || !*in) {
 			ast_str_append(out, 0, xml ? "'" : "</td></tr>\n");
 		}
 	}
 
-	if (inobj)
-	{
-		ast_str_append(out, 0, xml ? " /></response>\n" : "<tr><td colspan=\"2\"><hr></td></tr>\r\n");
+	if (inobj) {
+		ast_str_append(out, 0, xml ? " /></response>\n" :
+			"<tr><td colspan=\"2\"><hr></td></tr>\r\n");
 		ao2_ref(vco, -1);
 	}
 }
@@ -7062,100 +6307,78 @@ static void process_output(struct mansession *s, struct ast_str **out, struct as
 	fprintf(s->f, "%c", 0);
 	fflush(s->f);
 
-	if ((l = ftell(s->f)) > 0)
-	{
-		if (MAP_FAILED == (buf = mmap(NULL, l, PROT_READ | PROT_WRITE, MAP_PRIVATE, s->fd, 0)))
-		{
+	if ((l = ftell(s->f)) > 0) {
+		if (MAP_FAILED == (buf = mmap(NULL, l, PROT_READ | PROT_WRITE, MAP_PRIVATE, s->fd, 0))) {
 			ast_log(LOG_WARNING, "mmap failed.  Manager output was not processed\n");
-		}
-		else
-		{
-			if (format == FORMAT_XML || format == FORMAT_HTML)
-			{
+		} else {
+			if (format == FORMAT_XML || format == FORMAT_HTML) {
 				xml_translate(out, buf, params, format);
-			}
-			else
-			{
+			} else {
 				ast_str_append(out, 0, "%s", buf);
 			}
 			munmap(buf, l);
 		}
-	}
-	else if (format == FORMAT_XML || format == FORMAT_HTML)
-	{
+	} else if (format == FORMAT_XML || format == FORMAT_HTML) {
 		xml_translate(out, "", params, format);
 	}
 
-	if (s->f)
-	{
-		if (fclose(s->f))
-		{
+	if (s->f) {
+		if (fclose(s->f)) {
 			ast_log(LOG_ERROR, "fclose() failed: %s\n", strerror(errno));
 		}
 		s->f = NULL;
 		s->fd = -1;
-	}
-	else if (s->fd != -1)
-	{
-		if (close(s->fd))
-		{
+	} else if (s->fd != -1) {
+		if (close(s->fd)) {
 			ast_log(LOG_ERROR, "close() failed: %s\n", strerror(errno));
 		}
 		s->fd = -1;
-	}
-	else
-	{
+	} else {
 		ast_log(LOG_ERROR, "process output attempted to close file/file descriptor on mansession without a valid file or file descriptor.\n");
 	}
 }
 
 static int generic_http_callback(struct ast_tcptls_session_instance *ser,
-								 enum ast_http_method method,
-								 enum output_format format,
-								 const struct ast_sockaddr *remote_address, const char *uri,
-								 struct ast_variable *get_params,
-								 struct ast_variable *headers)
+					     enum ast_http_method method,
+					     enum output_format format,
+					     const struct ast_sockaddr *remote_address, const char *uri,
+					     struct ast_variable *get_params,
+					     struct ast_variable *headers)
 {
-	struct mansession s = {.session = NULL, .tcptls_session = ser};
+	struct mansession s = { .session = NULL, .tcptls_session = ser };
 	struct mansession_session *session = NULL;
 	uint32_t ident = 0;
 	int blastaway = 0;
 	struct ast_variable *v, *cookies, *params = get_params;
-	char template[] = "/tmp/ast-http-XXXXXX"; /* template for temporary file */
+	char template[] = "/tmp/ast-http-XXXXXX";	/* template for temporary file */
 	struct ast_str *http_header = NULL, *out = NULL;
-	struct message m = {0};
+	struct message m = { 0 };
 	unsigned int idx;
 	size_t hdrlen;
 
-	if (method != AST_HTTP_GET && method != AST_HTTP_HEAD && method != AST_HTTP_POST)
-	{
+	if (method != AST_HTTP_GET && method != AST_HTTP_HEAD && method != AST_HTTP_POST) {
 		ast_http_error(ser, 501, "Not Implemented", "Attempt to use unimplemented / unsupported method");
 		return -1;
 	}
 
 	cookies = ast_http_get_cookies(headers);
-	for (v = cookies; v; v = v->next)
-	{
-		if (!strcasecmp(v->name, "mansession_id"))
-		{
+	for (v = cookies; v; v = v->next) {
+		if (!strcasecmp(v->name, "mansession_id")) {
 			sscanf(v->value, "%30x", &ident);
 			break;
 		}
 	}
-	if (cookies)
-	{
+	if (cookies) {
 		ast_variables_destroy(cookies);
 	}
 
-	if (!(session = find_session(ident, 1)))
-	{
+	if (!(session = find_session(ident, 1))) {
 
 		/**/
 		/* Create new session.
 		 * While it is not in the list we don't need any locking
 		 */
-		if (!(session = build_mansession(remote_address)))
-		{
+		if (!(session = build_mansession(remote_address))) {
 			ast_http_error(ser, 500, "Server Error", "Internal Server Error (out of memory)\n");
 			return -1;
 		}
@@ -7167,8 +6390,7 @@ static int generic_http_callback(struct ast_tcptls_session_instance *ser,
 		 * properties of the rand() function (and the constantcy of s), that
 		 * won't happen twice in a row.
 		 */
-		while ((session->managerid = ast_random() ^ (unsigned long)session) == 0)
-			;
+		while ((session->managerid = ast_random() ^ (unsigned long) session) == 0);
 		session->last_ev = grab_last();
 		AST_LIST_HEAD_INIT_NOLOCK(&session->datastores);
 	}
@@ -7179,61 +6401,49 @@ static int generic_http_callback(struct ast_tcptls_session_instance *ser,
 
 	ast_mutex_init(&s.lock);
 
-	if (http_header == NULL || out == NULL)
-	{
+	if (http_header == NULL || out == NULL) {
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (ast_str_create() out of memory)\n");
 		goto generic_callback_out;
 	}
 
 	s.session = session;
-	s.fd = mkstemp(template); /* create a temporary file for command output */
+	s.fd = mkstemp(template);	/* create a temporary file for command output */
 	unlink(template);
-	if (s.fd <= -1)
-	{
+	if (s.fd <= -1) {
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (mkstemp failed)\n");
 		goto generic_callback_out;
 	}
 	s.f = fdopen(s.fd, "w+");
-	if (!s.f)
-	{
+	if (!s.f) {
 		ast_log(LOG_WARNING, "HTTP Manager, fdopen failed: %s!\n", strerror(errno));
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (fdopen failed)\n");
 		close(s.fd);
 		goto generic_callback_out;
 	}
 
-	if (method == AST_HTTP_POST)
-	{
+	if (method == AST_HTTP_POST) {
 		params = ast_http_get_post_vars(ser, headers);
 	}
 
-	for (v = params; v && m.hdrcount < ARRAY_LEN(m.headers); v = v->next)
-	{
+	for (v = params; v && m.hdrcount < ARRAY_LEN(m.headers); v = v->next) {
 		hdrlen = strlen(v->name) + strlen(v->value) + 3;
 		m.headers[m.hdrcount] = ast_malloc(hdrlen);
-		if (!m.headers[m.hdrcount])
-		{
+		if (!m.headers[m.hdrcount]) {
 			/* Allocation failure */
 			continue;
 		}
-		snprintf((char *)m.headers[m.hdrcount], hdrlen, "%s: %s", v->name, v->value);
+		snprintf((char *) m.headers[m.hdrcount], hdrlen, "%s: %s", v->name, v->value);
 		ast_debug(1, "HTTP Manager add header %s\n", m.headers[m.hdrcount]);
 		++m.hdrcount;
 	}
 
-	if (process_message(&s, &m))
-	{
-		if (session->authenticated)
-		{
-			if (manager_displayconnects(session))
-			{
+	if (process_message(&s, &m)) {
+		if (session->authenticated) {
+			if (manager_displayconnects(session)) {
 				ast_verb(2, "HTTP Manager '%s' logged off from %s\n", session->username, ast_sockaddr_stringify_addr(&session->addr));
 			}
-		}
-		else
-		{
-			if (displayconnects)
-			{
+		} else {
+			if (displayconnects) {
 				ast_verb(2, "HTTP Connect attempt from '%s' unable to authenticate\n", ast_sockaddr_stringify_addr(&session->addr));
 			}
 		}
@@ -7241,33 +6451,29 @@ static int generic_http_callback(struct ast_tcptls_session_instance *ser,
 	}
 
 	/* Free request headers. */
-	for (idx = 0; idx < m.hdrcount; ++idx)
-	{
-		ast_free((void *)m.headers[idx]);
+	for (idx = 0; idx < m.hdrcount; ++idx) {
+		ast_free((void *) m.headers[idx]);
 		m.headers[idx] = NULL;
 	}
 
 	ast_str_append(&http_header, 0,
-				   "Content-type: text/%s\r\n"
-				   "Cache-Control: no-cache;\r\n"
-				   "Set-Cookie: mansession_id=\"%08x\"; Version=1; Max-Age=%d\r\n"
-				   "Pragma: SuppressEvents\r\n",
-				   contenttype[format],
-				   session->managerid, httptimeout);
+		"Content-type: text/%s\r\n"
+		"Cache-Control: no-cache;\r\n"
+		"Set-Cookie: mansession_id=\"%08x\"; Version=1; Max-Age=%d\r\n"
+		"Pragma: SuppressEvents\r\n",
+		contenttype[format],
+		session->managerid, httptimeout);
 
-	if (format == FORMAT_XML)
-	{
+	if (format == FORMAT_XML) {
 		ast_str_append(&out, 0, "<ajax-response>\n");
-	}
-	else if (format == FORMAT_HTML)
-	{
+	} else if (format == FORMAT_HTML) {
 		/*
 		 * When handling AMI-over-HTTP in HTML format, we provide a simple form for
 		 * debugging purposes. This HTML code should not be here, we
 		 * should read from some config file...
 		 */
 
-#define ROW_FMT "<tr><td colspan=\"2\" bgcolor=\"#f1f1ff\">%s</td></tr>\r\n"
+#define ROW_FMT	"<tr><td colspan=\"2\" bgcolor=\"#f1f1ff\">%s</td></tr>\r\n"
 #define TEST_STRING \
 	"<form action=\"manager\" method=\"post\">\n\
 	Action: <select name=\"action\">\n\
@@ -7290,12 +6496,9 @@ static int generic_http_callback(struct ast_tcptls_session_instance *ser,
 
 	process_output(&s, &out, params, format);
 
-	if (format == FORMAT_XML)
-	{
+	if (format == FORMAT_XML) {
 		ast_str_append(&out, 0, "</ajax-response>\n");
-	}
-	else if (format == FORMAT_HTML)
-	{
+	} else if (format == FORMAT_HTML) {
 		ast_str_append(&out, 0, "</table></body>\r\n");
 	}
 
@@ -7303,25 +6506,18 @@ static int generic_http_callback(struct ast_tcptls_session_instance *ser,
 	/* Reset HTTP timeout.  If we're not authenticated, keep it extremely short */
 	session->sessiontimeout = time(NULL) + ((session->authenticated || httptimeout < 5) ? httptimeout : 5);
 
-	if (session->needdestroy)
-	{
-		if (session->inuse == 1)
-		{
+	if (session->needdestroy) {
+		if (session->inuse == 1) {
 			ast_debug(1, "Need destroy, doing it now!\n");
 			blastaway = 1;
-		}
-		else
-		{
+		} else {
 			ast_debug(1, "Need destroy, but can't do it yet!\n");
-			if (session->waiting_thread != AST_PTHREADT_NULL)
-			{
+			if (session->waiting_thread != AST_PTHREADT_NULL) {
 				pthread_kill(session->waiting_thread, SIGURG);
 			}
 			session->inuse--;
 		}
-	}
-	else
-	{
+	} else {
 		session->inuse--;
 	}
 	ao2_unlock(session);
@@ -7334,25 +6530,19 @@ generic_callback_out:
 
 	/* Clear resource */
 
-	if (method == AST_HTTP_POST && params)
-	{
+	if (method == AST_HTTP_POST && params) {
 		ast_variables_destroy(params);
 	}
-	if (http_header)
-	{
+	if (http_header) {
 		ast_free(http_header);
 	}
-	if (out)
-	{
+	if (out) {
 		ast_free(out);
 	}
 
-	if (session && blastaway)
-	{
+	if (session && blastaway) {
 		session_destroy(session);
-	}
-	else if (session && session->f)
-	{
+	} else if (session && session->f) {
 		fclose(session->f);
 		session->f = NULL;
 	}
@@ -7361,30 +6551,28 @@ generic_callback_out:
 }
 
 static int auth_http_callback(struct ast_tcptls_session_instance *ser,
-							  enum ast_http_method method,
-							  enum output_format format,
-							  const struct ast_sockaddr *remote_address, const char *uri,
-							  struct ast_variable *get_params,
-							  struct ast_variable *headers)
+					     enum ast_http_method method,
+					     enum output_format format,
+					     const struct ast_sockaddr *remote_address, const char *uri,
+					     struct ast_variable *get_params,
+					     struct ast_variable *headers)
 {
 	struct mansession_session *session = NULL;
-	struct mansession s = {.session = NULL, .tcptls_session = ser};
+	struct mansession s = { .session = NULL, .tcptls_session = ser };
 	struct ast_variable *v, *params = get_params;
-	char template[] = "/tmp/ast-http-XXXXXX"; /* template for temporary file */
+	char template[] = "/tmp/ast-http-XXXXXX";	/* template for temporary file */
 	struct ast_str *http_header = NULL, *out = NULL;
 	size_t result_size = 512;
-	struct message m = {0};
+	struct message m = { 0 };
 	unsigned int idx;
 	size_t hdrlen;
 
 	time_t time_now = time(NULL);
 	unsigned long nonce = 0, nc;
-	struct ast_http_digest d = {
-		NULL,
-	};
+	struct ast_http_digest d = { NULL, };
 	struct ast_manager_user *user = NULL;
 	int stale = 0;
-	char resp_hash[256] = "";
+	char resp_hash[256]="";
 	/* Cache for user data */
 	char u_username[80];
 	int u_readperm;
@@ -7392,41 +6580,34 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 	int u_writetimeout;
 	int u_displayconnects;
 
-	if (method != AST_HTTP_GET && method != AST_HTTP_HEAD && method != AST_HTTP_POST)
-	{
+	if (method != AST_HTTP_GET && method != AST_HTTP_HEAD && method != AST_HTTP_POST) {
 		ast_http_error(ser, 501, "Not Implemented", "Attempt to use unimplemented / unsupported method");
 		return -1;
 	}
 
 	/* Find "Authorization: " header */
-	for (v = headers; v; v = v->next)
-	{
-		if (!strcasecmp(v->name, "Authorization"))
-		{
+	for (v = headers; v; v = v->next) {
+		if (!strcasecmp(v->name, "Authorization")) {
 			break;
 		}
 	}
 
-	if (!v || ast_strlen_zero(v->value))
-	{
+	if (!v || ast_strlen_zero(v->value)) {
 		goto out_401; /* Authorization Header not present - send auth request */
 	}
 
 	/* Digest found - parse */
-	if (ast_string_field_init(&d, 128))
-	{
+	if (ast_string_field_init(&d, 128)) {
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (out of memory)\n");
 		return -1;
 	}
 
-	if (ast_parse_digest(v->value, &d, 0, 1))
-	{
+	if (ast_parse_digest(v->value, &d, 0, 1)) {
 		/* Error in Digest - send new one */
 		nonce = 0;
 		goto out_401;
 	}
-	if (sscanf(d.nonce, "%30lx", &nonce) != 1)
-	{
+	if (sscanf(d.nonce, "%30lx", &nonce) != 1) {
 		ast_log(LOG_WARNING, "Received incorrect nonce in Digest <%s>\n", d.nonce);
 		nonce = 0;
 		goto out_401;
@@ -7434,8 +6615,7 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 
 	AST_RWLIST_WRLOCK(&users);
 	user = get_manager_by_name_locked(d.username);
-	if (!user)
-	{
+	if(!user) {
 		AST_RWLIST_UNLOCK(&users);
 		ast_log(LOG_NOTICE, "%s tried to authenticate with nonexistent user '%s'\n", ast_sockaddr_stringify_addr(&session->addr), d.username);
 		nonce = 0;
@@ -7443,8 +6623,7 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 	}
 
 	/* --- We have User for this auth, now check ACL */
-	if (user->acl && !ast_apply_acl(user->acl, remote_address, "Manager User ACL:"))
-	{
+	if (user->acl && !ast_apply_acl(user->acl, remote_address, "Manager User ACL:")) {
 		AST_RWLIST_UNLOCK(&users);
 		ast_log(LOG_NOTICE, "%s failed to pass IP ACL as '%s'\n", ast_sockaddr_stringify_addr(&session->addr), d.username);
 		ast_http_error(ser, 403, "Permission denied", "Permission denied\n");
@@ -7463,21 +6642,17 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 		snprintf(a2, sizeof(a2), "%s:%s", ast_get_http_method(method), d.uri);
 		ast_md5_hash(a2_hash, a2);
 
-		if (d.qop)
-		{
+		if (d.qop) {
 			/* RFC 2617 */
 			snprintf(resp, sizeof(resp), "%s:%08lx:%s:%s:auth:%s", user->a1_hash, nonce, d.nc, d.cnonce, a2_hash);
-		}
-		else
-		{
+		}  else {
 			/* RFC 2069 */
 			snprintf(resp, sizeof(resp), "%s:%08lx:%s", user->a1_hash, nonce, a2_hash);
 		}
 		ast_md5_hash(resp_hash, resp);
 	}
 
-	if (strncasecmp(d.response, resp_hash, strlen(resp_hash)))
-	{
+	if (strncasecmp(d.response, resp_hash, strlen(resp_hash))) {
 		/* Something was wrong, so give the client to try with a new challenge */
 		AST_RWLIST_UNLOCK(&users);
 		nonce = 0;
@@ -7495,14 +6670,12 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 	u_writetimeout = user->writetimeout;
 	AST_RWLIST_UNLOCK(&users);
 
-	if (!(session = find_session_by_nonce(d.username, nonce, &stale)))
-	{
+	if (!(session = find_session_by_nonce(d.username, nonce, &stale))) {
 		/*
 		 * Create new session.
 		 * While it is not in the list we don't need any locking
 		 */
-		if (!(session = build_mansession(remote_address)))
-		{
+		if (!(session = build_mansession(remote_address))) {
 			ast_http_error(ser, 500, "Server Error", "Internal Server Error (out of memory)\n");
 			return -1;
 		}
@@ -7517,15 +6690,12 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 		session->writeperm = u_writeperm;
 		session->writetimeout = u_writetimeout;
 
-		if (u_displayconnects)
-		{
+		if (u_displayconnects) {
 			ast_verb(2, "HTTP Manager '%s' logged in from %s\n", session->username, ast_sockaddr_stringify_addr(&session->addr));
 		}
 		session->noncetime = session->sessionstart = time_now;
 		session->authenticated = 1;
-	}
-	else if (stale)
-	{
+	} else if (stale) {
 		/*
 		 * Session found, but nonce is stale.
 		 *
@@ -7542,12 +6712,9 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 		ao2_unlock(session);
 		stale = 1;
 		goto out_401;
-	}
-	else
-	{
+	} else {
 		sscanf(d.nc, "%30lx", &nc);
-		if (session->nc >= nc || ((time_now - session->noncetime) > 62))
-		{
+		if (session->nc >= nc || ((time_now - session->noncetime) > 62) ) {
 			/*
 			 * Nonce time expired (> 2 minutes) or something wrong with nonce
 			 * counter.
@@ -7562,12 +6729,11 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 			ao2_unlock(session);
 			stale = 1;
 			goto out_401;
-		}
-		else
-		{
+		} else {
 			session->nc = nc; /* All OK, save nonce counter */
 		}
 	}
+
 
 	/* Reset session timeout. */
 	session->sessiontimeout = time(NULL) + (httptimeout > 5 ? httptimeout : 5);
@@ -7575,45 +6741,38 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 
 	ast_mutex_init(&s.lock);
 	s.session = session;
-	s.fd = mkstemp(template); /* create a temporary file for command output */
+	s.fd = mkstemp(template);	/* create a temporary file for command output */
 	unlink(template);
-	if (s.fd <= -1)
-	{
+	if (s.fd <= -1) {
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (mkstemp failed)\n");
 		goto auth_callback_out;
 	}
 	s.f = fdopen(s.fd, "w+");
-	if (!s.f)
-	{
+	if (!s.f) {
 		ast_log(LOG_WARNING, "HTTP Manager, fdopen failed: %s!\n", strerror(errno));
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (fdopen failed)\n");
 		close(s.fd);
 		goto auth_callback_out;
 	}
 
-	if (method == AST_HTTP_POST)
-	{
+	if (method == AST_HTTP_POST) {
 		params = ast_http_get_post_vars(ser, headers);
 	}
 
-	for (v = params; v && m.hdrcount < ARRAY_LEN(m.headers); v = v->next)
-	{
+	for (v = params; v && m.hdrcount < ARRAY_LEN(m.headers); v = v->next) {
 		hdrlen = strlen(v->name) + strlen(v->value) + 3;
 		m.headers[m.hdrcount] = ast_malloc(hdrlen);
-		if (!m.headers[m.hdrcount])
-		{
+		if (!m.headers[m.hdrcount]) {
 			/* Allocation failure */
 			continue;
 		}
-		snprintf((char *)m.headers[m.hdrcount], hdrlen, "%s: %s", v->name, v->value);
+		snprintf((char *) m.headers[m.hdrcount], hdrlen, "%s: %s", v->name, v->value);
 		ast_verb(4, "HTTP Manager add header %s\n", m.headers[m.hdrcount]);
 		++m.hdrcount;
 	}
 
-	if (process_message(&s, &m))
-	{
-		if (u_displayconnects)
-		{
+	if (process_message(&s, &m)) {
+		if (u_displayconnects) {
 			ast_verb(2, "HTTP Manager '%s' logged off from %s\n", session->username, ast_sockaddr_stringify_addr(&session->addr));
 		}
 
@@ -7621,54 +6780,45 @@ static int auth_http_callback(struct ast_tcptls_session_instance *ser,
 	}
 
 	/* Free request headers. */
-	for (idx = 0; idx < m.hdrcount; ++idx)
-	{
-		ast_free((void *)m.headers[idx]);
+	for (idx = 0; idx < m.hdrcount; ++idx) {
+		ast_free((void *) m.headers[idx]);
 		m.headers[idx] = NULL;
 	}
 
-	if (s.f)
-	{
+	if (s.f) {
 		result_size = ftell(s.f); /* Calculate approx. size of result */
 	}
 
 	http_header = ast_str_create(80);
 	out = ast_str_create(result_size * 2 + 512);
 
-	if (http_header == NULL || out == NULL)
-	{
+	if (http_header == NULL || out == NULL) {
 		ast_http_error(ser, 500, "Server Error", "Internal Server Error (ast_str_create() out of memory)\n");
 		goto auth_callback_out;
 	}
 
 	ast_str_append(&http_header, 0, "Content-type: text/%s\r\n", contenttype[format]);
 
-	if (format == FORMAT_XML)
-	{
+	if (format == FORMAT_XML) {
 		ast_str_append(&out, 0, "<ajax-response>\n");
-	}
-	else if (format == FORMAT_HTML)
-	{
+	} else if (format == FORMAT_HTML) {
 		ast_str_append(&out, 0,
-					   "<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n"
-					   "<html><head>\r\n"
-					   "<title>Asterisk&trade; Manager Interface</title>\r\n"
-					   "</head><body style=\"background-color: #ffffff;\">\r\n"
-					   "<form method=\"POST\">\r\n"
-					   "<table align=\"center\" style=\"background-color: #f1f1f1;\" width=\"500\">\r\n"
-					   "<tr><th colspan=\"2\" style=\"background-color: #f1f1ff;\"><h1>Manager Tester</h1></th></tr>\r\n"
-					   "<tr><th colspan=\"2\" style=\"background-color: #f1f1ff;\">Action: <input name=\"action\" /> Cmd: <input name=\"command\" /><br>"
-					   "<input type=\"submit\" value=\"Send request\" /></th></tr>\r\n");
+		"<!DOCTYPE HTML PUBLIC \"-//IETF//DTD HTML 2.0//EN\">\r\n"
+		"<html><head>\r\n"
+		"<title>Asterisk&trade; Manager Interface</title>\r\n"
+		"</head><body style=\"background-color: #ffffff;\">\r\n"
+		"<form method=\"POST\">\r\n"
+		"<table align=\"center\" style=\"background-color: #f1f1f1;\" width=\"500\">\r\n"
+		"<tr><th colspan=\"2\" style=\"background-color: #f1f1ff;\"><h1>Manager Tester</h1></th></tr>\r\n"
+		"<tr><th colspan=\"2\" style=\"background-color: #f1f1ff;\">Action: <input name=\"action\" /> Cmd: <input name=\"command\" /><br>"
+		"<input type=\"submit\" value=\"Send request\" /></th></tr>\r\n");
 	}
 
 	process_output(&s, &out, params, format);
 
-	if (format == FORMAT_XML)
-	{
+	if (format == FORMAT_XML) {
 		ast_str_append(&out, 0, "</ajax-response>\n");
-	}
-	else if (format == FORMAT_HTML)
-	{
+	} else if (format == FORMAT_HTML) {
 		ast_str_append(&out, 0, "</table></form></body></html>\r\n");
 	}
 
@@ -7679,8 +6829,7 @@ auth_callback_out:
 	ast_mutex_destroy(&s.lock);
 
 	/* Clear resources and unlock manager session */
-	if (method == AST_HTTP_POST && params)
-	{
+	if (method == AST_HTTP_POST && params) {
 		ast_variables_destroy(params);
 	}
 
@@ -7688,16 +6837,14 @@ auth_callback_out:
 	ast_free(out);
 
 	ao2_lock(session);
-	if (session->f)
-	{
+	if (session->f) {
 		fclose(session->f);
 	}
 	session->f = NULL;
 	session->fd = -1;
 	ao2_unlock(session);
 
-	if (session->needdestroy)
-	{
+	if (session->needdestroy) {
 		ast_debug(1, "Need destroy, doing it now!\n");
 		session_destroy(session);
 	}
@@ -7705,8 +6852,7 @@ auth_callback_out:
 	return 0;
 
 out_401:
-	if (!nonce)
-	{
+	if (!nonce) {
 		nonce = ast_random();
 	}
 
@@ -7715,7 +6861,7 @@ out_401:
 	return 0;
 }
 
-static int manager_http_callback(struct ast_tcptls_session_instance *ser, const struct ast_http_uri *urih, const char *uri, enum ast_http_method method, struct ast_variable *get_params, struct ast_variable *headers)
+static int manager_http_callback(struct ast_tcptls_session_instance *ser, const struct ast_http_uri *urih, const char *uri, enum ast_http_method method, struct ast_variable *get_params,  struct ast_variable *headers)
 {
 	int retval;
 	struct ast_sockaddr ser_remote_address_tmp;
@@ -7772,8 +6918,9 @@ static struct ast_http_uri managerxmluri = {
 	.key = __FILE__,
 };
 
+
 /* Callback with Digest authentication */
-static int auth_manager_http_callback(struct ast_tcptls_session_instance *ser, const struct ast_http_uri *urih, const char *uri, enum ast_http_method method, struct ast_variable *get_params, struct ast_variable *headers)
+static int auth_manager_http_callback(struct ast_tcptls_session_instance *ser, const struct ast_http_uri *urih, const char *uri, enum ast_http_method method, struct ast_variable *get_params,  struct ast_variable *headers)
 {
 	int retval;
 	struct ast_sockaddr ser_remote_address_tmp;
@@ -7840,13 +6987,13 @@ static int get_manager_sessions_cb(void *obj, void *arg, void *data, int flags)
 	const char *login = (char *)arg;
 	int *no_sessions = data;
 
-	if (strcasecmp(session->username, login) == 0)
-	{
+	if (strcasecmp(session->username, login) == 0) {
 		(*no_sessions)++;
 	}
 
 	return 0;
 }
+
 
 /*! \brief  ${AMI_CLIENT()} Dialplan function - reads manager client data */
 static int function_amiclient(struct ast_channel *chan, const char *cmd, char *data, char *buf, size_t len)
@@ -7854,11 +7001,12 @@ static int function_amiclient(struct ast_channel *chan, const char *cmd, char *d
 	struct ast_manager_user *user = NULL;
 
 	AST_DECLARE_APP_ARGS(args,
-						 AST_APP_ARG(name);
-						 AST_APP_ARG(param););
+		AST_APP_ARG(name);
+		AST_APP_ARG(param);
+	);
 
-	if (ast_strlen_zero(data))
-	{
+
+	if (ast_strlen_zero(data) ) {
 		ast_log(LOG_WARNING, "AMI_CLIENT() requires two arguments: AMI_CLIENT(<name>[,<arg>])\n");
 		return -1;
 	}
@@ -7867,28 +7015,26 @@ static int function_amiclient(struct ast_channel *chan, const char *cmd, char *d
 	args.param = ast_strip(args.param);
 
 	AST_RWLIST_RDLOCK(&users);
-	if (!(user = get_manager_by_name_locked(args.name)))
-	{
+	if (!(user = get_manager_by_name_locked(args.name))) {
 		AST_RWLIST_UNLOCK(&users);
 		ast_log(LOG_ERROR, "There's no manager user called : \"%s\"\n", args.name);
 		return -1;
 	}
 	AST_RWLIST_UNLOCK(&users);
 
-	if (!strcasecmp(args.param, "sessions"))
-	{
+	if (!strcasecmp(args.param, "sessions")) {
 		int no_sessions = 0;
 		ao2_callback_data(sessions, 0, get_manager_sessions_cb, /*login name*/ data, &no_sessions);
 		snprintf(buf, len, "%d", no_sessions);
-	}
-	else
-	{
+	} else {
 		ast_log(LOG_ERROR, "Invalid arguments provided to function AMI_CLIENT: %s\n", args.param);
 		return -1;
+
 	}
 
 	return 0;
 }
+
 
 /*! \brief description of AMI_CLIENT dialplan function */
 static struct ast_custom_function managerclient_function = {
@@ -7914,28 +7060,27 @@ static struct ast_tcptls_session_args ami_desc = {
 	.accept_fd = -1,
 	.master = AST_PTHREADT_NULL,
 	.tls_cfg = NULL,
-	.poll_timeout = 5000, /* wake up every 5 seconds */
+	.poll_timeout = 5000,	/* wake up every 5 seconds */
 	.periodic_fn = purge_old_stuff,
 	.name = "AMI server",
-	.accept_fn = ast_tcptls_server_root, /* thread doing the accept() */
-	.worker_fn = session_do,			 /* thread handling the session */
+	.accept_fn = ast_tcptls_server_root,	/* thread doing the accept() */
+	.worker_fn = session_do,	/* thread handling the session */
 };
 
 static struct ast_tcptls_session_args amis_desc = {
 	.accept_fd = -1,
 	.master = AST_PTHREADT_NULL,
 	.tls_cfg = &ami_tls_cfg,
-	.poll_timeout = -1, /* the other does the periodic cleanup */
+	.poll_timeout = -1,	/* the other does the periodic cleanup */
 	.name = "AMI TLS server",
-	.accept_fn = ast_tcptls_server_root, /* thread doing the accept() */
-	.worker_fn = session_do,			 /* thread handling the session */
+	.accept_fn = ast_tcptls_server_root,	/* thread doing the accept() */
+	.worker_fn = session_do,	/* thread handling the session */
 };
 
 /*! \brief CLI command manager show settings */
 static char *handle_manager_show_settings(struct ast_cli_entry *e, int cmd, struct ast_cli_args *a)
 {
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show settings";
 		e->usage =
@@ -7947,8 +7092,7 @@ static char *handle_manager_show_settings(struct ast_cli_entry *e, int cmd, stru
 	}
 #define FORMAT "  %-25.25s  %-15.55s\n"
 #define FORMAT2 "  %-25.25s  %-15d\n"
-	if (a->argc != 3)
-	{
+	if (a->argc != 3) {
 		return CLI_SHOWUSAGE;
 	}
 	ast_cli(a->fd, "\nGlobal Settings:\n");
@@ -7992,47 +7136,41 @@ static char *handle_manager_show_events(struct ast_cli_entry *e, int cmd, struct
 	struct ast_str *buffer;
 	int i = 0, totalitems = 0;
 
-	switch (cmd)
-	{
+	switch (cmd) {
 	case CLI_INIT:
 		e->command = "manager show events";
 		e->usage =
 			"Usage: manager show events\n"
-			"	Prints a listing of the available Asterisk manager interface events.\n";
+				"	Prints a listing of the available Asterisk manager interface events.\n";
 		return NULL;
 	case CLI_GENERATE:
 		return NULL;
 	}
-	if (a->argc != 3)
-	{
+	if (a->argc != 3) {
 		return CLI_SHOWUSAGE;
 	}
 
 	buffer = ast_str_create(128);
-	if (!buffer)
-	{
+	if (!buffer) {
 		return CLI_SUCCESS;
 	}
 
 	events = ao2_global_obj_ref(event_docs);
-	if (!events)
-	{
+	if (!events) {
 		ast_cli(a->fd, "No manager event documentation loaded\n");
 		ast_free(buffer);
 		return CLI_SUCCESS;
 	}
 
 	ao2_lock(events);
-	if (!(it_events = ao2_callback(events, OBJ_MULTIPLE | OBJ_NOLOCK, NULL, NULL)))
-	{
+	if (!(it_events = ao2_callback(events, OBJ_MULTIPLE | OBJ_NOLOCK, NULL, NULL))) {
 		ao2_unlock(events);
 		ast_log(AST_LOG_ERROR, "Unable to create iterator for events container\n");
 		ast_free(buffer);
 		ao2_ref(events, -1);
 		return CLI_SUCCESS;
 	}
-	if (!(items = ast_calloc(sizeof(struct ast_xml_doc_item *), ao2_container_count(events))))
-	{
+	if (!(items = ast_calloc(sizeof(struct ast_xml_doc_item *), ao2_container_count(events)))) {
 		ao2_unlock(events);
 		ast_log(AST_LOG_ERROR, "Unable to create temporary sorting array for events\n");
 		ao2_iterator_destroy(it_events);
@@ -8042,8 +7180,7 @@ static char *handle_manager_show_events(struct ast_cli_entry *e, int cmd, struct
 	}
 	ao2_unlock(events);
 
-	while ((item = ao2_iterator_next(it_events)))
-	{
+	while ((item = ao2_iterator_next(it_events))) {
 		items[totalitems++] = item;
 		ao2_ref(item, -1);
 	}
@@ -8052,17 +7189,14 @@ static char *handle_manager_show_events(struct ast_cli_entry *e, int cmd, struct
 
 	ast_cli(a->fd, "Events:\n");
 	ast_cli(a->fd, "  --------------------  --------------------  --------------------  \n");
-	for (i = 0; i < totalitems; i++)
-	{
+	for (i = 0; i < totalitems; i++) {
 		ast_str_append(&buffer, 0, "  %-20.20s", items[i]->name);
-		if ((i + 1) % 3 == 0)
-		{
+		if ((i + 1) % 3 == 0) {
 			ast_cli(a->fd, "%s\n", ast_str_buffer(buffer));
 			ast_str_set(&buffer, 0, "%s", "");
 		}
 	}
-	if ((i + 1) % 3 != 0)
-	{
+	if ((i + 1) % 3 != 0) {
 		ast_cli(a->fd, "%s\n", ast_str_buffer(buffer));
 	}
 
@@ -8084,8 +7218,7 @@ static char *handle_manager_show_event(struct ast_cli_entry *e, int cmd, struct 
 	char *match = NULL;
 	char syntax_title[64], description_title[64], synopsis_title[64], seealso_title[64], arguments_title[64];
 
-	if (cmd == CLI_INIT)
-	{
+	if (cmd == CLI_INIT) {
 		e->command = "manager show event";
 		e->usage =
 			"Usage: manager show event <eventname>\n"
@@ -8094,21 +7227,17 @@ static char *handle_manager_show_event(struct ast_cli_entry *e, int cmd, struct 
 	}
 
 	events = ao2_global_obj_ref(event_docs);
-	if (!events)
-	{
+	if (!events) {
 		ast_cli(a->fd, "No manager event documentation loaded\n");
 		return CLI_SUCCESS;
 	}
 
-	if (cmd == CLI_GENERATE)
-	{
+	if (cmd == CLI_GENERATE) {
 		length = strlen(a->word);
 		which = 0;
 		it_events = ao2_iterator_init(events, 0);
-		while ((item = ao2_iterator_next(&it_events)))
-		{
-			if (!strncasecmp(a->word, item->name, length) && ++which > a->n)
-			{
+		while ((item = ao2_iterator_next(&it_events))) {
+			if (!strncasecmp(a->word, item->name, length) && ++which > a->n) {
 				match = ast_strdup(item->name);
 				ao2_ref(item, -1);
 				break;
@@ -8119,13 +7248,11 @@ static char *handle_manager_show_event(struct ast_cli_entry *e, int cmd, struct 
 		return match;
 	}
 
-	if (a->argc != 4)
-	{
+	if (a->argc != 4) {
 		return CLI_SHOWUSAGE;
 	}
 
-	if (!(item = ao2_find(events, a->argv[3], OBJ_KEY)))
-	{
+	if (!(item = ao2_find(events, a->argv[3], OBJ_KEY))) {
 		ast_cli(a->fd, "Could not find event '%s'\n", a->argv[3]);
 		return CLI_SUCCESS;
 	}
@@ -8137,37 +7264,31 @@ static char *handle_manager_show_event(struct ast_cli_entry *e, int cmd, struct 
 	term_color(arguments_title, "[Arguments]\n", COLOR_MAGENTA, 0, 40);
 
 	ast_cli(a->fd, "Event: %s\n", a->argv[3]);
-	for (temp = item; temp; temp = temp->next)
-	{
-		if (!ast_strlen_zero(ast_str_buffer(temp->synopsis)))
-		{
+	for (temp = item; temp; temp = temp->next) {
+		if (!ast_strlen_zero(ast_str_buffer(temp->synopsis))) {
 			ast_cli(a->fd, "%s%s\n\n",
-					synopsis_title,
-					ast_xmldoc_printable(ast_str_buffer(temp->synopsis), 1));
+				synopsis_title,
+				ast_xmldoc_printable(ast_str_buffer(temp->synopsis), 1));
 		}
-		if (!ast_strlen_zero(ast_str_buffer(temp->syntax)))
-		{
+		if (!ast_strlen_zero(ast_str_buffer(temp->syntax))) {
 			ast_cli(a->fd, "%s%s\n\n",
-					syntax_title,
-					ast_xmldoc_printable(ast_str_buffer(temp->syntax), 1));
+				syntax_title,
+				ast_xmldoc_printable(ast_str_buffer(temp->syntax), 1));
 		}
-		if (!ast_strlen_zero(ast_str_buffer(temp->description)))
-		{
+		if (!ast_strlen_zero(ast_str_buffer(temp->description))) {
 			ast_cli(a->fd, "%s%s\n\n",
-					description_title,
-					ast_xmldoc_printable(ast_str_buffer(temp->description), 1));
+				description_title,
+				ast_xmldoc_printable(ast_str_buffer(temp->description), 1));
 		}
-		if (!ast_strlen_zero(ast_str_buffer(temp->arguments)))
-		{
+		if (!ast_strlen_zero(ast_str_buffer(temp->arguments))) {
 			ast_cli(a->fd, "%s%s\n\n",
-					arguments_title,
-					ast_xmldoc_printable(ast_str_buffer(temp->arguments), 1));
+				arguments_title,
+				ast_xmldoc_printable(ast_str_buffer(temp->arguments), 1));
 		}
-		if (!ast_strlen_zero(ast_str_buffer(temp->seealso)))
-		{
+		if (!ast_strlen_zero(ast_str_buffer(temp->seealso))) {
 			ast_cli(a->fd, "%s%s\n\n",
-					seealso_title,
-					ast_xmldoc_printable(ast_str_buffer(temp->seealso), 1));
+				seealso_title,
+				ast_xmldoc_printable(ast_str_buffer(temp->seealso), 1));
 		}
 	}
 
@@ -8217,15 +7338,12 @@ static void load_channelvars(struct ast_variable *var)
 	 */
 	free_channelvars();
 	AST_RWLIST_WRLOCK(&channelvars);
-	while ((next = strsep(&remaining, ",|")))
-	{
-		if (!(mcv = ast_calloc(1, sizeof(*mcv) + strlen(next) + 1)))
-		{
+	while ((next = strsep(&remaining, ",|"))) {
+		if (!(mcv = ast_calloc(1, sizeof(*mcv) + strlen(next) + 1))) {
 			break;
 		}
 		strcpy(mcv->name, next); /* SAFE */
-		if (strchr(next, '('))
-		{
+		if (strchr(next, '(')) {
 			mcv->isfunc = 1;
 		}
 		AST_RWLIST_INSERT_TAIL(&channelvars, mcv, entry);
@@ -8236,12 +7354,10 @@ static void load_channelvars(struct ast_variable *var)
 /*! \internal \brief Free a user record.  Should already be removed from the list */
 static void manager_free_user(struct ast_manager_user *user)
 {
-	if (user->a1_hash)
-	{
+	if (user->a1_hash) {
 		ast_free(user->a1_hash);
 	}
-	if (user->secret)
-	{
+	if (user->secret) {
 		ast_free(user->secret);
 	}
 	ao2_t_callback(user->whitefilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all white filters");
@@ -8258,8 +7374,7 @@ static void manager_shutdown(void)
 {
 	struct ast_manager_user *user;
 
-	if (registered)
-	{
+	if (registered) {
 		ast_manager_unregister("Ping");
 		ast_manager_unregister("Events");
 		ast_manager_unregister("Logoff");
@@ -8306,30 +7421,25 @@ static void manager_shutdown(void)
 	ast_tcptls_server_stop(&ami_desc);
 	ast_tcptls_server_stop(&amis_desc);
 
-	if (ami_tls_cfg.certfile)
-	{
+	if (ami_tls_cfg.certfile) {
 		ast_free(ami_tls_cfg.certfile);
 		ami_tls_cfg.certfile = NULL;
 	}
-	if (ami_tls_cfg.pvtfile)
-	{
+	if (ami_tls_cfg.pvtfile) {
 		ast_free(ami_tls_cfg.pvtfile);
 		ami_tls_cfg.pvtfile = NULL;
 	}
-	if (ami_tls_cfg.cipher)
-	{
+	if (ami_tls_cfg.cipher) {
 		ast_free(ami_tls_cfg.cipher);
 		ami_tls_cfg.cipher = NULL;
 	}
 
-	if (sessions)
-	{
+	if (sessions) {
 		ao2_ref(sessions, -1);
 		sessions = NULL;
 	}
 
-	while ((user = AST_LIST_REMOVE_HEAD(&users, list)))
-	{
+	while ((user = AST_LIST_REMOVE_HEAD(&users, list))) {
 		manager_free_user(user);
 	}
 }
@@ -8345,7 +7455,7 @@ static int __init_manager(int reload, int by_external_config)
 	int newhttptimeout = 60;
 	struct ast_manager_user *user = NULL;
 	struct ast_variable *var;
-	struct ast_flags config_flags = {(reload && !by_external_config) ? CONFIG_FLAG_FILEUNCHANGED : 0};
+	struct ast_flags config_flags = { (reload && !by_external_config) ? CONFIG_FLAG_FILEUNCHANGED : 0 };
 	char a1[256];
 	char a1_hash[256];
 	struct ast_sockaddr ami_desc_local_address_tmp;
@@ -8355,8 +7465,7 @@ static int __init_manager(int reload, int by_external_config)
 
 	manager_enabled = 0;
 
-	if (!registered)
-	{
+	if (!registered) {
 		/* Register default actions */
 		ast_manager_register_xml_core("Ping", 0, action_ping);
 		ast_manager_register_xml_core("Events", 0, action_events);
@@ -8404,8 +7513,7 @@ static int __init_manager(int reload, int by_external_config)
 
 #ifdef AST_XML_DOCS
 	temp_event_docs = ast_xmldoc_build_documentation("managerEvent");
-	if (temp_event_docs)
-	{
+	if (temp_event_docs) {
 		ao2_t_global_obj_replace_unref(event_docs, temp_event_docs, "Toss old event docs");
 		ao2_t_ref(temp_event_docs, -1, "Remove creation ref - container holds only ref now");
 	}
@@ -8413,8 +7521,7 @@ static int __init_manager(int reload, int by_external_config)
 
 	ast_register_atexit(manager_shutdown);
 
-	if ((cfg = ast_config_load2("manager.conf", "manager", config_flags)) == CONFIG_STATUS_FILEUNCHANGED)
-	{
+	if ((cfg = ast_config_load2("manager.conf", "manager", config_flags)) == CONFIG_STATUS_FILEUNCHANGED) {
 		return 0;
 	}
 
@@ -8422,17 +7529,15 @@ static int __init_manager(int reload, int by_external_config)
 	broken_events_action = 0;
 	authtimeout = 30;
 	authlimit = 50;
-	manager_debug = 0; /* Debug disabled by default */
+	manager_debug = 0;		/* Debug disabled by default */
 
-	if (!cfg || cfg == CONFIG_STATUS_FILEINVALID)
-	{
+	if (!cfg || cfg == CONFIG_STATUS_FILEINVALID) {
 		ast_log(LOG_NOTICE, "Unable to open AMI configuration manager.conf, or configuration is invalid. Asterisk management interface (AMI) disabled.\n");
 		return 0;
 	}
 
 	/* If this wasn't performed due to a forced reload (because those can be created by ACL change events, we need to unsubscribe to ACL change events. */
-	if (!by_external_config)
-	{
+	if (!by_external_config) {
 		acl_change_event_unsubscribe();
 	}
 
@@ -8447,141 +7552,103 @@ static int __init_manager(int reload, int by_external_config)
 	tls_was_enabled = (reload && ami_tls_cfg.enabled);
 
 	ami_tls_cfg.enabled = 0;
-	if (ami_tls_cfg.certfile)
-	{
+	if (ami_tls_cfg.certfile) {
 		ast_free(ami_tls_cfg.certfile);
 	}
 	ami_tls_cfg.certfile = ast_strdup(AST_CERTFILE);
-	if (ami_tls_cfg.pvtfile)
-	{
+	if (ami_tls_cfg.pvtfile) {
 		ast_free(ami_tls_cfg.pvtfile);
 	}
 	ami_tls_cfg.pvtfile = ast_strdup("");
-	if (ami_tls_cfg.cipher)
-	{
+	if (ami_tls_cfg.cipher) {
 		ast_free(ami_tls_cfg.cipher);
 	}
 	ami_tls_cfg.cipher = ast_strdup("");
 
 	free_channelvars();
 
-	for (var = ast_variable_browse(cfg, "general"); var; var = var->next)
-	{
+	for (var = ast_variable_browse(cfg, "general"); var; var = var->next) {
 		val = var->value;
 
 		/* read tls config options while preventing unsupported options from being set */
-		if (strcasecmp(var->name, "tlscafile") && strcasecmp(var->name, "tlscapath") && strcasecmp(var->name, "tlscadir") && strcasecmp(var->name, "tlsverifyclient") && strcasecmp(var->name, "tlsdontverifyserver") && strcasecmp(var->name, "tlsclientmethod") && strcasecmp(var->name, "sslclientmethod") && !ast_tls_read_conf(&ami_tls_cfg, &amis_desc, var->name, val))
-		{
+		if (strcasecmp(var->name, "tlscafile")
+			&& strcasecmp(var->name, "tlscapath")
+			&& strcasecmp(var->name, "tlscadir")
+			&& strcasecmp(var->name, "tlsverifyclient")
+			&& strcasecmp(var->name, "tlsdontverifyserver")
+			&& strcasecmp(var->name, "tlsclientmethod")
+			&& strcasecmp(var->name, "sslclientmethod")
+			&& !ast_tls_read_conf(&ami_tls_cfg, &amis_desc, var->name, val)) {
 			continue;
 		}
 
-		if (!strcasecmp(var->name, "enabled"))
-		{
+		if (!strcasecmp(var->name, "enabled")) {
 			manager_enabled = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "block-sockets"))
-		{
+		} else if (!strcasecmp(var->name, "block-sockets")) {
 			block_sockets = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "webenabled"))
-		{
+		} else if (!strcasecmp(var->name, "webenabled")) {
 			webmanager_enabled = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "port"))
-		{
+		} else if (!strcasecmp(var->name, "port")) {
 			int bindport;
-			if (ast_parse_arg(val, PARSE_UINT32 | PARSE_IN_RANGE, &bindport, 1024, 65535))
-			{
+			if (ast_parse_arg(val, PARSE_UINT32|PARSE_IN_RANGE, &bindport, 1024, 65535)) {
 				ast_log(LOG_WARNING, "Invalid port number '%s'\n", val);
 			}
 			ast_sockaddr_set_port(&ami_desc_local_address_tmp, bindport);
-		}
-		else if (!strcasecmp(var->name, "bindaddr"))
-		{
+		} else if (!strcasecmp(var->name, "bindaddr")) {
 			/* remember port if it has already been set */
 			int setport = ast_sockaddr_port(&ami_desc_local_address_tmp);
 
-			if (ast_parse_arg(val, PARSE_ADDR | PARSE_PORT_IGNORE, NULL))
-			{
+			if (ast_parse_arg(val, PARSE_ADDR|PARSE_PORT_IGNORE, NULL)) {
 				ast_log(LOG_WARNING, "Invalid address '%s' specified, default '%s' will be used\n", val,
 						ast_sockaddr_stringify_addr(&ami_desc_local_address_tmp));
-			}
-			else
-			{
+			} else {
 				ast_sockaddr_parse(&ami_desc_local_address_tmp, val, PARSE_PORT_IGNORE);
 			}
 
-			if (setport)
-			{
+			if (setport) {
 				ast_sockaddr_set_port(&ami_desc_local_address_tmp, setport);
 			}
-		}
-		else if (!strcasecmp(var->name, "brokeneventsaction"))
-		{
+
+		} else if (!strcasecmp(var->name, "brokeneventsaction")) {
 			broken_events_action = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "allowmultiplelogin"))
-		{
+		} else if (!strcasecmp(var->name, "allowmultiplelogin")) {
 			allowmultiplelogin = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "displayconnects"))
-		{
+		} else if (!strcasecmp(var->name, "displayconnects")) {
 			displayconnects = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "timestampevents"))
-		{
+		} else if (!strcasecmp(var->name, "timestampevents")) {
 			timestampevents = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "debug"))
-		{
+		} else if (!strcasecmp(var->name, "debug")) {
 			manager_debug = ast_true(val);
-		}
-		else if (!strcasecmp(var->name, "httptimeout"))
-		{
+		} else if (!strcasecmp(var->name, "httptimeout")) {
 			newhttptimeout = atoi(val);
-		}
-		else if (!strcasecmp(var->name, "authtimeout"))
-		{
+		} else if (!strcasecmp(var->name, "authtimeout")) {
 			int timeout = atoi(var->value);
 
-			if (timeout < 1)
-			{
+			if (timeout < 1) {
 				ast_log(LOG_WARNING, "Invalid authtimeout value '%s', using default value\n", var->value);
-			}
-			else
-			{
+			} else {
 				authtimeout = timeout;
 			}
-		}
-		else if (!strcasecmp(var->name, "authlimit"))
-		{
+		} else if (!strcasecmp(var->name, "authlimit")) {
 			int limit = atoi(var->value);
 
-			if (limit < 1)
-			{
+			if (limit < 1) {
 				ast_log(LOG_WARNING, "Invalid authlimit value '%s', using default value\n", var->value);
-			}
-			else
-			{
+			} else {
 				authlimit = limit;
 			}
-		}
-		else if (!strcasecmp(var->name, "channelvars"))
-		{
+		} else if (!strcasecmp(var->name, "channelvars")) {
 			load_channelvars(var);
-		}
-		else
-		{
+		} else {
 			ast_log(LOG_NOTICE, "Invalid keyword <%s> = <%s> in manager.conf [general]\n",
-					var->name, val);
+				var->name, val);
 		}
 	}
 
 	ast_sockaddr_copy(&amis_desc_local_address_tmp, &amis_desc.local_address);
 
 	/* if the amis address has not been set, default is the same as non secure ami */
-	if (ast_sockaddr_isnull(&amis_desc_local_address_tmp))
-	{
+	if (ast_sockaddr_isnull(&amis_desc_local_address_tmp)) {
 		ast_sockaddr_copy(&amis_desc_local_address_tmp, &ami_desc_local_address_tmp);
 	}
 
@@ -8589,14 +7656,12 @@ static int __init_manager(int reload, int by_external_config)
 	   amis address was set, we need to check that a port was set or not, if not
 	   use the default tls port */
 	if (ast_sockaddr_port(&amis_desc_local_address_tmp) == 0 ||
-		(ast_sockaddr_port(&ami_desc_local_address_tmp) == ast_sockaddr_port(&amis_desc_local_address_tmp)))
-	{
+			(ast_sockaddr_port(&ami_desc_local_address_tmp) == ast_sockaddr_port(&amis_desc_local_address_tmp))) {
 
 		ast_sockaddr_set_port(&amis_desc_local_address_tmp, DEFAULT_MANAGER_TLS_PORT);
 	}
 
-	if (manager_enabled)
-	{
+	if (manager_enabled) {
 		ast_sockaddr_copy(&ami_desc.local_address, &ami_desc_local_address_tmp);
 		ast_sockaddr_copy(&amis_desc.local_address, &amis_desc_local_address_tmp);
 	}
@@ -8605,21 +7670,17 @@ static int __init_manager(int reload, int by_external_config)
 
 	/* First, get users from users.conf */
 	ucfg = ast_config_load2("users.conf", "manager", config_flags);
-	if (ucfg && (ucfg != CONFIG_STATUS_FILEUNCHANGED) && ucfg != CONFIG_STATUS_FILEINVALID)
-	{
+	if (ucfg && (ucfg != CONFIG_STATUS_FILEUNCHANGED) && ucfg != CONFIG_STATUS_FILEINVALID) {
 		const char *hasmanager;
 		int genhasmanager = ast_true(ast_variable_retrieve(ucfg, "general", "hasmanager"));
 
-		while ((cat = ast_category_browse(ucfg, cat)))
-		{
-			if (!strcasecmp(cat, "general"))
-			{
+		while ((cat = ast_category_browse(ucfg, cat))) {
+			if (!strcasecmp(cat, "general")) {
 				continue;
 			}
 
 			hasmanager = ast_variable_retrieve(ucfg, cat, "hasmanager");
-			if ((!hasmanager && genhasmanager) || ast_true(hasmanager))
-			{
+			if ((!hasmanager && genhasmanager) || ast_true(hasmanager)) {
 				const char *user_secret = ast_variable_retrieve(ucfg, cat, "secret");
 				const char *user_read = ast_variable_retrieve(ucfg, cat, "read");
 				const char *user_write = ast_variable_retrieve(ucfg, cat, "write");
@@ -8629,10 +7690,8 @@ static int __init_manager(int reload, int by_external_config)
 				/* Look for an existing entry,
 				 * if none found - create one and add it to the list
 				 */
-				if (!(user = get_manager_by_name_locked(cat)))
-				{
-					if (!(user = ast_calloc(1, sizeof(*user))))
-					{
+				if (!(user = get_manager_by_name_locked(cat))) {
+					if (!(user = ast_calloc(1, sizeof(*user)))) {
 						break;
 					}
 
@@ -8649,57 +7708,43 @@ static int __init_manager(int reload, int by_external_config)
 					user->writetimeout = 100;
 				}
 
-				if (!user_secret)
-				{
+				if (!user_secret) {
 					user_secret = ast_variable_retrieve(ucfg, "general", "secret");
 				}
-				if (!user_read)
-				{
+				if (!user_read) {
 					user_read = ast_variable_retrieve(ucfg, "general", "read");
 				}
-				if (!user_write)
-				{
+				if (!user_write) {
 					user_write = ast_variable_retrieve(ucfg, "general", "write");
 				}
-				if (!user_displayconnects)
-				{
+				if (!user_displayconnects) {
 					user_displayconnects = ast_variable_retrieve(ucfg, "general", "displayconnects");
 				}
-				if (!user_writetimeout)
-				{
+				if (!user_writetimeout) {
 					user_writetimeout = ast_variable_retrieve(ucfg, "general", "writetimeout");
 				}
 
-				if (!ast_strlen_zero(user_secret))
-				{
-					if (user->secret)
-					{
+				if (!ast_strlen_zero(user_secret)) {
+					if (user->secret) {
 						ast_free(user->secret);
 					}
 					user->secret = ast_strdup(user_secret);
 				}
 
-				if (user_read)
-				{
+				if (user_read) {
 					user->readperm = get_perm(user_read);
 				}
-				if (user_write)
-				{
+				if (user_write) {
 					user->writeperm = get_perm(user_write);
 				}
-				if (user_displayconnects)
-				{
+				if (user_displayconnects) {
 					user->displayconnects = ast_true(user_displayconnects);
 				}
-				if (user_writetimeout)
-				{
+				if (user_writetimeout) {
 					int value = atoi(user_writetimeout);
-					if (value < 100)
-					{
+					if (value < 100) {
 						ast_log(LOG_WARNING, "Invalid writetimeout value '%d' in users.conf\n", value);
-					}
-					else
-					{
+					} else {
 						user->writetimeout = value;
 					}
 				}
@@ -8710,20 +7755,16 @@ static int __init_manager(int reload, int by_external_config)
 
 	/* cat is NULL here in any case */
 
-	while ((cat = ast_category_browse(cfg, cat)))
-	{
+	while ((cat = ast_category_browse(cfg, cat))) {
 		struct ast_acl_list *oldacl;
 
-		if (!strcasecmp(cat, "general"))
-		{
+		if (!strcasecmp(cat, "general")) {
 			continue;
 		}
 
 		/* Look for an existing entry, if none found - create one and add it to the list */
-		if (!(user = get_manager_by_name_locked(cat)))
-		{
-			if (!(user = ast_calloc(1, sizeof(*user))))
-			{
+		if (!(user = get_manager_by_name_locked(cat))) {
+			if (!(user = ast_calloc(1, sizeof(*user)))) {
 				break;
 			}
 			/* Copy name over */
@@ -8740,9 +7781,7 @@ static int __init_manager(int reload, int by_external_config)
 
 			/* Insert into list */
 			AST_RWLIST_INSERT_TAIL(&users, user, list);
-		}
-		else
-		{
+		} else {
 			ao2_t_callback(user->whitefilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all white filters");
 			ao2_t_callback(user->blackfilters, OBJ_UNLINK | OBJ_NODATA | OBJ_MULTIPLE, NULL, NULL, "unlink all black filters");
 		}
@@ -8754,48 +7793,30 @@ static int __init_manager(int reload, int by_external_config)
 		ast_variables_destroy(user->chanvars);
 
 		var = ast_variable_browse(cfg, cat);
-		for (; var; var = var->next)
-		{
-			if (!strcasecmp(var->name, "secret"))
-			{
-				if (user->secret)
-				{
+		for (; var; var = var->next) {
+			if (!strcasecmp(var->name, "secret")) {
+				if (user->secret) {
 					ast_free(user->secret);
 				}
 				user->secret = ast_strdup(var->value);
-			}
-			else if (!strcasecmp(var->name, "deny") ||
-					 !strcasecmp(var->name, "permit") ||
-					 !strcasecmp(var->name, "acl"))
-			{
+			} else if (!strcasecmp(var->name, "deny") ||
+				       !strcasecmp(var->name, "permit") ||
+				       !strcasecmp(var->name, "acl")) {
 				ast_append_acl(var->name, var->value, &user->acl, NULL, &acl_subscription_flag);
-			}
-			else if (!strcasecmp(var->name, "read"))
-			{
+			}  else if (!strcasecmp(var->name, "read") ) {
 				user->readperm = get_perm(var->value);
-			}
-			else if (!strcasecmp(var->name, "write"))
-			{
+			}  else if (!strcasecmp(var->name, "write") ) {
 				user->writeperm = get_perm(var->value);
-			}
-			else if (!strcasecmp(var->name, "displayconnects"))
-			{
+			}  else if (!strcasecmp(var->name, "displayconnects") ) {
 				user->displayconnects = ast_true(var->value);
-			}
-			else if (!strcasecmp(var->name, "writetimeout"))
-			{
+			} else if (!strcasecmp(var->name, "writetimeout")) {
 				int value = atoi(var->value);
-				if (value < 100)
-				{
+				if (value < 100) {
 					ast_log(LOG_WARNING, "Invalid writetimeout value '%s' at line %d\n", var->value, var->lineno);
-				}
-				else
-				{
+				} else {
 					user->writetimeout = value;
 				}
-			}
-			else if (!strcasecmp(var->name, "setvar"))
-			{
+			} else if (!strcasecmp(var->name, "setvar")) {
 				struct ast_variable *tmpvar;
 				char varbuf[256];
 				char *varval;
@@ -8804,23 +7825,17 @@ static int __init_manager(int reload, int by_external_config)
 				ast_copy_string(varbuf, var->value, sizeof(varbuf));
 				varname = varbuf;
 
-				if ((varval = strchr(varname, '=')))
-				{
+				if ((varval = strchr(varname,'='))) {
 					*varval++ = '\0';
-					if ((tmpvar = ast_variable_new(varname, varval, "")))
-					{
+					if ((tmpvar = ast_variable_new(varname, varval, ""))) {
 						tmpvar->next = user->chanvars;
 						user->chanvars = tmpvar;
 					}
 				}
-			}
-			else if (!strcasecmp(var->name, "eventfilter"))
-			{
+			} else if (!strcasecmp(var->name, "eventfilter")) {
 				const char *value = var->value;
 				manager_add_filter(value, user->whitefilters, user->blackfilters);
-			}
-			else
-			{
+			} else {
 				ast_debug(1, "%s is an unknown option.\n", var->name);
 			}
 		}
@@ -8830,23 +7845,19 @@ static int __init_manager(int reload, int by_external_config)
 	ast_config_destroy(cfg);
 
 	/* Check the flag for named ACL event subscription and if we need to, register a subscription. */
-	if (acl_subscription_flag && !by_external_config)
-	{
+	if (acl_subscription_flag && !by_external_config) {
 		acl_change_event_subscribe();
 	}
 
 	/* Perform cleanup - essentially prune out old users that no longer exist */
-	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&users, user, list)
-	{
-		if (user->keep)
-		{ /* valid record. clear flag for the next round */
+	AST_RWLIST_TRAVERSE_SAFE_BEGIN(&users, user, list) {
+		if (user->keep) {	/* valid record. clear flag for the next round */
 			user->keep = 0;
 
 			/* Calculate A1 for Digest auth */
 			snprintf(a1, sizeof(a1), "%s:%s:%s", user->username, global_realm, user->secret);
-			ast_md5_hash(a1_hash, a1);
-			if (user->a1_hash)
-			{
+			ast_md5_hash(a1_hash,a1);
+			if (user->a1_hash) {
 				ast_free(user->a1_hash);
 			}
 			user->a1_hash = ast_strdup(a1_hash);
@@ -8861,16 +7872,13 @@ static int __init_manager(int reload, int by_external_config)
 
 	AST_RWLIST_UNLOCK(&users);
 
-	if (!reload)
-	{
+	if (!reload) {
 		/* If you have a NULL hash fn, you only need a single bucket */
 		sessions = ao2_container_alloc(1, NULL, mansession_cmp_fn);
 	}
 
-	if (webmanager_enabled && manager_enabled)
-	{
-		if (!webregged)
-		{
+	if (webmanager_enabled && manager_enabled) {
+		if (!webregged) {
 
 			ast_http_uri_link(&rawmanuri);
 			ast_http_uri_link(&manageruri);
@@ -8881,11 +7889,8 @@ static int __init_manager(int reload, int by_external_config)
 			ast_http_uri_link(&amanagerxmluri);
 			webregged = 1;
 		}
-	}
-	else
-	{
-		if (webregged)
-		{
+	} else {
+		if (webregged) {
 			ast_http_uri_unlink(&rawmanuri);
 			ast_http_uri_unlink(&manageruri);
 			ast_http_uri_unlink(&managerxmluri);
@@ -8897,20 +7902,16 @@ static int __init_manager(int reload, int by_external_config)
 		}
 	}
 
-	if (newhttptimeout > 0)
-	{
+	if (newhttptimeout > 0) {
 		httptimeout = newhttptimeout;
 	}
 
 	manager_event(EVENT_FLAG_SYSTEM, "Reload", "Module: Manager\r\nStatus: %s\r\nMessage: Manager reload Requested\r\n", manager_enabled ? "Enabled" : "Disabled");
 
 	ast_tcptls_server_start(&ami_desc);
-	if (tls_was_enabled && !ami_tls_cfg.enabled)
-	{
+	if (tls_was_enabled && !ami_tls_cfg.enabled) {
 		ast_tcptls_server_stop(&amis_desc);
-	}
-	else if (ast_ssl_setup(amis_desc.tls_cfg))
-	{
+	} else if (ast_ssl_setup(amis_desc.tls_cfg)) {
 		ast_tcptls_server_start(&amis_desc);
 	}
 
@@ -8929,8 +7930,7 @@ static void free_channelvars(void)
 {
 	struct manager_channel_variable *var;
 	AST_RWLIST_WRLOCK(&channelvars);
-	while ((var = AST_RWLIST_REMOVE_HEAD(&channelvars, entry)))
-	{
+	while ((var = AST_RWLIST_REMOVE_HEAD(&channelvars, entry))) {
 		ast_free(var);
 	}
 	AST_RWLIST_UNLOCK(&channelvars);
@@ -8965,21 +7965,17 @@ struct ast_datastore *astman_datastore_find(struct mansession *s, const struct a
 	if (info == NULL)
 		return NULL;
 
-	AST_LIST_TRAVERSE_SAFE_BEGIN(&s->session->datastores, datastore, entry)
-	{
-		if (datastore->info != info)
-		{
+	AST_LIST_TRAVERSE_SAFE_BEGIN(&s->session->datastores, datastore, entry) {
+		if (datastore->info != info) {
 			continue;
 		}
 
-		if (uid == NULL)
-		{
+		if (uid == NULL) {
 			/* matched by type only */
 			break;
 		}
 
-		if ((datastore->uid != NULL) && !strcasecmp(uid, datastore->uid))
-		{
+		if ((datastore->uid != NULL) && !strcasecmp(uid, datastore->uid)) {
 			/* Matched by type AND uid */
 			break;
 		}

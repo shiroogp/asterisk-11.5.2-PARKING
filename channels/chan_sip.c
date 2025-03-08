@@ -30402,7 +30402,8 @@ static int handle_request_bye(struct sip_pvt *p, struct sip_request *req)
 		// 			}
 		// 		}
 		// 	}
-		<VITEL> ast_verbose(VERBOSE_PREFIX_3 " Received a SIP BYE\n");
+		//<VITEL>
+		ast_verbose(VERBOSE_PREFIX_3 " Received a SIP BYE\n");
 
 		c = p->owner;
 		bridged_to = ast_bridged_channel(c);
@@ -30415,9 +30416,9 @@ static int handle_request_bye(struct sip_pvt *p, struct sip_request *req)
 			ast_verbose(VERBOSE_PREFIX_3 " %s(%s) issued BYE\n", ast_channel_name(c), ast_channel_caller(c)->id.number.str);
 		}
 		pbx_builtin_setvar_helper(c, "HANGUP_ORIGINATOR", "TRUE");
-		</ VITEL>
+		//</VITEL>
 
-			sip_queue_hangup_cause(p, 0);
+		sip_queue_hangup_cause(p, 0);
 		sip_scheddestroy_final(p, DEFAULT_TRANS_TIMEOUT);
 		ast_debug(3, "Received bye, issuing owner hangup\n");
 	}
