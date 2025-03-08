@@ -3090,9 +3090,9 @@ int ast_hangup(struct ast_channel *chan)
 					  ast_channel_hangupcause(chan),
 					  ast_cause2str(ast_channel_hangupcause(chan)));
 
-	//<VITEL>
-	// We only want hangup events for channels that were put into the queue
-	const char *qcall = pbx_builtin_getvar_helper(chan, "QCALL");
+	<VITEL>
+		// We only want hangup events for channels that were put into the queue
+		const char *qcall = pbx_builtin_getvar_helper(chan, "QCALL");
 	const char *survey = pbx_builtin_getvar_helper(chan, "SURVEY");
 	const char *survey_id = pbx_builtin_getvar_helper(chan, "SURVEY_ID");
 	const char *hangup = pbx_builtin_getvar_helper(chan, "HANGUP_ORIGINATOR");
@@ -3151,11 +3151,11 @@ int ast_hangup(struct ast_channel *chan)
 			ast_vitel_log("NONE", "HANGUP", "0000", PING, ast_cause2str(ast_channel_hangupcause(chan)), PING, "", "", "");
 		}
 	}
-	//</VITEL>
+	</ VITEL>
 
-	if (ast_channel_cdr(chan) && !ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_BRIDGED) &&
-		!ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_POST_DISABLED) &&
-		(ast_channel_cdr(chan)->disposition != AST_CDR_NULL || ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_DIALED)))
+		if (ast_channel_cdr(chan) && !ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_BRIDGED) &&
+			!ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_POST_DISABLED) &&
+			(ast_channel_cdr(chan)->disposition != AST_CDR_NULL || ast_test_flag(ast_channel_cdr(chan), AST_CDR_FLAG_DIALED)))
 	{
 		ast_channel_lock(chan);
 		ast_cdr_end(ast_channel_cdr(chan));
@@ -3231,11 +3231,10 @@ int __ast_answer(struct ast_channel *chan, unsigned int delay, int cdr_answer)
 {
 	int res = 0;
 	enum ast_channel_state old_state;
-	//<VITEL>
-	char *tmp;
-	//</VITEL>
+	<VITEL> char *tmp;
+	</ VITEL>
 
-	old_state = ast_channel_state(chan);
+		old_state = ast_channel_state(chan);
 	if ((res = ast_raw_answer(chan, cdr_answer)))
 	{
 		return res;
@@ -3345,8 +3344,7 @@ int __ast_answer(struct ast_channel *chan, unsigned int delay, int cdr_answer)
 	default:
 		break;
 	}
-	//<VITEL>
-	tmp = "";
+	<VITEL> tmp = "";
 	const char *survey = pbx_builtin_getvar_helper(chan, "SURVEY");
 	const char *vID = pbx_builtin_getvar_helper(chan, "VITEL_ID");
 	if (survey && !strcmp(survey, "YES"))
@@ -3361,9 +3359,9 @@ int __ast_answer(struct ast_channel *chan, unsigned int delay, int cdr_answer)
 		}
 		ast_vitel_log(ast_channel_uniqueid(chan), "ANSWERED", ast_channel_caller(chan)->id.number.str, ast_channel_exten(chan), ast_channel_name(chan), "SURVEY", tmp, "|%s|%s", "NONE", "NONE");
 	}
-	//</VITEL>
+	</ VITEL>
 
-	return res;
+		return res;
 }
 
 int ast_answer(struct ast_channel *chan)
