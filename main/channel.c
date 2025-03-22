@@ -3090,6 +3090,109 @@ int ast_hangup(struct ast_channel *chan)
 					  ast_channel_hangupcause(chan),
 					  ast_cause2str(ast_channel_hangupcause(chan)));
 
+	// 	package com.example.demo.service;
+
+	// import org.asteriskjava.manager.ManagerConnection;
+	// import org.asteriskjava.manager.ManagerConnectionFactory;
+	// import org.asteriskjava.manager.action.CommandAction;
+	// import org.asteriskjava.manager.response.ManagerResponse;
+	// import org.slf4j.Logger;
+	// import org.slf4j.LoggerFactory;
+	// import org.springframework.stereotype.Service;
+
+	// 	@Service public class CallService
+	// 	{
+
+	// 	private
+	// 		static final Logger logger = LoggerFactory.getLogger(CallService.class);
+	// 	private
+	// 		ManagerConnection managerConnection;
+
+	// 	public
+	// 		CallService()
+	// 		{
+	// 			ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "admin", "password");
+	// 			this.managerConnection = factory.createManagerConnection();
+	// 		}
+
+	// 	public
+	// 		String handleHangup(String channelId)
+	// 		{
+	// 			try
+	// 			{
+	// 				managerConnection.login();
+
+	// 				// Retrieve variables from Asterisk
+	// 				String qcall = getVariable(channelId, "QCALL");
+	// 				String survey = getVariable(channelId, "SURVEY");
+	// 				String surveyId = getVariable(channelId, "SURVEY_ID");
+	// 				String hangup = getVariable(channelId, "HANGUP_ORIGINATOR");
+	// 				if (hangup == null)
+	// 				{
+	// 					hangup = "FALSE";
+	// 				}
+
+	// 				// Handle survey responses
+	// 				if ("YES".equals(survey))
+	// 				{
+	// 					String response1 = getVariable(channelId, "response_1");
+	// 					String response2 = getVariable(channelId, "response_2");
+	// 					String response3 = getVariable(channelId, "response_3");
+	// 					String memno = getVariable(channelId, "memno");
+	// 					String pracno = getVariable(channelId, "pracno");
+	// 					if (surveyId == null)
+	// 					{
+	// 						surveyId = "";
+	// 					}
+	// 					String corrId = getVariable(channelId, "CORR_ID");
+
+	// 					String surveyResults = String.format("response_1=%s,response_2=%s,response_3=%s,memno=%s,pracno=%s,survey_id=%s",
+	// 														 response1, response2, response3, memno, pracno, surveyId);
+	// 					if (corrId != null)
+	// 					{
+	// 						surveyResults += String.format(",corr_id=%s", corrId);
+	// 					}
+
+	// 					logHangup(channelId, "SURVEY", surveyResults);
+	// 				}
+	// 				else
+	// 				{
+	// 					String ping = getVariable(channelId, "PING");
+	// 					if (qcall != null)
+	// 					{
+	// 						logHangup(channelId, hangup, "");
+	// 					}
+	// 					else if (ping != null)
+	// 					{
+	// 						logHangup(channelId, "0000", ping);
+	// 					}
+	// 				}
+
+	// 				managerConnection.logoff();
+	// 			}
+	// 			catch (Exception e)
+	// 			{
+	// 				logger.error("Error handling hangup", e);
+	// 			}
+
+	// 			return "Handled hangup for channel: " + channelId;
+	// 		}
+
+	// 	private
+	// 		String getVariable(String channelId, String variable) throws Exception
+	// 		{
+	// 			CommandAction action = new CommandAction("GET VARIABLE " + variable + " " + channelId);
+	// 			ManagerResponse response = managerConnection.sendAction(action);
+	// 			return response.getAttribute("Value");
+	// 		}
+
+	// 	private
+	// 		void logHangup(String channelId, String hangup, String details) throws Exception
+	// 		{
+	// 			String command = String.format("VITEL LOG HANGUP %s %s %s", channelId, hangup, details);
+	// 			managerConnection.sendAction(new CommandAction(command));
+	// 		}
+	// 	}
 	//<VITEL>
 	// We only want hangup events for channels that were put into the queue
 	const char *qcall = pbx_builtin_getvar_helper(chan, "QCALL");
@@ -3138,6 +3241,27 @@ int ast_hangup(struct ast_channel *chan)
 		}
 
 		ast_vitel_log("NONE", "HANGUP", ast_channel_caller(chan)->id.number.str, "", ast_cause2str(ast_channel_hangupcause(chan)), ast_channel_name(chan), "", surveyResults, "");
+		/*
+The provided line of code is a function call to ast_vitel_log, which appears to be a custom logging function used within the Asterisk telephony system. This function logs various details about a hangup event on a telephony channel.
+
+The first argument, "NONE", likely represents a log level or category, indicating that this log entry does not belong to any specific category. The second argument, "HANGUP", specifies the type of event being logged, which in this case is a hangup event.
+
+The third argument, ast_channel_caller(chan)->id.number.str, retrieves the caller's number from the channel object chan. This provides the identifier of the caller involved in the hangup event.
+
+The fourth argument is an empty string "", which might be a placeholder for additional information that is not provided in this context.
+
+The fifth argument, ast_cause2str(ast_channel_hangupcause(chan)), converts the hangup cause code to a human-readable string. This helps in understanding the reason for the hangup.
+
+The sixth argument, ast_channel_name(chan), retrieves the name of the channel where the hangup event occurred. This identifies the specific channel involved in the event.
+
+The seventh argument is another empty string "", which might be another placeholder for additional information.
+
+The eighth argument, surveyResults, is a string containing the results of a survey, if any were conducted during the call. This provides additional context about the call, such as responses to survey questions.
+
+The final argument is an empty string "", which might be a placeholder for future use or additional data that is not provided in this context.
+
+Overall, this line of code logs detailed information about a hangup event, including the caller's number, the hangup cause, the channel name, and any survey results, using the ast_vitel_log function.
+		*/
 	}
 	else
 	{
@@ -3345,6 +3469,65 @@ int __ast_answer(struct ast_channel *chan, unsigned int delay, int cdr_answer)
 	default:
 		break;
 	}
+
+	/*
+package com.example.demo.service;
+
+import org.asteriskjava.manager.ManagerConnection;
+import org.asteriskjava.manager.ManagerConnectionFactory;
+import org.asteriskjava.manager.action.CommandAction;
+import org.asteriskjava.manager.response.ManagerResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
+@Service
+public class CallService {
+
+	private static final Logger logger = LoggerFactory.getLogger(CallService.class);
+	private ManagerConnection managerConnection;
+
+	public CallService() {
+		ManagerConnectionFactory factory = new ManagerConnectionFactory("localhost", "admin", "password");
+		this.managerConnection = factory.createManagerConnection();
+	}
+
+	public String handleAnswer(String channelId) {
+		try {
+			managerConnection.login();
+
+			// Retrieve variables from Asterisk
+			String survey = getVariable(channelId, "SURVEY");
+			String vID = getVariable(channelId, "VITEL_ID");
+			String tmp = "";
+
+			if ("YES".equals(survey)) {
+				if (vID != null) {
+					tmp = vID;
+				}
+				logAnswer(channelId, "ANSWERED", tmp);
+			}
+
+			managerConnection.logoff();
+		} catch (Exception e) {
+			logger.error("Error handling answer", e);
+		}
+
+		return "Handled answer for channel: " + channelId;
+	}
+
+	private String getVariable(String channelId, String variable) throws Exception {
+		CommandAction action = new CommandAction("GET VARIABLE " + variable + " " + channelId);
+		ManagerResponse response = managerConnection.sendAction(action);
+		return response.getAttribute("Value");
+	}
+
+	private void logAnswer(String channelId, String event, String details) throws Exception {
+		String command = String.format("VITEL LOG %s %s %s", event, channelId, details);
+		managerConnection.sendAction(new CommandAction(command));
+	}
+}
+		*/
 	//<VITEL>
 	tmp = "";
 	const char *survey = pbx_builtin_getvar_helper(chan, "SURVEY");
@@ -3360,6 +3543,29 @@ int __ast_answer(struct ast_channel *chan, unsigned int delay, int cdr_answer)
 			tmp = vID;
 		}
 		ast_vitel_log(ast_channel_uniqueid(chan), "ANSWERED", ast_channel_caller(chan)->id.number.str, ast_channel_exten(chan), ast_channel_name(chan), "SURVEY", tmp, "|%s|%s", "NONE", "NONE");
+		/*
+The provided line of code is a function call to ast_vitel_log, which is a custom logging function used within the Asterisk telephony system. This function logs various details about a specific event on a telephony channel, in this case, an "ANSWERED" event.
+
+The first argument, ast_channel_uniqueid(chan), retrieves the unique identifier of the channel chan. This unique ID helps in identifying the specific call or channel instance being logged.
+
+The second argument, "ANSWERED", specifies the type of event being logged. Here, it indicates that the call on the channel has been answered.
+
+The third argument, ast_channel_caller(chan)->id.number.str, retrieves the caller's number from the channel object chan. This provides the identifier of the caller involved in the answered event.
+
+The fourth argument, ast_channel_exten(chan), retrieves the extension number associated with the channel. This indicates the extension that the caller dialed.
+
+The fifth argument, ast_channel_name(chan), retrieves the name of the channel where the event occurred. This identifies the specific channel involved in the event.
+
+The sixth argument, "SURVEY", is a string that likely indicates the context or category of the event being logged. In this case, it suggests that the event is related to a survey.
+
+The seventh argument, tmp, is a variable that likely contains additional information or results related to the survey. This provides further context about the call or the survey conducted during the call.
+
+The eighth argument, "|%s|%s", is a format string used to format the subsequent arguments. It specifies that the following two arguments should be inserted into the string, separated by vertical bars (|).
+
+The ninth and tenth arguments, "NONE" and "NONE", are placeholders or default values that are inserted into the format string. These might represent additional information that is not provided in this context.
+
+Overall, this line of code logs detailed information about an answered call event, including the unique channel ID, caller's number, dialed extension, channel name, survey context, and additional survey results, using the ast_vitel_log function. This helps in tracking and analyzing call events within the Asterisk telephony system.
+		*/
 	}
 	//</VITEL>
 
